@@ -33,7 +33,7 @@ function loadWorkspace(S, P, folder) {
     manifest: null, project: null, vocab: emptyVocab(), modules: [...S.modules], lifecycle: null,
     basedOn: null, kb: null, name: null, subfolders: [],
   };
-  const mf = path.join(dir, 'mdstandard.md');
+  const mf = path.join(dir, 'intent-format.md');
   if (exists(mf)) {
     ws.manifest = buildFile(S, mf, rel(mf));
     const m = ws.manifest.fm?.map;

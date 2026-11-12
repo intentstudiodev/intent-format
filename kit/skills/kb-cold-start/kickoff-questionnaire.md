@@ -14,11 +14,11 @@
 3. **States.** Does the product show a different set of screens depending on a mode — typically signed in vs not, or by plan? List the states and which roles see them, or write "no states".
 4. **Platforms.** Desktop web, mobile web, native app, desktop app, CLI? Which of them get a different way of moving around (a top bar on desktop, a tab bar in the app)?
 
-## B. Main use cases and features
+## B. User stories and features
 
-5. **Main use cases (5–10)** as user stories, most important first:
+5. **User stories (5–10)** as user stories, most important first:
    `As a <role>, I want <goal> so that <benefit>.`
-   Main use cases only — not a backlog.
+   User stories only — not a backlog.
 6. **Main features.** The top-level groups of the product (e.g. *Items*, *Account*, *Settings*), each with the capabilities it contains if you know them. Optional — the AI can propose them from the use cases.
 
 ## C. What exists
@@ -37,6 +37,6 @@
 ## E. Direction
 
 14. **Priorities.** What matters most in the next release? What is explicitly out of scope?
-15. **Constraints.** Performance, offline use, privacy, security, accessibility, languages — anything that limits design or technology.
+15. **Keep in mind.** Performance, offline use, privacy, security, accessibility, languages — anything that limits design or technology.
 16. **Tech stack.** What is decided, and what is still open? Starter categories: Languages & runtimes · Frontend · Backend · Data & storage · Infrastructure & hosting · Integrations & third-party services · AI · Auth & security · Observability · Build, test & delivery · App wrappers (native, desktop).
 17. **Open questions you already know about.**

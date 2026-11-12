@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: edge-case
 id: EC000001
 name: Save fails
@@ -9,13 +9,13 @@ severity: Medium
 # Save fails · #EC000001
 > ⚙ #EC000001V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 **R1 · GWT**
 Given a Member editing an item
 When Save item does not answer in time
 Then the edits stay on screen and a retry option is shown
 
-## Rules applied
+## Rules
 none
 
 ## Where

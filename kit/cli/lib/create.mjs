@@ -1,4 +1,4 @@
-// Card creation shared by `mds new`, `mds mint` and `mds scaffold`: minting, High-water marks, templates.
+// Card creation shared by `intent-format new`, `intent-format mint` and `intent-format scaffold`: minting, High-water marks, templates.
 import fs from 'node:fs';
 import path from 'node:path';
 import { exists, readText, slugify, pad6, toPosix } from './util.mjs';
@@ -50,7 +50,7 @@ export function createCard(S, P, ws, type, name, opts = {}) {
   const keys = S.keyOrder(type);
   const folder = S.folderOfType[type];
   if (type === 'project' && ws.project) throw new Refused(`V${ws.version} already has a project card`);
-  if (folder && !ws.modules.includes(folder)) throw new Refused(`module ${folder} is not enabled in V${ws.version}/mdstandard.md`);
+  if (folder && !ws.modules.includes(folder)) throw new Refused(`module ${folder} is not enabled in V${ws.version}/intent-format.md`);
   const values = { name };
   if (opts.state !== undefined) {
     if (!keys.includes('state')) throw new Usage(`--state is not allowed on ${type}`);
@@ -145,7 +145,7 @@ export function scaffold(S, P, ws, invFile, log) {
   for (const r of rows) {
     if (!blank(r.core)) stats.skipped++;
     else if (!r.type) problem(r, `unknown type "${r.rawType}" — skipped`);
-    else if (r.type === 'project') { stats.skipped++; log(`row ${r.no}: project skipped (mds init creates the project card)`); }
+    else if (r.type === 'project') { stats.skipped++; log(`row ${r.no}: project skipped (intent-format init creates the project card)`); }
     else if (!r.name) problem(r, 'no name — skipped');
     else if (!r.coreCell) problem(r, 'row has no Core cell — skipped');
   }
@@ -173,7 +173,7 @@ export function scaffold(S, P, ws, invFile, log) {
       const { core, rel } = createCard(S, P, ws, r.type, r.name, opts);
       writeCore(r, core);
       stats.created++;
-      log(`${core} ${rel}${opts.parent ? ' · parent: ' + opts.parent : ''}${opts.feature ? ' · feature: ' + opts.feature : ''}`);
+      log(`${core} ${rel}${opts.parent ? ' · under: ' + opts.parent : ''}${opts.feature ? ' · feature: ' + opts.feature : ''}`);
     } catch (e) {
       if (e instanceof Refused || e instanceof Usage) problem(r, e.message);
       else throw e;

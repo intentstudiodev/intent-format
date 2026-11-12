@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: index
 name: ID register
 ---
@@ -46,7 +46,6 @@ name: ID register
 | SC000003 | screen | Item detail | 1.0, 1.1 | V1.1/screens/sc000003-item-detail.md |
 | SC000004 | screen | Edit item | 1.0, 1.1 | V1.1/screens/sc000004-edit-item.md |
 | SC000005 | screen | Settings | 1.0, 1.1 | V1.1/screens/sc000005-settings.md |
-| SH000001 | shell | App shell | 1.1 | V1.1/shells/sh000001-app-shell.md |
 | SV000001 | screen-variant | Picker | 1.0, 1.1 | V1.1/screens/sc000002-item-list.md#sv000001 |
 | TC000001 | tech | UI framework | 1.0, 1.1 | V1.1/tech/tc000001-ui-framework.md |
 | TC000002 | tech | Relational database | 1.0, 1.1 | V1.1/tech/tc000002-relational-database.md |
@@ -56,7 +55,6 @@ name: ID register
 ## ⚙ Retired
 | Core | Type | Name | Last version | Merged into |
 |---|---|---|---|---|
-| CP000005 | component | App shell | 1.1 | — |
 
 ## ⚙ High-water marks
 | Prefix | Highest |
@@ -64,7 +62,7 @@ name: ID register
 | AP | 2 |
 | BN | 3 |
 | CM | 2 |
-| CP | 5 |
+| CP | 4 |
 | CV | 1 |
 | DC | 1 |
 | EC | 1 |
@@ -75,7 +73,6 @@ name: ID register
 | RL | 1 |
 | RO | 2 |
 | SC | 5 |
-| SH | 1 |
 | SV | 1 |
 | TC | 2 |
 | UF | 2 |

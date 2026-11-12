@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// End-to-end smoke test for mds. Runs in a temp dir; `--save <dir>` copies the final KB there.
+// End-to-end smoke test for intent-format. Runs in a temp dir; `--save <dir>` copies the final KB there.
 //   node kit/cli/test/smoke.mjs [--save examples/example-app] [--keep]
 import fs from 'node:fs';
 import os from 'node:os';
@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const MDS = path.join(here, '..', 'mds.mjs');
+const MDS = path.join(here, '..', 'intent-format.mjs');
 const STD = path.resolve(here, '..', '..', '..');
 const schema = JSON.parse(fs.readFileSync(path.join(STD, 'schema.json'), 'utf8'));
 const args = process.argv.slice(2);
@@ -122,17 +122,20 @@ function fill(key, fm, body) {
 }
 
 fill('Project', { status: 'In design' }, `
-## Description & Requirements
+## Description
 A small app in which a Member keeps a list of items: create, browse and change them.
 
-## Main use cases
+## Why
+Members lose track of things kept in notes and chats; one list that is always at hand fixes that.
+
+## User stories
 - As a Member, I want to create an item, so that I can keep track of it.
 - As a Member, I want to browse my items, so that I find one quickly.
 - As a Member, I want to edit an item, so that its details stay current.
 - As a Member, I want to change my settings, so that the app fits how I work.
 - As an Admin, I want to review all items, so that the list stays clean.
 
-## Constraints
+## Keep in mind
 **R1 · Checklist**
 - [ ] The Item list opens in under one second with 1000 items.
 - [ ] Every screen works with the keyboard alone.
@@ -146,7 +149,7 @@ A small app in which a Member keeps a list of items: create, browse and change t
 - Web
 - Mobile
 
-### Appears-as
+### Opens-as
 - Side panel — opens beside the current page
 
 ### Tech categories
@@ -162,41 +165,62 @@ A small app in which a Member keeps a list of items: create, browse and change t
 - [Product brief](../inputs/brief.md) · type: Source`);
 
 fill('Member', { status: 'In design', platform: '[Web, Mobile]' }, `
-## Description & Requirements
-Keeps a personal list of items; mostly on the phone, several times a week.`);
+## Description
+Keeps a personal list of items; mostly on the phone, several times a week.
+
+## Why
+The product exists for this user; every story names them.`);
 fill('Admin', { status: 'Idea', platform: 'Web' }, `
-## Description & Requirements
-Reviews the items of all Members, on the web.`);
+## Description
+Reviews the items of all Members, on the web.
+
+## Why
+Someone has to keep the shared list clean. [likely]`);
 fill('Items', { status: 'In design', priority: 'High' }, `
-## Description & Requirements
+## Description
 Members need one dependable place for the things they keep track of.
 
-In scope: finding, creating and changing items. Out of scope: sharing items with other people.`);
+In scope: finding, creating and changing items. Out of scope: sharing items with other people.
+
+## Why
+Keeping track of things is the reason the app exists. [confirmed]`);
 fill('Account', { status: 'Idea', priority: 'Medium' }, `
-## Description & Requirements
+## Description
 Members need to adjust the app to how they work.
 
-In scope: personal settings. Out of scope: settings shared between Members.`);
+In scope: personal settings. Out of scope: settings shared between Members.
+
+## Why
+Members asked for a dark theme in the first interviews. [assumed]`);
 fill('Browse', { status: 'In design', priority: 'High' }, `
-## Description & Requirements
+## Description
 Lets a Member find an item in their list.
 
-**R1 · User story** As a Member, I want to browse my items, so that I find one quickly.`);
+**R1 · User story** As a Member, I want to browse my items, so that I find one quickly.
+
+## Why
+same as #${C.Items}`);
 fill('EditF', { status: 'In design', priority: 'High' }, `
-## Description & Requirements
+## Description
 Lets a Member create an item or change its details.
 
 **R1 · User story** As a Member, I want to change an item's details, so that my list stays accurate.
 
+## Why
+A list nobody can change goes stale within a week.
+
 ## Touchpoints
 - {Field} — name entry`);
 fill('SettingsF', { status: 'Idea' }, `
-## Description & Requirements
+## Description
 Lets a Member change their personal settings.
 
-**R1 · User story** As a Member, I want to change my settings, so that the app fits how I work.`);
+**R1 · User story** As a Member, I want to change my settings, so that the app fits how I work.
+
+## Why
+One app, many working habits.`);
 fill('UI', { status: 'Adopted', category: 'Frontend' }, `
-## Description & Requirements
+## Description
 Renders every screen and component of the app.
 
 ## Why
@@ -205,7 +229,7 @@ One component model for the web and mobile screens.
 ## Alternatives
 none`);
 fill('DB', { status: 'Adopted', category: 'Data & storage', 'tech-version': '"16"', license: 'Open source' }, `
-## Description & Requirements
+## Description
 Keeps items and settings in tables with transactions.
 
 ## Why
@@ -214,7 +238,7 @@ Items have a fixed shape and need safe concurrent updates.
 ## Alternatives
 - [~ Document database]`);
 fill('Server', { status: 'In build', 'backend-type': 'server' }, `
-## Description & Requirements
+## Description
 Serves the item APIs and reads and writes the stored data.
 
 ## Connections
@@ -224,7 +248,7 @@ Serves the item APIs and reads and writes the stored data.
 ## Built with
 - [~ Server runtime]`);
 fill('MainDb', { status: 'In build', 'backend-type': 'database' }, `
-## Description & Requirements
+## Description
 Stores items and settings.
 
 ## Connections
@@ -233,31 +257,34 @@ none
 ## Built with
 - {DB}`);
 fill('Files', { status: 'Idea', 'backend-type': 'storage' }, `
-## Description & Requirements
+## Description
 Keeps files attached to items.
 
 ## Connections
 none`);
 fill('List', { status: 'In build', method: 'GET', endpoint: '/items' }, `
-## Description & Requirements
+## Description
 Returns the items of the signed-in Member, newest first.
 
 ## Served by
 - {Server}`);
 fill('Save', { status: 'In build', method: 'PUT', endpoint: '/items/{id}' }, `
-## Description & Requirements
+## Description
 Creates or updates one item and returns the stored version.
 
 ## Served by
 - {Server}`);
 fill('Button', { status: 'Live', 'component-type': 'atom' }, `
-## Description & Requirements
+## Description
 Starts one action when chosen.
+
+## Why
+none — layout only
 
 ## Components
 none`);
 fill('Field', { status: 'Live', 'component-type': 'atom' }, `
-## Description & Requirements
+## Description
 Lets the user type one line of text.
 
 **R1 · GWT**
@@ -268,8 +295,11 @@ Then the name is shown in the field
 ## Components
 none`);
 fill('Row', { status: 'In design', 'component-type': 'molecule' }, `
-## Description & Requirements
+## Description
 Shows one item's name in a list and opens the item when chosen.
+
+## Why
+same as #${C.Browse}
 
 ## Do & Don'ts
 ✅ Show the whole name on one line and cut it at the end.
@@ -283,7 +313,7 @@ Shows one item's name in a list and opens the item when chosen.
 
 none`);
 fill('Bar', { status: 'In design', 'component-type': 'organism' }, `
-## Description & Requirements
+## Description
 Shows the title of the current screen and its main action.
 
 ## Components
@@ -292,13 +322,13 @@ Shows the title of the current screen and its main action.
 ## Built with
 - {UI}`);
 fill('Home', { status: 'In design' }, `
-## Description & Requirements
+## Description
 The starting point of the app.
 
 ## Components
 1. {Bar}`);
 fill('ItemList', { status: 'In design' }, `
-## Description & Requirements
+## Description
 Shows all of a Member's items as rows; choosing a row opens Item detail.
 
 **R1 · GWT**
@@ -313,27 +343,27 @@ Then an empty-list message and a create button are shown
 
 ## Variants
 ### Picker · {Picker}
-appears-as: Side panel
+opens-as: Side panel
 
 1. {Row} · variant: Compact
 
-## Uses API
+## APIs
 - {List}
 
 ## Comments
 - {EmptyMsg}`);
 fill('Detail', { status: 'In design' }, `
-## Description & Requirements
+## Description
 Shows one item with all its details.
 
 ## Components
 1. {Bar}
 2. {Button} — edits the item`);
-fill('EditS', { status: 'In design', 'appears-as': 'Side panel' }, `
-## Description & Requirements
+fill('EditS', { status: 'In design', 'opens-as': 'Side panel' }, `
+## Description
 Lets a Member change an item's name and notes.
 
-## Rules applied
+## Rules
 - {NameRule}
 
 ## Components
@@ -341,30 +371,33 @@ Lets a Member change an item's name and notes.
 2. {Field} — item name
 3. {Button} — saves the item
 
-## Uses API
+## APIs
 - {Save}`);
 fill('Settings', { status: 'Idea' }, `
-## Description & Requirements
+## Description
 Lets a Member change how the app behaves.
 
 ## Components
 1. {Bar}`);
 fill('Map', { status: 'In design', default: 'true' }, `
-## Description & Requirements
+## Description
 How the places of Example app are arranged for every Member.
 
 ## Parts
 - {Home}
   - {ItemList} · group: Items
     - {Detail} · group: Items
-      - {EditS} · appears-as: Side panel · group: Items
+      - {EditS} · opens-as: Side panel · group: Items
   - {Settings}
 
 ### Lateral
 - Edge: {Settings} → {ItemList} · label: Back to items`);
 fill('Create', { status: 'In design' }, `
-## Description & Requirements
+## Description
 A Member adds a new item from the Item list and returns to the list with the item saved.
+
+## Why
+The main use case of Items: without it nothing gets into the list.
 
 ## Step list
 1. {S1}
@@ -403,8 +436,11 @@ The Member types a name and optional notes.
 - Outcome: the new item is saved and shown on the Item list.
 - Screen: {ItemList}`);
 fill('EditFlow', { status: 'In design' }, `
-## Description & Requirements
+## Description
 A Member changes an existing item and returns to its details.
+
+## Why
+Details change; the list must follow.
 
 ## Step list
 1. {S6}
@@ -429,16 +465,19 @@ A Member changes an existing item and returns to its details.
 - Outcome: the changes are saved and shown on Item detail.
 - Screen: {Detail}`);
 fill('NameRule', { status: 'Approved' }, `
-## Description & Requirements
-**R1 · EARS** If the item name is empty, then the system shall refuse to save the item and say why.`);
+## Description
+**R1 · EARS** If the item name is empty, then the system shall refuse to save the item and say why.
+
+## Why
+An item without a name cannot be found again in the list.`);
 fill('SaveFails', { status: 'Idea', severity: 'Medium' }, `
-## Description & Requirements
+## Description
 **R1 · GWT**
 Given a Member editing an item
 When Save item does not answer in time
 Then the edits stay on screen and a retry option is shown
 
-## Rules applied
+## Rules
 none
 
 ## Where
@@ -448,6 +487,9 @@ none
 fill('Images', { status: 'Open' }, `
 ## Question
 Should item images be kept in File storage or inside the Main database?
+
+## Why
+Images are the largest data the app stores; where they live decides backup and cost.
 
 ## Options
 1. File storage — cheap and fast to serve; needs a cleanup job.
@@ -468,6 +510,9 @@ step('regen', r.code === 0, r.out.split('\n')[0]);
 let k = checkCounts(R);
 if (k.error || k.warning) showProblems(k.json);
 step('check after regen', k.error === 0 && k.warning === 0 && k.code === 0, `${k.error} errors · ${k.warning} warnings · ${k.info} infos`);
+const hw = k.json.health[0];
+step('why and confidence counted', hw.why.filled === 13 && hw.why.inherited === 2 && hw.why.none === 1 && hw.why.missing === 0 && hw.confidence.assumed === 1 && hw.confidence.likely === 1
+  && hw.blindSpotsByKind.why === 0 && !read(F.Items).includes('[confirmed]') && read(F.Items).includes('reason the app exists.\n'), JSON.stringify({ why: hw.why, confidence: hw.confidence }));
 let h1 = hashTree(R);
 r = mds('regen', R);
 let h2 = hashTree(R);
@@ -478,30 +523,30 @@ const has = (key, text) => read(F[key]).includes(sub(text));
 ok(has('ItemList', '> ⚙ {ItemList}V1.0 · V1.0 in-progress'), 'status line V1.0');
 ok(has('Create', '1. [{S1} Start from the list](#fs000001)'), 'hand step reference upgraded to bound');
 ok(has('Create', '<a id="fs000003"></a>'), 'anchor inserted');
-ok(has('Row', `- [{ItemList} Item list](../screens/${path.basename(F.ItemList)}) · at: {Picker}`), '⚙ Used on with at:');
-ok(has('Button', `· via: {Bar}`) && has('Button', '## ⚙ Used on'), '⚙ Used on with via:');
+ok(has('Row', `- [{ItemList} Item list](../screens/${path.basename(F.ItemList)}) · at: {Picker}`), '⚙ Used in with at:');
+ok(has('Button', `· via: {Bar}`) && has('Button', '## ⚙ Used in'), '⚙ Used in with via:');
 ok(has('NameRule', '## ⚙ Applied in') && has('NameRule', '· at: {S3}') && has('NameRule', '· at: {S8}'), '⚙ Applied in');
 ok(has('Save', '## ⚙ Called from') && has('Save', '· at: {S4}') && has('Save', '## ⚙ Edge cases') && has('Save', '· status: Open'), '⚙ Called from / Edge cases / Decisions');
 ok(has('EditF', '## ⚙ Also uses') && has('EditF', '· home: {Browse}') && has('EditF', '## ⚙ User flows'), '⚙ Also uses / User flows');
 ok(has('Items', '## ⚙ Sub-features') && has('Items', '— Lets a Member find an item in their list.'), '⚙ Sub-features with one-liner');
 ok(has('UI', '## ⚙ Used by') && has('UI', '[#PR000001 Example app](../project.md)'), '⚙ Used by');
 ok(has('EmptyMsg', '## ⚙ Attached to'), '⚙ Attached to');
-ok(has('Home', '## ⚙ Placed on') && has('ItemList', '· parent: {Home}'), '⚙ Placed on');
+ok(has('Home', '## ⚙ On maps') && has('ItemList', '· under: {Home}'), '⚙ On maps');
 ok(has('Server', '## ⚙ Serves') && has('MainDb', '## ⚙ Connected from') && has('MainDb', '· kind: stores'), '⚙ Serves / Connected from');
 ok(has('Field', '## ⚙ Features') && has('Browse', '## ⚙ Screens') && has('Browse', '## ⚙ Components'), '⚙ Features / Screens / Components');
 ok(read('V1.0/screens/_index.md').includes('| Feature | One-liner | Blind spots |'), 'roster columns');
 ok(read('_ids.md').includes(`| ${C.Picker} | screen-variant | Picker | 1.0 |`), '_ids.md lists sub-documents');
-ok(has('Member', '## ⚙ Stories') && has('Member', '[#PR000001 Example app](../project.md) · story: Main use cases') && has('Member', '{Browse}') && has('Member', '· story: R1'), '⚙ Stories on a role');
-ok(has('Admin', '· story: Main use cases') && !has('Admin', '{Browse}'), '⚙ Stories only for the role named');
+ok(has('Member', '## ⚙ Stories') && has('Member', '[#PR000001 Example app](../project.md) · story: User stories') && has('Member', '{Browse}') && has('Member', '· story: R1'), '⚙ Stories on a role');
+ok(has('Admin', '· story: User stories') && !has('Admin', '{Browse}'), '⚙ Stories only for the role named');
 step('generated sections', failed === 0);
 
 /* ---------- 5. release V1.0, branch V1.0 → V1.1, change one card ---------- */
-write('V1.0/mdstandard.md', read('V1.0/mdstandard.md').replace('lifecycle: in-progress', 'lifecycle: released'));
+write('V1.0/intent-format.md', read('V1.0/intent-format.md').replace('lifecycle: in-progress', 'lifecycle: released'));
 r = mds('regen', R);
 ok(read(F.Home).includes('V1.0 released'), 'status line follows the lifecycle');
 r = mds('branch', R, 'V1.0', 'V1.1');
 const v11 = (key) => F[key].replace(/^V1\.0\//, 'V1.1/');
-const man = read('V1.1/mdstandard.md');
+const man = read('V1.1/intent-format.md');
 step('branch', r.code === 0 && man.includes('version: "1.1"') && man.includes('based-on: "1.0"') && man.includes('lifecycle: in-progress')
   && read(v11('ItemList')).includes('· based on V1.0 · unchanged'), r.err.trim());
 const il = read(v11('ItemList')).replace('3. [#' + C.Button, `4. #${C.Field} — filters the list\n3. [#${C.Button}`);
@@ -557,6 +602,43 @@ k = checkCounts(Q);
 if (k.error || k.warning) showProblems(k.json);
 step('incomplete-list marker + lifecycle', k.error === 0 && k.warning === 0 && k.json.health[0].blindSpotsByKind.lists === 1 && qf('V1.0/screens/sc000001-item-list.md').includes('V1.0 planned'),
   `blind spots ${k.json.health[0].blindSpots}: ${JSON.stringify(k.json.health[0].blindSpotsByKind)}`);
+
+/* ---------- 5c. why values, decision keys, Source links, open ---------- */
+const dec = mds('new', 'decision', 'Keep it simple?', '--root', Q);
+const dm = /^(DC\d{6}) (\S+)$/.exec(dec.out.trim());
+ok(dm, 'new decision in scaffold KB');
+const dpath = path.join(Q, dm[2]);
+const decText = (fm, source) => `---\nstandard: ${schema.standard}\ntype: decision\nid: ${dm[1]}\nname: Keep it simple?\nstatus: Decided\n${fm}---\n# Keep it simple? · #${dm[1]}\n\n## Question\nKeep it simple?\n\n## Why\nIt decides the shape of everything else.\n\n## Options\n1. Yes\n2. No\n\n## Outcome\nYes. [assumed]\n\n## Affects\nnone\n\n## Links\n- [Owner note](${source}) · type: Source\n`;
+fs.writeFileSync(dpath, decText('', '../../notebook/raw/note.md'));
+const tech = path.join(Q, 'V1.0/tech/tc000001-ui-framework.md');
+fs.writeFileSync(tech, fs.readFileSync(tech, 'utf8').replace(/## Why\n—/, '## Why\nsame as #ZZ999999'));
+const comp = path.join(Q, 'V1.0/components/cp000001-item-row.md');
+fs.writeFileSync(comp, fs.readFileSync(comp, 'utf8').replace(/## Description\n—/, '## Description\n—\n\n## Why\nsame as #FT000002'));
+k = checkCounts(Q);
+const codes = (j) => new Set(j.diagnostics.map((d) => d.code));
+let cs = codes(k.json);
+const hq = k.json.health[0];
+step('W052 · W053 · W051 · I030 reported', cs.has('W052') && cs.has('W053') && cs.has('W051') && cs.has('I030') && hq.confidence.assumed === 1 && hq.why.inherited === 0,
+  [...cs].filter((c) => /^(W05[123]|I03[01])$/.test(c)).join(' ') + ` · why ${JSON.stringify(hq.why)}`);
+fs.writeFileSync(dpath, decText('decided: 2026-11-10\nby: owner\n', '../../inputs/note.md'));
+fs.writeFileSync(tech, fs.readFileSync(tech, 'utf8').replace(/## Why\nsame as #ZZ999999/, '## Why\nnone'));
+const feat = path.join(Q, 'V1.0/features/ft000002-browse-items.md');
+fs.writeFileSync(feat, fs.readFileSync(feat, 'utf8').replace(/## Why\n—/, '## Why\nFinding things is the point.').replace(/## Description\n—/, '## Description\nA Member finds an item by name [ask: also by tag?]; the list is sorted by date [ask: newest first? · later 2026-11-12].'));
+k = checkCounts(Q);
+cs = codes(k.json);
+const op = mds('open', Q);
+step('decision keys and Source fixed; intent-format open lists the assumed Outcome', !cs.has('W052') && !cs.has('W053') && !cs.has('W051') && !cs.has('I030') && k.json.health[0].why.inherited === 1
+  && op.code === 0 && op.out.includes(`#${dm[1]} Keep it simple? · Outcome`) && op.out.includes('Why missing (why debt) (')
+  && k.json.health[0].asks.open === 1 && k.json.health[0].asks.later === 1 && op.out.includes('Questions to the owner ([ask: …]) (2)') && op.out.includes('also by tag?') && op.out.includes('later 2026-11-12'),
+  op.out.split('\n').slice(0, 5).join(' | ') + ` · asks ${JSON.stringify(k.json.health[0].asks)}`);
+
+// a "later" ask older than ask.again days is due: counted, flagged, listed first
+fs.writeFileSync(feat, fs.readFileSync(feat, 'utf8').replace('[ask: newest first? · later 2026-11-12]', '[ask: newest first? · later 2020-01-01]'));
+k = checkCounts(Q);
+const op2 = mds('open', Q);
+step('a later ask past ask.again days is due and listed first', k.json.health[0].asks.due === 1 && k.json.health[0].asks.later === 1 && op2.code === 0
+  && op2.out.includes('later 2020-01-01 · due — ask again') && op2.out.indexOf('newest first?') < op2.out.indexOf('also by tag?'),
+  `asks ${JSON.stringify(k.json.health[0].asks)}`);
 
 /* ---------- 6. templates pass check in a fresh workspace ---------- */
 const T = path.join(tmp, 'templates-kb');

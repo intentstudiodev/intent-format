@@ -1,4 +1,4 @@
-// mds regen: rewrite machine-owned tokens and generated zones. Idempotent; no dates.
+// intent-format regen: rewrite machine-owned tokens and generated zones. Idempotent; no dates.
 import fs from 'node:fs';
 import path from 'node:path';
 import { writeIfChanged, exists, toPosix } from './util.mjs';
@@ -31,6 +31,7 @@ export function rewriteCard(S, ws, card, gen, status) {
   const renumber = new Map();
   for (const g of card.groups) g.forEach((idx, k) => renumber.set(idx, k + 1));
   const forgive = new Set(card.forgive);
+  const confirmed = new Set(card.confirmedIdx || []);
   const anchorAfter = new Map(), anchorFix = new Map();
   for (const sd of card.subs) {
     const want = `<a id="${sd.core.toLowerCase()}"></a>`;
@@ -48,6 +49,7 @@ export function rewriteCard(S, ws, card, gen, status) {
     if (!untouched.has(i) && !mask[i] && !card.extLines.has(i)) {
       if (anchorFix.has(i)) l = anchorFix.get(i);
       else if (forgive.has(i)) l = l.replace(l.trim(), '—');
+      else if (confirmed.has(i)) l = l.replace(/ \[confirmed\]\s*$/, '');
       else {
         const u = ups.get(i);
         if (u) for (const x of [...u].sort((p, q) => q.start - p.start)) l = l.slice(0, x.start) + x.text + l.slice(x.end);

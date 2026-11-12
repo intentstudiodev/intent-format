@@ -1,8 +1,8 @@
-# MDStandard 1.0 — Specification
+# Intent Format 1.0 — Specification
 
-`standard: MDStandard/1.0` · Status: normative · Companion: `schema.json`
+`standard: IntentFormat/1.0` · Status: normative · Companion: `schema.json`
 
-MDStandard is a format for the knowledge base (KB) of a software product, written as plain
+Intent Format is a format for the knowledge base (KB) of a software product, written as plain
 Markdown files. This document is the normative text; `schema.json` is the machine-readable
 source of the same rules — types, keys, sections, relations, generated sections, diagnostics,
 grammar — and the two never disagree. Long tables live only in the schema and are cited by
@@ -10,7 +10,7 @@ path, e.g. `schema.json types.<type>.sections`.
 
 **Reading the rules.** Rules are numbered `S-<TOPIC>-<n>`, stated once and cited by number
 elsewhere. MUST, SHOULD and MAY have their RFC 2119 meaning. A bracketed code is the
-diagnostic `mds check` reports when the rule is broken (`schema.json diagnostics`): a MUST on
+diagnostic `intent-format check` reports when the rule is broken (`schema.json diagnostics`): a MUST on
 KB content cites an error (`E…`) or warning (`W…`), a SHOULD an info (`I…`) where one exists.
 A MUST on a tool cites the diagnostics that trigger or verify it, so fixtures can test it. Examples use the abstract `example-app`: screens Home, Item list, Item detail, Edit item
 and Settings; features Items and Account.
@@ -53,7 +53,8 @@ A body state MUST be the whole body, never mixed with other lines [W015] — wit
 list section, a final item `—` (`- —` or `N. —`) marks the list as **incomplete** (more items
 exist but are unknown) and counts as one blind spot. Values and relation targets use `—` only. An absent optional section means nothing to say; an absent required
 section is a gap (S-BODY-3). `-`, `–`, `TBD` or `?` alone read as `—` and SHOULD be written
-as `—` [I005].
+as `—` [I005]. The `Why` section adds two values of its own, `none — <note>` and `same as #<id>`
+(S-BODY-7). A question for the owner inside a sentence is an `[ask: …]` marker (S-BODY-8).
 
 **S-CORE-5 · Warn, never block.** An incomplete or inconsistent KB is a normal working state:
 tools read, show, check and export it whatever its warnings and infos. Only errors stop
@@ -76,7 +77,7 @@ file; a conforming generator MUST meet this [I001] [I020].
   proposal/         cold-start working files; report.md beside it (S-PKG-8)
   layout/           tool-private canvas positions (S-PKG-5)
   V1.0/             one workspace per version (chapter 8)
-    mdstandard.md   manifest
+    intent-format.md   manifest
     project.md      project card
     CHANGES.md      ⚙ only when based-on is set (S-VER-5)
     roles/ screens/ components/ shells/ userflows/ ia/ rules/ apis/ features/
@@ -88,10 +89,10 @@ Workspace folders are named `V<major>.<minor>`, explorations `V<major>.<minor>-<
 `inputs/`, `layout/`, `proposal/` and the agent files MAY be absent.
 
 **S-PKG-2 · Workspace.** A workspace holds one full KB and MUST contain exactly one manifest
-`mdstandard.md` and one project card `project.md` at its root [W032]. A card outside any
+`intent-format.md` and one project card `project.md` at its root [W032]. A card outside any
 workspace is a valid fragment: it announces its own standard, type and identity.
 
-**S-PKG-3 · Manifest.** `mdstandard.md` describes the KB as an artifact; `project.md` describes
+**S-PKG-3 · Manifest.** `intent-format.md` describes the KB as an artifact; `project.md` describes
 the product. The manifest's front matter MUST hold these keys in this order [W033]:
 `standard`, `type: manifest`, `kb` (a lowercase slug), `name`, `version` (quoted, equal to the
 folder name without `V`), `lifecycle` (S-VER-2), optional `based-on` (S-VER-3), `modules` (the
@@ -128,11 +129,11 @@ Hand authors MAY omit head files; a missing or stale one SHOULD be regenerated [
 `type: Source`, S-LINK-6). `inputs/` belongs to no workspace and is not validated.
 
 **S-PKG-8 · Agent entry and working files.** `AGENTS.md` at the project root tells a fresh
-agent where the standard is and to start with `mds next`, which derives the next step from the
+agent where the standard is and to start with `intent-format next`, which derives the next step from the
 project's own files alone; `CLAUDE.md` holds `@AGENTS.md`. Tools create them when missing and
 never overwrite them. `proposal/` (inventory, frames, decisions, questions, review) and
 `report.md` are the cold start's working files; they are not cards and are never checked.
-`.mds.lock` exists only while a writing command runs.
+`.intent-format.lock` exists only while a writing command runs.
 
 Filenames are defined with identifiers (S-ID-8).
 
@@ -142,7 +143,7 @@ A card has four parts, in order: front matter, title line, optional status line,
 
 ```markdown
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.0
 type: screen
 id: SC000002
 name: Item list
@@ -152,7 +153,7 @@ feature: FT000002
 # Item list · #SC000002
 > ⚙ #SC000002V1.1 · V1.1 in-progress · based on V1.0 · changed: Components
 
-## Description & Requirements
+## Description
 Shows all of a Member's items as rows; choosing a row opens Item detail.
 
 ## Components
@@ -169,7 +170,7 @@ one-line flow list `[a, b]`, only where the key allows one. Front matter MUST pa
 [E001]. If a key repeats, the first occurrence wins.
 
 **S-FM-2 · Sniff key.** The first key of every file — card, manifest or generated file — MUST
-be `standard: MDStandard/1.0` [W001].
+be `standard: IntentFormat/1.0` [W001].
 
 **S-FM-3 · Keys and order.** Keys MUST follow this order [W002]: `standard`, `type`, `id`,
 `name`, `status`, then `state` and `feature` where the type allows them, the type's extras in
@@ -203,6 +204,10 @@ shell's `flow:` (S-SHELL-1) are the only front-matter keys holding a core, one v
 **home**, a Feature or Sub-feature; `parent:` (features) names a Sub-feature's top-level
 Feature. The core MUST resolve in the workspace [W019] to a feature card [W018]. Their reverses
 are generated on the feature card (S-FEAT-3).
+
+**S-FM-10 · Users.** `users:` on a screen or a user flow names the user types it is for: one
+role card name, or a list. Omitted means every user type whose states include the card's
+state. Tools read it as a lens (show the map as a Member), never as a boundary.
 
 **S-FM-9 · Values.** A value is plain text to the end of the line, double-quoted only where YAML
 requires it: it contains `: ` or ` #`, starts with a special character or a space, or would
@@ -244,13 +249,49 @@ edits there are lost. A `## ⚙` heading MUST be in the type's registry or be `#
 [W014]. Generated sections hold bound reference lines only, one fact per line (the
 `⚙ Contents` table excepted), and exist only with content: an empty one, or one holding `—` or
 `none`, SHOULD NOT exist [I009]. The registry is closed; counts and roll-ups outside it come
-only from `mds check`.
+only from `intent-format check`.
 
 **S-BODY-6 · Content shapes.** The registry fixes each section's content: prose; relation lines
 (chapter 5); ordered lines (S-REL-3); an IA tree (S-IA-1); sub-documents; vocabularies
 (S-VOC-1); user stories (S-TYPE-2); Do & Don'ts, one `✅ <do>` or `🚫 <don't>` line each; Tags,
 one comma-separated line. Do & Don'ts and Tags SHOULD keep their shapes [I024]. Prose sections
 hold prose first, then requirement blocks.
+
+**S-BODY-7 · Why.** Every card type except `comment` has a `## Why` section directly after
+`## Description` (after `## Question` on decisions): one or two sentences answering the type's
+**why question** (schema `why.questions`). The question has one of three flavours: *purpose* —
+why this exists at all (project, feature, userflow, role); *choice* — why this way and not
+another (screen, component, shell, ia, api, backend, tech, decision); *constraint* — what goes
+wrong without it (rule, edge-case). A screen's why is therefore not its feature's why: the
+feature says what problem it solves, the screen says why it is a screen of its own.
+The section is required on the types that carry intent — `project`, `feature`, `rule`,
+`decision`, `userflow`, `shell`, `role`, `tech` — and optional elsewhere, where an absent `Why`
+means nothing to say and a present one counts like a required one. Its body is one of:
+
+- text — the answer, optionally ending with a confidence mark (below). It MAY mention other
+  cards (`… purpose: #FT000003`); a Why says what the Description does not;
+- `none`, or `none — <note>` — no why is needed here (a divider, a plain button); not counted;
+- `same as #<id>` — another card's why covers this one, any card by its core id. A checker MUST
+  follow the link and, when that card has no why (or borrows one that is missing), count this
+  card as missing [I030]. An id that names no card, or the card itself, is a warning [W051];
+- `—` — nobody has asked yet; a blind spot of kind `why` (S-CONF-2).
+
+**Confidence.** A Why text or a decision's `Outcome` MAY end with one mark: `[likely]` — the
+statement follows from the inputs but none states it; `[assumed]` — a guess no input
+supports. Unmarked means confirmed by the owner or an input; `[confirmed]` MAY be written and
+`regen` removes it [I031]. A mark anywhere else in the body is a warning [W051]. Confirming a
+why means removing its mark. Health counts both marks (S-CONF-2); `intent-format open` lists them.
+
+**S-BODY-8 · Ask markers.** A question for the owner that no card value can hold yet — an
+unknown fact, a doubt about one sentence — is written where it belongs, inside the sentence,
+as `[ask: <question>]`. It is allowed in any authored body line of any card, never in front
+matter, a status line or a generated section. It is not a blind spot (`—` says *unknown*) and
+not a guess (`[assumed]` says *probably*): it says *somebody must answer this*. Health counts
+ask markers as **asks** — open, later, and due (S-CONF-2); `intent-format open` lists each with its card
+and line, due ones first. An answer rewrites the sentence and the marker goes. When the owner says
+*later*, the marker gains ` · later <YYYY-MM-DD>` and stays counted; after `ask.again` days (2) it
+is **due** and is asked again. *Unknown* is not an answer: the marker stays as it is. Only the
+owner closes a question as not relevant; a tool or agent MUST NOT drop one.
 
 ### 3.4 Requirement blocks
 
@@ -282,7 +323,7 @@ added; `regen` adds it [I006].
 
 **S-SUB-2 · Passport line.** After its anchor a variant MAY carry one passport line
 `key: value · key: value` with these keys, in order, each omitted at its default: `state` (one
-State name or `Shared`; default the host's), `appears-as` (default the host's), `platform`
+State name or `Shared`; default the host's), `opens-as` (default the host's), `platform`
 (comma-separated; default all), `flag` (a feature-flag name, one token). Flow variants take
 only `platform` and `flag`; flow steps take no passport line. A passport line MUST use only its
 allowed keys, in order, with legal values [W024].
@@ -298,10 +339,10 @@ type's purpose, keys and sections are in `schema.json types`; below is what they
 implicit.
 
 **S-TYPE-2 · project (PR).** The front door, read first by every agent; one per workspace
-(S-PKG-2). `Description & Requirements` says what the product is and for whom. `Main use
+(S-PKG-2). `Description` says what the product is and for whom. `Main use
 cases` holds lines `- As a <Role>, I want <goal>, so that <benefit>.`: each MUST be a user
 story whose role is the exact name of a role card, once role cards exist [W037]. There SHOULD be 5–10 of
-them [I017]. `Constraints` holds non-functional requirements (performance, offline, privacy,
+them [I017]. `Keep in mind` holds non-functional requirements (performance, offline, privacy,
 accessibility, languages) as requirement blocks, or `none`. `Built with` names project-wide
 technologies. `industry:` (free text: Travel, Fintech …) and `audience:` (B2C, B2B, B2B2C,
 Internal system, Marketplace; one or several) frame the product's domain; both optional, read
@@ -309,7 +350,7 @@ by agents before anything else so that suggestions use the domain's vocabulary, 
 rules.
 
 **S-TYPE-3 · screen (SC).** A place the user can be — a page, a modal, a panel with its own
-composition: what it is for and what it is made of. `appears-as` is its default presentation
+composition: what it is for and what it is made of. `opens-as` is its default presentation
 (omitted = Page); acceptance criteria are GWT blocks. A screen never states where it sits (IA
 maps) or how users move through it (flows). A piece placed inside places — a row, a toast, a
 menu — is a component; the same place with another composition is a variant; a different
@@ -326,7 +367,7 @@ components (`none` for atoms). Interactions are described on the component, not 
 frame around places is not a component but a shell (S-TYPE-14).
 
 **S-TYPE-5 · userflow (UF).** A journey in one file: typed steps, an ordered step list per
-variant and fork wiring (section 6.1); `Description & Requirements` gives its intent, for whom
+variant and fork wiring (section 6.1); `Description` gives its intent, for whom
 and its success criteria; `platform:` limits it to some platforms (omitted = all). A KB SHOULD have one flow per main use case or recurring journey.
 
 **S-TYPE-6 · ia (IA).** One IA map: screens arranged in a hierarchy plus lateral edges — pure
@@ -343,7 +384,7 @@ of one card stays in that card; a situation with its handling is an edge case.
 line, the backend node serving the call [W022].
 
 **S-TYPE-9 · edge-case (EC).** A named exceptional situation and every place it can happen;
-`severity` (`High · Medium · Low`) is the impact if unhandled. `Description & Requirements`
+`severity` (`High · Medium · Low`) is the impact if unhandled. `Description`
 states the situation and its handling, as a GWT or EARS block with both parts; `Where` lists
 every screen, variant, component, flow, step, API or backend node concerned. Status reads as a
 risk register: Idea = spotted, Approved = handling agreed, Live = handled. An edge case that
@@ -357,7 +398,7 @@ card naming it in `Served by`.
 
 **S-TYPE-11 · tech (TC).** A technology the product uses or considers: a language, framework,
 library, platform or external service. `category` is one Tech category; `tech-version`
-(quoted), `license` and `provider` are optional. Required: `Description & Requirements` (what
+(quoted), `license` and `provider` are optional. Required: `Description` (what
 it is, what it is used for here), `Why` (with evidence or a decision reference),
 `Alternatives` (TC references, placeholders or `none`). Cards name it in `Built with`. An open
 technology need SHOULD be a placeholder in a `Built with` section (`- [~ Graph canvas
@@ -367,7 +408,10 @@ an integration component is tech.
 **S-TYPE-12 · decision (DC).** A question that needs or got a decision: `Question` (one or two
 sentences), `Options` (each with its trade-off; the recommendation, if any), `Outcome` (`—`
 while Open or Proposed, then the choice and why) and `Affects` (every card or sub-document the
-outcome changes). A Decided or Superseded decision MUST state its Outcome [W039]. Every open
+outcome changes). A Decided or Superseded decision MUST state its Outcome [W039] and record
+`decided: <YYYY-MM-DD>` (who, in `by:` — `owner`, `agent` or a role card name); a Superseded one
+MUST name its successor in `superseded-by: <DC core>`; these keys on another status are a
+warning [W052]. Rejected options are the `Options` lines that are not the Outcome. Every open
 question, judgment call or conflict between inputs SHOULD become a decision with
 `status: Open`. A remark is a comment; a runtime branch is a Fork step. Exports include
 decisions.
@@ -380,7 +424,7 @@ attaches a comment with a line in its `## Comments` (in a sub-document, `- Comme
 Exports exclude comments by default.
 
 **S-TYPE-14 · shell (SH).** The frame around places (section 6.4): `shell-type` names its
-kind; `platform` and `state` say whom it frames; `appears-as` (overlays) the presentation it
+kind; `platform` and `state` say whom it frames; `opens-as` (overlays) the presentation it
 frames; `flow` (steppers) the flow it shows. `Components` are its own parts, `Navigation`
 where it leads, `Places inside` the contract for what it frames, `Variants` the frame per
 platform, state and level. Typically three to eight per product (S-SHELL-8); a KB without
@@ -406,6 +450,12 @@ Feature>`; it says what capability, for whom, usually with User story blocks. `p
 Sub-feature or another type [W030]. In `example-app`, Feature Items has Sub-features Browse
 items and Edit an item; Feature Account has Change settings.
 
+The feature tree groups by purpose, never by screen: a capability with a why, rules or decisions of
+its own SHOULD be a Feature, wherever the user reaches it from (a loyalty programme opened from the
+profile screen is its own Feature; the way there is navigation, S-IA-1 and S-SHELL-6). A Sub-feature's
+`## Why` is normally `same as` its Feature's. When a Sub-feature outgrows its Feature, `parent:` is
+removed and the id kept; the move is recorded as a decision.
+
 **S-FEAT-2 · Home line.** A screen, userflow or component MAY name its single home with
 `feature:` (S-FM-8); other features reach it through flows and touchpoints. When the workspace
 has feature cards, every screen and userflow SHOULD have a home [I025].
@@ -424,10 +474,10 @@ touched card shows the reverse in `⚙ Features`.
 **S-FEAT-5 · Altitude rule.** Each level answers only its own question: Feature — why and
 scope; Sub-feature — what capability, for whom; flow and step — how the user moves; screen —
 what the place is for and made of; component — what the part does anywhere; rule — the exact
-policy. A card's **one-liner** is the first sentence of its `Description & Requirements`
+policy. A card's **one-liner** is the first sentence of its `Description`
 (decision: `Question`; comment: the remark). Parents never summarise children; child lists are
 generated. Numbers, limits and conditions live in rules or the lowest owner: a top-level
-Feature's `Description & Requirements` SHOULD contain no digits [I021].
+Feature's `Description` SHOULD contain no digits [I021].
 
 **S-FEAT-6 · Perspectives.** Tools MAY group cards by feature, state, platform or status —
 including a feature selector and the variants a feature touches — as views computed over the
@@ -437,17 +487,17 @@ files; nothing is stored for them.
 
 **S-VOC-1 · Defined once.** Project vocabularies are defined only in `project.md`
 `## Vocabularies`, in four optional subsections that start empty: `### States`, a table
-`State · Code · Note`; and `### Platforms`, `### Appears-as`, `### Tech categories`, one
+`State · Code · Note`; and `### Platforms`, `### Opens-as`, `### Tech categories`, one
 bullet per value, `- <value>[ — <note>]`. Tables MUST have exactly these columns, lists one
 bullet per value, and a value MUST NOT repeat [W035]. An empty vocabulary is not in use. User
 types are role cards (S-TYPE-15); a `### Roles` table (`Role · Description · States`) from
 earlier KBs is still read — its names resolve stories while no role card exists — but is
-deprecated [W050]; `mds migrate` turns each row into a role card.
+deprecated [W050]; `intent-format migrate` turns each row into a role card.
 
 **S-VOC-2 · Selection.** Cards select values by exact name and never define them inline. A
-state, platform, appears-as or Tech category value MUST be declared in `project.md` or be
+state, platform, opens-as or Tech category value MUST be declared in `project.md` or be
 reserved, and a story's role MUST name a role card once role cards exist [W006]. The reserved values `Shared` (state), `All` (platform) and `Page`
-(appears-as) are always legal unlisted, and are what an omitted state, platform or appears-as
+(opens-as) are always legal unlisted, and are what an omitted state, platform or opens-as
 means. `Shared` MUST NOT be a States row [W035].
 
 **S-VOC-3 · Roles and States.** A **Role** is who uses the product — a card (S-TYPE-15); user
@@ -500,7 +550,8 @@ promotes. When a placeholder's name exactly matches a card of a target type, `ch
 **S-LINK-6 · External links.** `## Links` holds external links,
 `- [<title>](<url or inputs/ path>) · type: <type>[ — <note>]`, with type `Design`, `Code`,
 `Doc`, `Source`, `Analytics` or `Other`; `Source` marks evidence, a file in `inputs/` or a
-URL. In a sub-document the line takes its prefix, `- Link: …` — e.g. a variant's own design.
+URL. A `Source` path MUST point inside the project root's `inputs/` [W053]: nothing outside it
+(a notebook, a scratch folder) is evidence until it is moved there. In a sub-document the line takes its prefix, `- Link: …` — e.g. a variant's own design.
 Link lines MUST have this shape [W038].
 
 **S-REL-1 · Closed vocabulary.** Relations come from `schema.json relations`, which gives each
@@ -521,10 +572,10 @@ default word anyway is tolerated and SHOULD be dropped [I003]. Sub-document line
 [W015]; the numbers SHOULD run 1..N, and `regen` renumbers them [I015].
 
 **S-REL-4 · Generated reverses.** `regen` writes each authored relation's reverse on its target,
-as listed in `schema.json generatedSections` — e.g. `Part` → `⚙ Used on`, `Built with` →
+as listed in `schema.json generatedSections` — e.g. `Part` → `⚙ Used in`, `Built with` →
 `⚙ Used by`, `Affects` → `⚙ Decisions`, `Leads to` → `⚙ Reached from`, membership keys → the
-feature lists (S-FEAT-3), `shell:` and `· shell:` → `⚙ Frames` on the shell (S-SHELL-4), a
-stepper's `flow:` → `⚙ Shown as` on the flow. A source inside a sub-document appears as its host card
+feature lists (S-FEAT-3), `shell:` and `· shell:` → `⚙ Wraps` on the shell (S-SHELL-4), a
+stepper's `flow:` → `⚙ Shown in` on the flow. A source inside a sub-document appears as its host card
 with `· at: #<core>`; a component reached through another carries `· via: #CP…`; qualifier
 cores use the hand form; lines are de-duplicated and sorted by target type (roster order),
 core, then first qualifier. `Step`, `Edge`, `Branch`, `Entry`, `Outcome` and `Alternative`
@@ -608,7 +659,7 @@ reference after `- `, indented exactly two spaces per level, no tabs. A node's p
 nearest line above with one level less; several roots are allowed; a screen MAY be placed more
 than once. Indentation MUST follow these rules and never go more than one level deeper than
 its parent [W027]. Node qualifiers: `· variant:` pins a screen variant (unpinned = the default
-composition); `· appears-as:` sets this placement's presentation; `· shell:` binds a shell to this
+composition); `· opens-as:` sets this placement's presentation; `· shell:` binds a shell to this
 placement and the subtree below it (S-SHELL-4); `· group:` labels a cluster — an annotation,
 never nesting. The root of a map is a real place, such as Home — never a shell.
 
@@ -652,14 +703,14 @@ name an existing variant of its target [W028].
 ## Variants
 ### Picker · #SV000001
 <a id="sv000001"></a>
-appears-as: Side panel
+opens-as: Side panel
 
 1. [#CP000003 Item row](../components/cp000003-item-row.md) · variant: Compact
 ```
 
 **S-COMP-3 · Presentation and platform.** A placement's presentation resolves from the most
-specific source: its own `· appears-as:` (IA node or step `Screen` line), else the variant's
-passport, else the screen's `appears-as:`, else Page. A variant's `platform` limits it to those
+specific source: its own `· opens-as:` (IA node or step `Screen` line), else the variant's
+passport, else the screen's `opens-as:`, else Page. A variant's `platform` limits it to those
 platforms (omitted = all). Tools MAY show resolved values; they are never stored. A placement's
 shell resolves the same way (S-SHELL-4).
 
@@ -676,13 +727,13 @@ whatever it frames (`## Places inside`). It is never a screen and never a `Part`
 [W046]: it frames nodes of a map, it is not one. `shell-type` names its kind: `app` (the
 home frame of a platform and state), `section` (back, breadcrumbs, section tabs), `stepper`
 (progress and Continue; `flow:` names the flow it shows), `overlay` (the frame of a modal,
-sheet or drawer; `appears-as:` names the presentation it frames), `focus` (nothing but an
+sheet or drawer; `opens-as:` names the presentation it frames), `focus` (nothing but an
 exit), `split` (a list that stays while the detail changes), `embedded` (a host provides the
-frame). `appears-as:` belongs to overlays only and `flow:` to steppers only, and each of
+frame). `opens-as:` belongs to overlays only and `flow:` to steppers only, and each of
 those needs its key [W047].
 
-**S-SHELL-2 · Three things, each written once.** `appears-as` on a placement says *how*
-content is shown: over the current screen, which stays. The overlay shell whose `appears-as`
+**S-SHELL-2 · Three things, each written once.** `opens-as` on a placement says *how*
+content is shown: over the current screen, which stays. The overlay shell whose `opens-as`
 matches says *what* frames everything shown that way: title, close, Confirm or Cancel, and
 the rules. The content is the screen card, or a part of a shell. None of the three repeats
 the others: a screen card SHOULD NOT hold a frame's control (Continue, Close, Back, the
@@ -691,10 +742,10 @@ renders it. Links that are the place's own content — a row opening its detail 
 navigation; flows and lateral edges hold them.
 
 **S-SHELL-3 · Places and parts.** Does the user go somewhere with content and purpose of its
-own? Then it is a screen, with `appears-as` on its placement (a size guide as a modal, the
+own? Then it is a screen, with `opens-as` on its placement (a size guide as a modal, the
 cart as a side drawer). Does the frame unfold — a navigation drawer, an account menu, a
 search overlay? Then it is a part of the shell: a `Part` line in the shell's `## Components`
-with `· appears-as:` saying how it unfolds. `· appears-as:` on a `Part` line is legal only in
+with `· opens-as:` saying how it unfolds. `· opens-as:` on a `Part` line is legal only in
 shells [W047]. An overlay shell frames shell parts the same way it frames places.
 
 **S-SHELL-4 · Binding and resolution.** A screen MAY name its usual shell with `shell:` (an SH
@@ -712,14 +763,14 @@ most specific source, like its presentation (S-COMP-3):
    the whole subtree;
 6. the default: for a Page, the `app` shell whose `platform` and `state` match the map's or
    flow's (an omitted key matches any value; a stated match beats an omitted one); for any
-   other presentation, the `overlay` shell whose `appears-as` equals it;
+   other presentation, the `overlay` shell whose `opens-as` equals it;
 7. none.
 
 On every rung, a shell whose `platform:` excludes the placement's platform is skipped and
 resolution goes on down the list — a desktop-only section shell bound on a node leaves the
 app's placements to the app shell. Two shells MUST NOT be the default for the same kind,
 platform, state and presentation, nor two steppers show one flow [W045]. Then the shell's variant (S-SHELL-5) is chosen. Tools MAY show the resolved shell and
-variant; they are never stored. The reverse, `⚙ Frames` on the shell, lists explicit bindings
+variant; they are never stored. The reverse, `⚙ Wraps` on the shell, lists explicit bindings
 only (S-REL-4); default bindings are computed.
 
 **S-SHELL-5 · Variants stack.** `## Variants` of a shell holds sub-documents `### <Name> · #HV…`
@@ -745,7 +796,7 @@ line none of whose `in:` parts is in the resolved frame is not shown there. Ever
 `in:` value MUST be a part of this shell, host or variant [W048]. A line shown in a State
 where its screen does not exist is a finding [I028]. Written on the shell, never on the
 screens reached; their reverse is `⚙ Reached from`. Breadcrumbs and back are parts; what they show is the map path,
-computed. A stepper's order comes from its `flow:`, whose reverse is `⚙ Shown as`. A tool
+computed. A stepper's order comes from its `flow:`, whose reverse is `⚙ Shown in`. A tool
 reading a map treats a shell's navigation as reachable from every node the shell frames, so
 lateral edges are for the rest.
 
@@ -754,7 +805,7 @@ frames, as ✅ / 🚫 lines and requirement blocks: what the frame provides, wha
 place (a primary action by name, valid or not, done), what a place MUST NOT do (own
 navigation, own close, own back), and what happens on complete, cancel, leave and error. An
 agent, a designer or a developer reads the resolved shells' contracts before writing a place
-(`mds frame <root> <screen>` prints them per placement); a place that lists a frame's control
+(`intent-format frame <root> <screen>` prints them per placement); a place that lists a frame's control
 is a review finding (Appendix B).
 
 **S-SHELL-8 · New shell or variant.** A new shell when the frame does another job (another
@@ -801,13 +852,13 @@ platform: Desktop web
 platform: Mobile web
 
 1. [#CP000011 Burger](../components/cp000011-burger.md)
-2. [#CP000012 Navigation drawer](../components/cp000012-navigation-drawer.md) · appears-as: Side drawer — opened by the burger
+2. [#CP000012 Navigation drawer](../components/cp000012-navigation-drawer.md) · opens-as: Side drawer — opened by the burger
 
 ### Signed in · #HV000003
 <a id="hv000003"></a>
 state: Signed in
 
-1. [#CP000013 Account menu](../components/cp000013-account-menu.md) · appears-as: Dropdown
+1. [#CP000013 Account menu](../components/cp000013-account-menu.md) · opens-as: Dropdown
 ```
 
 A signed-in desktop page gets the consent banner, the top bar, the footer and the account
@@ -815,7 +866,7 @@ menu: Desktop web and Signed in both match, and both apply.
 
 The Payment screen is a page under Checkout, framed by the Checkout stepper through
 `· shell:` on the checkout flow's step; in the edit-order flow its step says
-`· appears-as: Modal`, so rule 3 skips the page shell and rule 5 gives it the Modal shell.
+`· opens-as: Modal`, so rule 3 skips the page shell and rule 5 gives it the Modal shell.
 The Payment card has no Continue and no Save: the stepper renders its action as Continue, the
 modal as Save. Nothing on the card changes between the two.
 
@@ -824,7 +875,7 @@ modal as Save. Nothing on the card changes between the two.
 **S-ID-1 · Core.** A **core** is a two-letter prefix plus six digits (`SC000006`), the only
 load-bearing token of a reference. `id:` holds the core only — no `#`, state code or version.
 A card without `id:`, with a malformed core, an unknown or reserved prefix, or another type's
-prefix MUST NOT exist [E003]. `regen` never mints; `mds new` or `mds mint` fixes a missing id.
+prefix MUST NOT exist [E003]. `regen` never mints; `intent-format new` or `intent-format mint` fixes a missing id.
 
 **S-ID-2 · Prefixes.** Card prefixes are in S-TYPE-1; sub-documents use `SV` (screen variant),
 `CV` (component variant), `HV` (shell variant) and `FS` (flow step). `X?` and `Z?` are reserved for extensions,
@@ -838,7 +889,7 @@ resolve within their own workspace. Two files or sub-documents with one core in 
 
 **S-ID-4 · Minting.** The next core for a prefix is one above the highest number ever used for
 it — in any file of any workspace, in the Retired table, or as its High-water mark —
-zero-padded. Tools mint (`mds new`, `mds mint`) and every mint raises the High-water mark, so
+zero-padded. Tools mint (`intent-format new`, `intent-format mint`) and every mint raises the High-water mark, so
 a minted but unused core is never handed out again. Hand minting MAY follow the same rule. A
 core is minted when its file or sub-document is created; until then a placeholder points at
 the thing.
@@ -879,7 +930,7 @@ progress at once), `released` (matches what shipped; editable for corrections), 
 
 **S-VER-3 · Based on.** Versions form a tree: `based-on` names the version a workspace was
 branched from, is omitted for a root version, and MUST name another existing workspace
-[W033]. `mds branch <root> <from> <to>` copies a workspace and sets `version`,
+[W033]. `intent-format branch <root> <from> <to>` copies a workspace and sets `version`,
 `lifecycle: in-progress` and `based-on`.
 
 **S-VER-4 · Change status.** In a workspace with `based-on`, each card is compared by core with
@@ -917,7 +968,7 @@ listed in `schema.json diagnostics` [E001] … [I025]. The severities:
 - **warning** (`W`) — a MUST is broken; it never blocks authors;
 - **info** (`I`) — a SHOULD is broken, or something `regen` will tidy.
 
-`mds check` prints `severity · code · file:line · message` and health, and exits 1 when an
+`intent-format check` prints `severity · code · file:line · message` and health, and exits 1 when an
 error exists.
 
 **S-CONF-2 · Health.** Health is three numbers, reported side by side per card, module and
@@ -930,8 +981,14 @@ workspace, never combined into one score:
 - **unresolved placeholders** — distinct placeholder groups (S-LINK-5);
 - **open decisions** — decisions with status Open or Proposed.
 
+Beside them a checker reports **why** — filled · inherited · none · missing (the missing count is
+the KB's *why debt*; it is also a blind-spot kind) — **confidence**: the number of `[assumed]`
+and `[likely]` marks (S-BODY-7) — and **asks**: open, later and due `[ask: …]` markers (S-BODY-8).
+`intent-format open` prints the one list behind these numbers: questions to the owner, open decisions,
+marks to confirm, whys missing, other blind spots per card.
+
 Tools SHOULD report diagnostic counts per severity beside them, and SHOULD break blind spots down
-by kind (status, other keys, required sections, list items, requirement slots, relation targets).
+by kind (status, other keys, required sections, list items, requirement slots, relation targets, why).
 
 **S-CONF-3 · Hand-grade and tool-grade.** A **hand-grade** KB — no generated sections, status
 lines or generated files — is valid; a **tool-grade** KB adds them over the same authored
@@ -959,8 +1016,12 @@ delete the other file; add its core to `⚙ Retired` with `Merged into` = the su
 survivor keeps its own core and `origin`. Every reference to the retired core MUST be rebound
 [W041].
 
+**S-OPS-7 · Renamed in 1.1.** Headings, one key, one vocabulary and one qualifier were renamed so
+files read as plain language (the full list: `renames` in `schema.json`; the changelog). A 1.0
+spelling MUST still be read as its 1.2 name; `intent-format migrate` and `regen` write the 1.2 names.
+
 **S-OPS-2 · Duplicate.** A card MAY be started from a copy of another: take a new core from
-`mds mint`, set `id:` and rename the file; no provenance is stamped. A copy that keeps the
+`intent-format mint`, set `id:` and rename the file; no provenance is stamped. A copy that keeps the
 original's core MUST NOT stay in the workspace [E004].
 
 **S-OPS-3 · Export.** Export units are a workspace, a module folder and a single card. Export
@@ -987,7 +1048,7 @@ silently changed. A card whose `origin` already exists in the project is skipped
 warning; two cards with one `origin` in a workspace MUST NOT exist [W043]. Import is authoring:
 it never fails as a whole, and SHOULD be followed by `check`.
 
-**S-OPS-5 · Migrate.** `mds migrate <root>` brings a KB written against an earlier reading of
+**S-OPS-5 · Migrate.** `intent-format migrate <root>` brings a KB written against an earlier reading of
 the current version up to date, idempotently: each `### Roles` row becomes a role card (Description →
 the card's description, States → `state:`), one core per role name across all workspaces so
 the same role is the same card in every version; read-only workspaces are skipped; the table
@@ -1032,7 +1093,9 @@ IA node line      <two spaces per level>- <atom>[ · <key>: <value>]…
 
 Atoms: bound `[#<CORE> <Name>](<relative-path>[#<anchor>])` · hand `#<CORE>` · placeholder
 `[~ <Name>]` · unknown `—`. Bodies: `—` alone = blind spot · `none` alone = verified none ·
-`-`, `–`, `TBD`, `?` alone = forgiveness for `—`.
+`-`, `–`, `TBD`, `?` alone = forgiveness for `—`. In `## Why` also: `none — <note>` · `same as #<CORE>`
+(`sameAs`) · text ending ` [likely]` / ` [assumed]` (`confidenceMark`). In any authored body line:
+`[ask: <question>[ · later <date>]]` (`askMarker`).
 
 **A.2 Parsing a relation line**
 
@@ -1078,6 +1141,7 @@ Judgment checks for a reviewer (`schema.json reviewChecks`; S-CONF-5):
 - **Altitude rule** — each card level answers only its own question (S-FEAT-5).
 - **Blind spot** — `—`: a known question without an answer; counted in health.
 - **Card** — one file documenting one thing of the product.
+- **Confidence** — how sure a why or outcome is: unmarked (confirmed), `[likely]`, `[assumed]` (S-BODY-7).
 - **Core** — prefix plus six digits; a card's permanent, project-wide identity.
 - **Default relation** — the relation a section's prefix-less lines express.
 - **Feature / Sub-feature** — a product domain / a capability inside one.
@@ -1086,7 +1150,7 @@ Judgment checks for a reviewer (`schema.json reviewChecks`; S-CONF-5):
 - **Home** — the one feature a screen, flow or component belongs to.
 - **Membership key** — `feature:` or `parent:`, the only front-matter keys holding a core.
 - **Navigation** — a shell's ordered `Leads to` lines: the places it leads to (S-SHELL-6).
-- **One-liner** — the first sentence of `Description & Requirements`.
+- **One-liner** — the first sentence of `Description`.
 - **Ownership Law** — the one who knows writes; the referenced side is computed.
 - **Placeholder** — `[~ Name]`: something that should exist but is not a card yet.
 - **Rendered ID** — `#<CORE>[<state code>]V<version>`; for display only.
@@ -1100,5 +1164,8 @@ Judgment checks for a reviewer (`schema.json reviewChecks`; S-CONF-5):
 - **Sub-document** — a variant or step with its own core inside its card.
 - **Truth Law** — the files are the database.
 - **Verified none** — `none`: known to be empty; not counted.
+- **Ask marker** — `[ask: …]` inside a sentence: a question for the owner; counted as *asks* (S-BODY-8).
+- **Why / why debt** — the `## Why` section of a card, answering the type's why question (purpose · choice · constraint) / the number of cards whose why is `—` (S-BODY-7, S-CONF-2).
+- **Why question** — the question a type's `## Why` answers (schema `why.questions`); `same as #<id>` borrows another card's answer (S-BODY-7).
 - **Workspace** — `V<major>.<minor>/`, holding one version of the KB.
 - **Zone** — authored (people write it) or generated (`⚙`, `regen` writes it).

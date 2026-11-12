@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: feature
 id: FT000003
 name: Browse items
@@ -10,10 +10,13 @@ priority: High
 # Browse items · #FT000003
 > ⚙ #FT000003V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Lets a Member find an item in their list.
 
 **R1 · User story** As a Member, I want to browse my items, so that I find one quickly.
+
+## Why
+same as #FT000001
 
 ## ⚙ Screens
 - [#SC000002 Item list](../screens/sc000002-item-list.md)

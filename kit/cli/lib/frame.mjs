@@ -1,4 +1,4 @@
-// mds frame: what surrounds a screen at each of its placements (spec 6.4). Resolves the shell
+// intent-format frame: what surrounds a screen at each of its placements (spec 6.4). Resolves the shell
 // (S-SHELL-4), stacks the matching variants (S-SHELL-5), merges parts, filters navigation
 // (S-SHELL-6) and quotes the contract (S-SHELL-7). A view over the files; nothing is stored.
 
@@ -33,7 +33,7 @@ function defaultShell(S, ws, pres, platform, state) {
   for (const c of ws.cards) {
     if (c.type !== 'shell') continue;
     const kind = fmOne(c, 'shell-type');
-    if (pres === 'Page' ? kind !== 'app' : kind !== 'overlay' || fmOne(c, 'appears-as') !== pres) continue;
+    if (pres === 'Page' ? kind !== 'app' : kind !== 'overlay' || fmOne(c, 'opens-as') !== pres) continue;
     let score = 0;
     const plats = fmList(c, 'platform');
     if (plats && !plats.includes(S.reserved.Platforms)) { if (!platform || !plats.includes(platform)) continue; score += 2; }
@@ -82,7 +82,7 @@ export function resolvePlacement(S, ws, p) {
     if (!core || seen.has(core)) continue;
     seen.add(core);
     const t = res(core);
-    parts.push({ core, name: t?.card?.name ?? core, appearsAs: qual(r, 'appears-as'), from: r.sub ? r.sub.name : null });
+    parts.push({ core, name: t?.card?.name ?? core, appearsAs: qual(r, 'opens-as'), from: r.sub ? r.sub.name : null });
   }
   const has = (x) => { const h = /^#?([A-Z]{2}\d{6})$/.exec(x); return parts.find((pt) => (h ? pt.core === h[1] : pt.name.toLowerCase() === x.toLowerCase())); };
   const navigation = [];
@@ -120,7 +120,7 @@ export function frameOf(S, ws, screen) {
     if (!v) return null;
     return screen.subs.find((sd) => sd.name === v || sd.core === bare(v)) || null;
   };
-  const presOf = (r, sd) => qual(r, 'appears-as') || passportOf(sd || {})['appears-as'] || fmOne(screen, 'appears-as') || 'Page';
+  const presOf = (r, sd) => qual(r, 'opens-as') || passportOf(sd || {})['opens-as'] || fmOne(screen, 'opens-as') || 'Page';
   for (const m of ws.cards) {
     if (m.type !== 'ia') continue;
     const plats = fmList(m, 'platform')?.filter((x) => x !== S.reserved.Platforms) || declared;
@@ -147,7 +147,7 @@ export function frameOf(S, ws, screen) {
       add(`${f.name} › ${r.sub ? r.sub.name : 'step'}`, fplats?.length ? fplats : declared, state, { depth: null, presentation: presOf(r, sd), own: qual(r, 'shell'), variantShell: passportOf(sd || {}).shell, flow: f });
     }
   }
-  if (!rows.length) add('not placed on a map or flow', declared, null, { depth: null, presentation: fmOne(screen, 'appears-as') || 'Page' });
+  if (!rows.length) add('not placed on a map or flow', declared, null, { depth: null, presentation: fmOne(screen, 'opens-as') || 'Page' });
   return rows;
 }
 

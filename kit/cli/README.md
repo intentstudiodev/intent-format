@@ -1,13 +1,13 @@
-# mds — the MDStandard command-line tool
+# intent-format — the Intent Format command-line tool
 
-Zero-dependency CLI for MDStandard 1.0 knowledge bases. Node ≥ 18; nothing to install.
+Zero-dependency CLI for Intent Format 1.0 knowledge bases. Node ≥ 18; nothing to install.
 
 ```
-node <standard>/kit/cli/mds.mjs <command> [arguments]
-node <standard>/kit/cli/mds.mjs --help
+node <standard>/kit/cli/intent-format.mjs <command> [arguments]
+node <standard>/kit/cli/intent-format.mjs --help
 ```
 
-`mds` reads `schema.json` two folders above this file (located via `import.meta.url`). Types,
+`intent-format` reads `schema.json` two folders above this file (located via `import.meta.url`). Types,
 prefixes, front-matter keys, sections, relations, step shapes, vocabularies, generated sections,
 diagnostic severities and the grammar regexes all come from the schema; the code holds only the
 algorithms (how to compute a generated section, how to compare versions).
@@ -16,21 +16,22 @@ algorithms (how to compute a generated section, how to compare versions).
 
 | Command | Does |
 |---|---|
-| `init <root> --name "<Name>" [--kb <slug>] [--version 1.0] [--lifecycle in-progress] [--modules a,b]` | Creates the project root (`_index.md`, `_ids.md`, `inputs/links.md`), the workspace `V<version>/` with `mdstandard.md` (lifecycle from `--lifecycle`, default `in-progress`), `project.md` (core minted) and the module folders, then runs `regen`. `<root>` may exist already (e.g. holding `inputs/`): nothing in `inputs/` is overwritten; `inputs/links.md` is created only when missing. Refuses when `<root>` already holds a workspace manifest. |
+| `init <root> --name "<Name>" [--kb <slug>] [--version 1.0] [--lifecycle in-progress] [--modules a,b]` | Creates the project root (`_index.md`, `_ids.md`, `inputs/links.md`), the workspace `V<version>/` with `intent-format.md` (lifecycle from `--lifecycle`, default `in-progress`), `project.md` (core minted) and the module folders, then runs `regen`. `<root>` may exist already (e.g. holding `inputs/`): nothing in `inputs/` is overwritten; `inputs/links.md` is created only when missing. Refuses when `<root>` already holds a workspace manifest. |
 | `new <type> "<Name>" --root <root> [--ws V1.0] [--feature FT…] [--state <State>] [--parent FT…]` | Mints the next core (D9.2, raising the High-water mark), writes `<ws>/<folder>/<core>-<slug>.md` from the type's template (same text as `templates/<type>.md`) and prints `<core> <path>` (path relative to the root). Without `--ws`: the only workspace, else the only `in-progress` one, else it asks for `--ws`. |
 | `scaffold <root> --inventory <file> [--ws V1.0]` | Reads the first markdown table whose header has **Type**, **Name** and **Core** (optional **Parent / home**) and creates a card for every row without a Core, in this order: roles, features (top-level, then Sub-features), tech, backend, api, component, shell, screen, ia, userflow, rule, edge-case, decision, comment; row order within a type. Parent / home = the parent Feature (Sub-features) or the home feature (`feature:` on screens, userflows, components), resolved by name against existing cards and cards created in the same run. Writes each new core into that row's Core cell only. Rows with a Core and `project` rows are skipped; a row whose card already exists (same type and name) just gets its core. Idempotent. Prints one line per card and a summary; exit 1 when a row had a problem (unknown type, unresolved parent/home — the card is then created without the key). |
 | `mint <PREFIX> --root <root> [--count n]` | Prints `n` new cores (one per line) for any prefix — `FS`, `SV`, `CV`, `HV` for sub-documents — and raises the prefix's High-water mark in `_ids.md` (other tables untouched). |
-| `check <root> [--ws V1.0] [--json]` | Prints `<severity> <code> <path>:<line> <message>`, then `Summary: E errors · W warnings · I infos` and one health line per workspace: cards · blind spots with a breakdown by kind (status · front matter · required sections · list items · requirement slots · relation targets; `--json`: `health[].blindSpotsByKind`) · unresolved placeholders · open decisions. `<root>` may also be a workspace folder. |
+| `check <root> [--ws V1.0] [--json]` | Prints `<severity> <code> <path>:<line> <message>`, then `Summary: E errors · W warnings · I infos` and one health line per workspace: cards · blind spots with a breakdown by kind (status · front matter · required sections · list items · requirement slots · relation targets; `--json`: `health[].blindSpotsByKind`) · unresolved placeholders · open decisions, then why (filled · inherited · none · debt), confidence (assumed · likely) and asks. `<root>` may also be a workspace folder. |
 | `regen <root>` | Refuses when `check` finds errors. Otherwise writes, per non-archived workspace: card title lines, status lines (with `new / unchanged / changed: <Part>` against `based-on`), refreshed bound-reference names/paths, hand references on relation lines upgraded to bound, sub-document anchors, ordered-line numbering, `—` for forgiveness values, every `⚙` section of the schema registry (only when non-empty, after all authored sections), folder `_index.md` rosters and `CHANGES.md` (only with `based-on`); and project-wide `_index.md` and `_ids.md` (Resolved · Retired, append-only · High-water marks). No dates. Prints the files it changed. |
 | `branch <root> <from> <to>` | Copies `V<from>/` to `V<to>/`, sets `version`, `lifecycle: in-progress`, `based-on: <from>` in the manifest, then runs `regen`. |
-| `migrate <root>` | Brings a KB up to date with the current version, idempotently, then runs `regen`. Files whose `standard:` key holds a pre-release name (`MDStandard/1.0-draft.2`) get `MDStandard/1.0`, in every workspace. Each row of the deprecated `### Roles` table becomes a role card (Description, States → `state:`), one core per role name across all workspaces so a role is the same card in every version; read-only workspaces are skipped; the table is removed and the `roles` module enabled. Exit 1 if a row had a problem. |
+| `migrate <root>` | Brings a KB up to date with the current version, idempotently, then runs `regen`. Files whose `standard:` key holds a pre-release name (`IntentFormat/1.0-draft.2`) get `IntentFormat/1.0`, in every workspace. Each row of the deprecated `### Roles` table becomes a role card (Description, States → `state:`), one core per role name across all workspaces so a role is the same card in every version; read-only workspaces are skipped; the table is removed and the `roles` module enabled. Exit 1 if a row had a problem. |
 | `next [<root>] [--ws V1.0] [--json]` | Reads the project folder and prints the one next step: during a cold start (set up · kickoff · proposal · owner review · scaffold · fill · check · report) and after it. State comes only from the project's files (`inputs/kickoff-answers.md`, `proposal/`, `report.md`, empty cards, check results), so a folder handed over half built picks up where it stopped. Fill order: project, features, shells, maps, screens, then the rest. Read-only. |
+| `open <root> [--ws V1.0] [--json]` | The open list of a workspace: `[ask: …]` questions with their card and line, open decisions, `[assumed]` and `[likely]` marks on Why texts and decision Outcomes, whys still `—` (why debt), other blind spots per card (by kind). What to ask the owner next. Read-only. |
 | `frame <root> <screen core or name> [--ws V1.0] [--json]` | For every placement of the screen (map nodes, flow steps, else the screen alone) and every platform: the resolved shell (S-SHELL-4), the variants that apply (they stack), the merged parts, the navigation shown there (`· platform:`, `· state:`, `· in:` applied) and the shell's `## Places inside`. Identical frames print once. Read-only. |
-| `build-kit` | **Maintainer only** — regenerates the kit inside the standard from the schema: `templates/<type>.md`, `kit/skills/mdstandard/types/<type>.md` (with the requirement-preset syntax), `types/_overview.md` (purpose + not-to-confuse-with per type) and `links.md`. Never run it in a KB project. |
+| `build-kit` | **Maintainer only** — regenerates the kit inside the standard from the schema: `templates/<type>.md`, `kit/skills/intent-format/types/<type>.md` (with the requirement-preset syntax), `types/_overview.md` (purpose + not-to-confuse-with per type) and `links.md`. Never run it in a KB project. |
 
 Versions may be written `1.1` or `V1.1`.
 
-Writing commands (`init`, `new`, `scaffold`, `mint`, `regen`, `branch`, `migrate`) hold `<root>/.mds.lock` while they run; a second one waits up to 30 s (a lock older than 2 min is stale). `init` and `regen` create `AGENTS.md` and `CLAUDE.md` at the root when missing and never overwrite them.
+Writing commands (`init`, `new`, `scaffold`, `mint`, `regen`, `branch`, `migrate`) hold `<root>/.intent-format.lock` while they run; a second one waits up to 30 s (a lock older than 2 min is stale). `init` and `regen` create `AGENTS.md` and `CLAUDE.md` at the root when missing and never overwrite them.
 
 ### Exit codes
 
@@ -53,12 +54,12 @@ bytes (the smoke test asserts this with a hash of the whole tree).
 
 | Not checked | Why |
 |---|---|
-| I022 Membership key dropped on import | emitted by import; `mds` has no import command yet |
+| I022 Membership key dropped on import | emitted by import; `intent-format` has no import command yet |
 
 Partial coverage (known limits, not yet checked):
 
 - **E005** can only fire for extension (`X*`/`Z*`) cores: E003 already ties every roster prefix to one type.
-- **W006** Role values are checked in `## Main use cases` (reported as W037) and in User story blocks; the Roles table's States column is checked against States.
+- **W006** Role values are checked in `## User stories` (reported as W037) and in User story blocks; the Roles table's States column is checked against States.
 - **W021** an unquoted qualifier value containing ` · ` cannot be told apart from a second qualifier; it is reported as an unknown or malformed qualifier.
 - **W028** variant pins are checked by name or core on screens/components and by flow-variant name on flows.
 - **W031** loose cards outside a workspace are not checked (valid fragments, D18.1).
@@ -80,7 +81,7 @@ decision cards with status Open or Proposed.
 ## Behaviour choices
 
 - Generated lines: one per target + qualifiers, sorted by type roster order, then core, then
-  qualifier values; sources inside sub-documents carry `· at: #<core>`; `⚙ Used on` adds transitive
+  qualifier values; sources inside sub-documents carry `· at: #<core>`; `⚙ Used in` adds transitive
   hosts with `· via:` and follows `· variant:` pins. `⚙ Edge cases` omits `· severity:` when the edge
   case has none; `⚙ Sub-features` omits the one-liner note when it is `—`.
 - Sources in disabled modules are ignored when computing generated sections.
@@ -112,7 +113,7 @@ pass with 0 errors / 0 warnings. `--save` copies the final KB (this is how
 
 | File | Role |
 |---|---|
-| `mds.mjs` | argument parsing and the commands |
+| `intent-format.mjs` | argument parsing and the commands |
 | `lib/create.mjs` | minting, High-water marks, card creation (`new`) and `scaffold` |
 | `lib/schema.mjs` | loads `schema.json`, compiles the grammar, derives lookup tables |
 | `lib/parse.mjs` | front matter, card skeleton, relation lines, passports, tables |

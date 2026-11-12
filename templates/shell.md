@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: shell
 id: SH000000
 name: New shell
@@ -8,7 +8,10 @@ shell-type: —
 ---
 # New shell · #SH000000
 
-## Description & Requirements
+## Description
+—
+
+## Why
 —
 
 ## Components

@@ -1,10 +1,10 @@
 {
-  "name": "mdstandard",
-  "version": "1.0.0",
-  "description": "A Markdown format for a software product's knowledge base: spec, schema, the mds CLI and agent skills.",
+  "name": "intent-format",
+  "version": "1.2.0",
+  "description": "A Markdown format for a software product's knowledge base: spec, schema, the intent-format CLI and agent skills.",
   "type": "module",
   "bin": {
-    "mds": "kit/cli/mds.mjs"
+    "intent-format": "kit/cli/intent-format.mjs"
   },
   "scripts": {
     "test": "node kit/cli/test/smoke.mjs && node kit/cli/test/nav.mjs && node kit/cli/test/roles.mjs"
@@ -21,12 +21,12 @@
     "cli"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/intentstudiodev/mdstandard#readme",
+  "homepage": "https://github.com/intentstudiodev/intent-format#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/intentstudiodev/mdstandard.git"
+    "url": "git+https://github.com/intentstudiodev/intent-format.git"
   },
   "bugs": {
-    "url": "https://github.com/intentstudiodev/mdstandard/issues"
+    "url": "https://github.com/intentstudiodev/intent-format/issues"
   }
 }

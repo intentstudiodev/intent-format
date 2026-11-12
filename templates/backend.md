@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: backend
 id: BN000000
 name: New backend
@@ -8,7 +8,7 @@ backend-type: —
 ---
 # New backend · #BN000000
 
-## Description & Requirements
+## Description
 —
 
 ## Connections

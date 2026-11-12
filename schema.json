@@ -1,7 +1,31 @@
 {
-  "standard": "MDStandard/1.0",
-  "legacyStandards": ["MDStandard/1.0-draft.2"],
-  "about": "Single machine-readable source of MDStandard 1.0. The CLI reads it; templates and type sheets are generated from it; the spec cites it.",
+  "standard": "IntentFormat/1.2",
+  "legacyStandards": ["MDStandard/1.0-draft.2","MDStandard/1.0","MDStandard/1.1","IntentFormat/1.0","IntentFormat/1.1"],
+  "renames": {
+    "note": "Intent Format 1.2 renamed these so files read as plain language. Parsers accept the old spellings; intent-format migrate (and regen) rewrite them. The relation Uses API keeps its name; only its section heading changed.",
+    "headings": {
+      "Description & Requirements": "Description",
+      "Rules applied": "Rules",
+      "Uses API": "APIs",
+      "Constraints": "Keep in mind",
+      "Main use cases": "User stories",
+      "⚙ Placed on": "⚙ On maps",
+      "⚙ Flows": "⚙ In user flows",
+      "⚙ Used on": "⚙ Used in",
+      "⚙ Frames": "⚙ Wraps",
+      "⚙ Shown as": "⚙ Shown in"
+    },
+    "keys": {
+      "appears-as": "opens-as"
+    },
+    "vocabularies": {
+      "Appears-as": "Opens-as"
+    },
+    "qualifiers": {
+      "parent": "under"
+    }
+  },
+  "about": "Single machine-readable source of Intent Format 1.0. The CLI reads it; templates and type sheets are generated from it; the spec cites it.",
   "regexFlags": "u",
   "conventions": {
     "gear": "⚙",
@@ -12,7 +36,8 @@
     "verifiedNone": "none",
     "placeholderMark": "[~ ",
     "encoding": "UTF-8, LF line endings; tools write a final newline",
-    "typeSortOrder": "@typeRoster"
+    "typeSortOrder": "@typeRoster",
+    "inheritedWhy": "same as #<id>"
   },
   "typeRoster": [
     "project",
@@ -33,15 +58,15 @@
   ],
   "nonCardTypes": {
     "index": "Generated machinery files (_index.md, _ids.md, CHANGES.md); no id.",
-    "manifest": "The workspace contract mdstandard.md; no id."
+    "manifest": "The workspace contract intent-format.md; no id."
   },
   "idPattern": "^[A-Z]{2}\\d{6}$",
   "ids": {
     "core": "Two-letter prefix + six digits, e.g. SC000006. The only load-bearing token of a reference.",
     "scope": "Unique across the whole project (all workspaces). The same core in two workspaces is the same card in two versions.",
-    "minting": "Next = max(highest number in any file of any workspace, the Retired table, the High-water mark) + 1, zero-padded. Tools mint (mds new, mds mint); every mint raises the High-water mark.",
+    "minting": "Next = max(highest number in any file of any workspace, the Retired table, the High-water mark) + 1, zero-padded. Tools mint (intent-format new, intent-format mint); every mint raises the High-water mark.",
     "neverReused": "A core is never edited and never reused, even after deletion or merge.",
-    "missingId": "A card without id: is a malformed id (error). Fix with mds mint / mds new; regen never mints.",
+    "missingId": "A card without id: is a malformed id (error). Fix with intent-format mint / intent-format new; regen never mints.",
     "filename": "<core-lowercase>-<slug>.md, e.g. sc000006-item-list.md. The core part must equal id:; the slug is a courtesy tools may rewrite.",
     "slug": "NFKD-fold the name, drop combining marks, lowercase, replace each run of characters outside a-z0-9 with -, trim -, cut to 60 characters and trim a trailing -; empty → the type name.",
     "anchor": "Sub-documents anchor at <a id=\"<core-lowercase>\"></a> on the line after their heading.",
@@ -182,7 +207,7 @@
     {
       "key": "standard",
       "required": true,
-      "value": "MDStandard/1.0",
+      "value": "IntentFormat/1.2",
       "rule": "First key of every file; the sniff value."
     },
     {
@@ -243,7 +268,7 @@
     "rule": "Last in front matter; preserved byte-for-byte; never validated."
   },
   "membershipKeys": {
-    "rule": "feature:, parent:, shell: and flow: are the only front-matter keys that hold a core; one value each (Truth Law). Their reverses are generated: feature lists on the feature card, ⚙ Frames on the shell, ⚙ Shown as on the flow.",
+    "rule": "feature:, parent:, shell: and flow: are the only front-matter keys that hold a core; one value each (Truth Law). Their reverses are generated: feature lists on the feature card, ⚙ Wraps on the shell, ⚙ Shown in on the flow.",
     "feature": {
       "on": [
         "screen",
@@ -327,13 +352,13 @@
     ]
   },
   "manifest": {
-    "file": "mdstandard.md",
+    "file": "intent-format.md",
     "where": "Root of every workspace; exactly one.",
     "keys": [
       {
         "key": "standard",
         "required": true,
-        "value": "MDStandard/1.0"
+        "value": "IntentFormat/1.0"
       },
       {
         "key": "type",
@@ -396,7 +421,7 @@
     "extensionKeys": "x-* keys may follow and are preserved.",
     "title": "# <name>",
     "body": "One paragraph: what this KB documents and who maintains it.",
-    "example": "---\nstandard: MDStandard/1.0\ntype: manifest\nkb: example-app\nname: Example app\nversion: \"1.0\"\nlifecycle: in-progress\nmodules: [screens, components, userflows, ia, rules, apis, features, edge-cases, backend, tech, decisions, comments]\n---\n# Example app\n\nKnowledge base of Example app, version 1.0. Maintained by the product team.\n"
+    "example": "---\nstandard: IntentFormat/1.2\ntype: manifest\nkb: example-app\nname: Example app\nversion: \"1.0\"\nlifecycle: in-progress\nmodules: [screens, components, userflows, ia, rules, apis, features, edge-cases, backend, tech, decisions, comments]\n---\n# Example app\n\nKnowledge base of Example app, version 1.0. Maintained by the product team.\n"
   },
   "indexFile": {
     "file": "_index.md",
@@ -408,7 +433,7 @@
     "frontMatter": [
       {
         "key": "standard",
-        "value": "MDStandard/1.0"
+        "value": "IntentFormat/1.0"
       },
       {
         "key": "type",
@@ -452,14 +477,14 @@
         "Based on"
       ],
       "cells": {
-        "Version": "[V<version>](V<version>/mdstandard.md)",
+        "Version": "[V<version>](V<version>/intent-format.md)",
         "Based on": "V<base> or —"
       },
       "sort": "version: major, then minor numerically; a labelled exploration after its unlabelled version, labels alphabetically"
     },
-    "oneLiner": "First sentence of Description & Requirements (decision: Question; comment: the remark): up to the first . ? or ! followed by a space or end of paragraph; references flattened to their names; requirement markers skipped; cut at 120 characters with …; — when empty.",
+    "oneLiner": "First sentence of Description (decision: Question; comment: the remark): up to the first . ? or ! followed by a space or end of paragraph; references flattened to their names; requirement markers skipped; cut at 120 characters with …; — when empty.",
     "emptyFolder": "No ## ⚙ Contents section (generated sections are written only with content).",
-    "example": "---\nstandard: MDStandard/1.0\ntype: index\nname: Screens\n---\n# Screens\n\nA place the user can be: what it is for and what it is made of.\n\n## ⚙ Contents\n| ID | Name | Status | Feature | One-liner | Blind spots |\n|---|---|---|---|---|---|\n| [#SC000001](sc000001-home.md) | Home | In design | — | The starting point of the app. | 0 |\n| [#SC000002](sc000002-item-list.md) | Item list | In design | [#FT000002 Browse items](../features/ft000002-browse-items.md) | Shows all of a Member's items as rows; choosing a row opens Item detail. | 0 |\n"
+    "example": "---\nstandard: IntentFormat/1.2\ntype: index\nname: Screens\n---\n# Screens\n\nA place the user can be: what it is for and what it is made of.\n\n## ⚙ Contents\n| ID | Name | Status | Feature | One-liner | Blind spots |\n|---|---|---|---|---|---|\n| [#SC000001](sc000001-home.md) | Home | In design | — | The starting point of the app. | 0 |\n| [#SC000002](sc000002-item-list.md) | Item list | In design | [#FT000002 Browse items](../features/ft000002-browse-items.md) | Shows all of a Member's items as rows; choosing a row opens Item detail. | 0 |\n"
   },
   "projectRoot": {
     "entries": [
@@ -492,7 +517,7 @@
     "idRegister": {
       "file": "_ids.md",
       "frontMatter": {
-        "standard": "MDStandard/1.0",
+        "standard": "IntentFormat/1.0",
         "type": "index",
         "name": "ID register"
       },
@@ -532,13 +557,13 @@
         }
       },
       "note": "Retired and High-water marks are memory, not derivable: deleting _ids.md can lose them.",
-      "example": "---\nstandard: MDStandard/1.0\ntype: index\nname: ID register\n---\n# ID register\n\n## ⚙ Resolved\n| Core | Type | Name | Versions | Path |\n|---|---|---|---|---|\n| SC000002 | screen | Item list | 1.0, 1.1 | V1.1/screens/sc000002-item-list.md |\n| SV000001 | screen-variant | Picker | 1.0, 1.1 | V1.1/screens/sc000002-item-list.md#sv000001 |\n\n## ⚙ Retired\n| Core | Type | Name | Last version | Merged into |\n|---|---|---|---|---|\n| SC000007 | screen | Item grid | 1.0 | SC000002 |\n\n## ⚙ High-water marks\n| Prefix | Highest |\n|---|---|\n| SC | 7 |\n| SV | 1 |\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: index\nname: ID register\n---\n# ID register\n\n## ⚙ Resolved\n| Core | Type | Name | Versions | Path |\n|---|---|---|---|---|\n| SC000002 | screen | Item list | 1.0, 1.1 | V1.1/screens/sc000002-item-list.md |\n| SV000001 | screen-variant | Picker | 1.0, 1.1 | V1.1/screens/sc000002-item-list.md#sv000001 |\n\n## ⚙ Retired\n| Core | Type | Name | Last version | Merged into |\n|---|---|---|---|---|\n| SC000007 | screen | Item grid | 1.0 | SC000002 |\n\n## ⚙ High-water marks\n| Prefix | Highest |\n|---|---|\n| SC | 7 |\n| SV | 1 |\n"
     }
   },
   "workspace": {
     "files": [
       {
-        "path": "mdstandard.md",
+        "path": "intent-format.md",
         "required": true,
         "purpose": "Manifest."
       },
@@ -571,11 +596,11 @@
     ],
     "flatFolders": "Type folders are flat: no subfolders. Grouping by feature, state, platform or status is a computed perspective in tools.",
     "otherFiles": "Non-.md files are attachments, ignored by tools. A .md file without front matter inside a workspace is reported.",
-    "missing": "A workspace without mdstandard.md or project.md is reported (warning). Loose cards outside any workspace are valid fragments.",
+    "missing": "A workspace without intent-format.md or project.md is reported (warning). Loose cards outside any workspace are valid fragments.",
     "changesFile": {
       "file": "CHANGES.md",
       "frontMatter": {
-        "standard": "MDStandard/1.0",
+        "standard": "IntentFormat/1.0",
         "type": "index",
         "name": "Changes"
       },
@@ -590,7 +615,7 @@
   },
   "versions": {
     "model": "A version is a workspace folder holding a full KB. Workspaces form a tree through based-on.",
-    "branch": "mds branch <root> <from> <to>: copy the workspace, set version, lifecycle: in-progress, based-on: <from>.",
+    "branch": "intent-format branch <root> <from> <to>: copy the workspace, set version, lifecycle: in-progress, based-on: <from>.",
     "fingerprint": "Per card, by core, against the base workspace's current content. Parts: Passport (front matter except standard, plus the title name) and each authored section by heading (incl. unknown and x- sections; sub-documents count in their host section). Before comparing: references reduced to #CORE, anchor lines, status line and ⚙ lines removed, trailing spaces trimmed, blank-line runs collapsed.",
     "results": {
       "new": "core absent from the base workspace",
@@ -602,7 +627,7 @@
     "agents": "Agents name the version they change (\"In V1.1 (in-progress): …\") and ask when the target version is unclear."
   },
   "operations": {
-    "duplicate": "Manual: copy the file, take a new core from mds mint, rename the file; no provenance stamp.",
+    "duplicate": "Manual: copy the file, take a new core from intent-format mint, rename the file; no provenance stamp.",
     "merge": "Manual: rebind every reference (incl. feature:/parent:) to the survivor, delete the other file, add its core to ⚙ Retired with Merged into = survivor. The survivor keeps its own origin.",
     "promotePlaceholder": "Manual edit: replace [~ Name] with a reference to the card that now exists. check reports exact matches (info); regen never promotes."
   },
@@ -657,13 +682,118 @@
     "alone": "— and none are body states only when they are the whole body (a single line).",
     "absent": "An optional section that is absent = nothing to say (not a blind spot). A required section that is absent = missing (warning)."
   },
+  "why": {
+    "section": "Why",
+    "after": {
+      "default": "Description",
+      "decision": "Question"
+    },
+    "requiredOn": [
+      "project",
+      "feature",
+      "rule",
+      "decision",
+      "userflow",
+      "shell",
+      "role",
+      "tech"
+    ],
+    "optionalOn": [
+      "screen",
+      "component",
+      "ia",
+      "api",
+      "edge-case",
+      "backend"
+    ],
+    "notOn": [
+      "comment"
+    ],
+    "values": {
+      "—": "nobody has asked yet — missing; counted as a blind spot of kind why (the health line calls it why debt)",
+      "none": "no why needed here (a divider, a plain button); may carry a note: none — layout only. Not counted.",
+      "same as #XX000000": "another card's why covers this one — any card, named by its core id. check follows the link; a target with no why makes this card count as missing [I030]; an id that names no card, or the card itself, is a warning [W051].",
+      "text": "the answer to this type's why question (below), in one or two sentences, optionally ending with a confidence mark. Text may also mention cards: 'Separate page because people lose the email; purpose: #FT000003.'"
+    },
+    "optionalRule": "On an optional type an absent Why means nothing to say; a present Why holding — is a deliberate unknown and counts.",
+    "confidence": {
+      "confirmed": "unmarked — the owner said it or an input states it; [confirmed] may be written and regen removes it [I031]",
+      "likely": "[likely] — follows from inputs, not stated; listed to confirm",
+      "assumed": "[assumed] — a guess no input supports; an open question and a blind spot"
+    },
+    "markWhere": "only at the end of a Why text or of a decision Outcome",
+    "flavours": {
+      "purpose": "why this exists at all — the problem or goal",
+      "choice": "why this way and not another",
+      "constraint": "what goes wrong without it"
+    },
+    "questions": {
+      "project": {
+        "flavour": "purpose",
+        "question": "What problem does the product solve, for whom, and why now?"
+      },
+      "feature": {
+        "flavour": "purpose",
+        "question": "What problem does this solve, or what goal does it serve?"
+      },
+      "userflow": {
+        "flavour": "purpose",
+        "question": "Why does this journey exist — what does the user have at the end of it?"
+      },
+      "role": {
+        "flavour": "purpose",
+        "question": "Why does this user type matter to the product?"
+      },
+      "screen": {
+        "flavour": "choice",
+        "question": "Why this screen, this way — and not folded into another?"
+      },
+      "component": {
+        "flavour": "choice",
+        "question": "Why this element, this way?"
+      },
+      "shell": {
+        "flavour": "choice",
+        "question": "Why this frame around the places?"
+      },
+      "ia": {
+        "flavour": "choice",
+        "question": "Why this arrangement of places?"
+      },
+      "api": {
+        "flavour": "choice",
+        "question": "Why this call, this shape?"
+      },
+      "backend": {
+        "flavour": "choice",
+        "question": "Why this part, this way?"
+      },
+      "tech": {
+        "flavour": "choice",
+        "question": "Why this library or service and not another?"
+      },
+      "decision": {
+        "flavour": "choice",
+        "question": "Why does this question matter — what hangs on the outcome?"
+      },
+      "rule": {
+        "flavour": "constraint",
+        "question": "What goes wrong without it?"
+      },
+      "edge-case": {
+        "flavour": "constraint",
+        "question": "Why does this case need handling of its own?"
+      }
+    },
+    "guidance": "A Why says something the Description does not. When it would only repeat the Description, write none; when another card already says it, write same as #<id>."
+  },
   "zones": {
     "authored": "Every section without the ⚙ prefix, every sub-document, the preamble of a comment, all front matter. Tools never rewrite authored content except the machine-owned tokens below.",
     "generated": "Every ## ⚙ section and every generated file. Rewritten whole by regen; hand edits are lost. Pure function of authored content; carries no dates.",
     "placement": "Authored sections first, in registry order; generated sections last, in registry order. Unknown and ## x-<name> sections are preserved where they stand among the authored sections.",
     "writtenOnlyWithContent": "regen writes a generated section only when it has at least one line, and removes it otherwise.",
     "enabledModulesOnly": "A generated section is computed only when every module it reads is enabled in the manifest.",
-    "closedRegistry": "The generated-section registry is closed; facts outside it (counts, roll-ups) come only from mds check output.",
+    "closedRegistry": "The generated-section registry is closed; facts outside it (counts, roll-ups) come only from intent-format check output.",
     "machineOwnedTokens": [
       "the title line (from name and id)",
       "the status line",
@@ -693,7 +823,7 @@
       "notToConfuseWith": [
         {
           "type": "manifest",
-          "rule": "mdstandard.md describes the KB as an artifact (version, lifecycle, modules); project.md describes the product."
+          "rule": "intent-format.md describes the KB as an artifact (version, lifecycle, modules); project.md describes the product."
         },
         {
           "type": "feature",
@@ -728,7 +858,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -738,7 +868,17 @@
           "guidance": "What the product is and for whom, in a few sentences; product-wide requirement blocks if any."
         },
         {
-          "heading": "Main use cases",
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "What problem does the product solve, for whom, and why now? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
+        },
+        {
+          "heading": "User stories",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -748,7 +888,7 @@
           "guidance": "5–10 lines: - As a <Role>, I want <goal>, so that <benefit>. <Role> is the exact name of a role card (roles/)."
         },
         {
-          "heading": "Constraints",
+          "heading": "Keep in mind",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -769,11 +909,11 @@
             "Roles",
             "States",
             "Platforms",
-            "Appears-as",
+            "Opens-as",
             "Tech categories"
           ],
-          "template": "### States\n| State | Code | Note |\n|---|---|---|\n\n### Platforms\n\n### Appears-as\n\n### Tech categories",
-          "guidance": "The only place States, Platforms, Appears-as values and Tech categories are defined; all start empty. User types are role cards (roles/); a ### Roles table is deprecated (W050, mds migrate)."
+          "template": "### States\n| State | Code | Note |\n|---|---|---|\n\n### Platforms\n\n### Opens-as\n\n### Tech categories",
+          "guidance": "The only place States, Platforms, Opens-as values and Tech categories are defined; all start empty. User types are role cards (roles/); a ### Roles table is deprecated (W050, intent-format migrate)."
         },
         {
           "heading": "Built with",
@@ -827,7 +967,7 @@
         }
       ],
       "defaultPreset": "Checklist",
-      "example": "---\nstandard: MDStandard/1.0\ntype: project\nid: PR000001\nname: Example app\nstatus: In design\n---\n# Example app · #PR000001\n> ⚙ #PR000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nA small app in which a Member keeps a list of items: create, browse and change them.\n\n## Main use cases\n- As a Member, I want to create an item, so that I can keep track of it.\n- As a Member, I want to browse my items, so that I find one quickly.\n- As a Member, I want to edit an item, so that its details stay current.\n- As a Member, I want to change my settings, so that the app fits how I work.\n- As an Admin, I want to review all items, so that the list stays clean.\n\n## Constraints\n**R1 · Checklist**\n- [ ] The Item list opens in under one second with 1000 items.\n- [ ] Every screen works with the keyboard alone.\n\n## Vocabularies\n### States\n| State | Code | Note |\n|---|---|---|\n\n### Platforms\n- Web\n- Mobile\n\n### Appears-as\n- Side panel — opens beside the current page\n\n### Tech categories\n- Frontend\n- Data & storage\n\n## Built with\n- [#TC000001 UI framework](tech/tc000001-ui-framework.md)\n- [#TC000002 Relational database](tech/tc000002-relational-database.md)\n- [~ Graph canvas library]\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: project\nid: PR000001\nname: Example app\nstatus: In design\n---\n# Example app · #PR000001\n> ⚙ #PR000001V1.0 · V1.0 in-progress\n\n## Description\nA small app in which a Member keeps a list of items: create, browse and change them.\n\n\n## Why\nMembers lose track of things kept in notes and chats; one list that is always at hand fixes that.\n## User stories\n- As a Member, I want to create an item, so that I can keep track of it.\n- As a Member, I want to browse my items, so that I find one quickly.\n- As a Member, I want to edit an item, so that its details stay current.\n- As a Member, I want to change my settings, so that the app fits how I work.\n- As an Admin, I want to review all items, so that the list stays clean.\n\n## Keep in mind\n**R1 · Checklist**\n- [ ] The Item list opens in under one second with 1000 items.\n- [ ] Every screen works with the keyboard alone.\n\n## Vocabularies\n### States\n| State | Code | Note |\n|---|---|---|\n\n### Platforms\n- Web\n- Mobile\n\n### Opens-as\n- Side panel — opens beside the current page\n\n### Tech categories\n- Frontend\n- Data & storage\n\n## Built with\n- [#TC000001 UI framework](tech/tc000001-ui-framework.md)\n- [#TC000002 Relational database](tech/tc000002-relational-database.md)\n- [~ Graph canvas library]\n"
     },
     "screen": {
       "prefix": "SC",
@@ -838,7 +978,7 @@
       "notToConfuseWith": [
         {
           "type": "component",
-          "rule": "Hosts its own component list → screen (modal/panel via appears-as); a piece placed inside places (row, toast, menu) → component; the frame around places → shell."
+          "rule": "Hosts its own component list → screen (modal/panel via opens-as); a piece placed inside places (row, toast, menu) → component; the frame around places → shell."
         },
         {
           "type": "screen-variant",
@@ -859,16 +999,22 @@
         "status",
         "state?",
         "feature?",
-        "appears-as?",
+        "users?",
+        "opens-as?",
         "shell?",
         "origin?",
         "x-*?"
       ],
       "extras": [
         {
-          "key": "appears-as",
+          "key": "users",
           "required": false,
-          "values": "@vocabulary:Appears-as",
+          "description": "The user types this card is for: one role card name, or a list; omitted = every user type whose states include its state."
+        },
+        {
+          "key": "opens-as",
+          "required": false,
+          "values": "@vocabulary:Opens-as",
           "description": "Default presentation; omitted = Page."
         },
         {
@@ -880,7 +1026,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -890,7 +1036,18 @@
           "guidance": "What the place is for and what the user can do there; acceptance criteria as GWT blocks."
         },
         {
-          "heading": "Rules applied",
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why this screen, this way — and not folded into another? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
+        },
+        {
+          "heading": "Rules",
           "required": false,
           "generated": false,
           "defaultRelation": "Applies rule",
@@ -931,7 +1088,7 @@
           "guidance": "Named alternatives (### <Name> · #SV…), each with its own component list; there is no Default variant — the default is ## Components."
         },
         {
-          "heading": "Uses API",
+          "heading": "APIs",
           "required": false,
           "generated": false,
           "defaultRelation": "Uses API",
@@ -981,7 +1138,7 @@
           "guidance": "Comment cards attached here, one line each; the remark lives in the CM file."
         },
         {
-          "heading": "⚙ Placed on",
+          "heading": "⚙ On maps",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -999,7 +1156,7 @@
           "guidance": "Components (usually shells) whose Navigation leads to this screen."
         },
         {
-          "heading": "⚙ Flows",
+          "heading": "⚙ In user flows",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -1036,7 +1193,7 @@
         }
       ],
       "defaultPreset": "GWT",
-      "example": "---\nstandard: MDStandard/1.0\ntype: screen\nid: SC000002\nname: Item list\nstatus: In design\nfeature: FT000002\n---\n# Item list · #SC000002\n> ⚙ #SC000002V1.0 · V1.0 in-progress\n\n## Description & Requirements\nShows all of a Member's items as rows; choosing a row opens Item detail.\n\n**R1 · GWT**\nGiven a Member with no items\nWhen the Item list opens\nThen an empty-list message and a create button are shown\n\n## Components\n1. [#CP000003 Item row](../components/cp000003-item-row.md) — one per item\n2. [#CP000001 Button](../components/cp000001-button.md) — creates an item\n\n## Variants\n### Picker · #SV000001\n<a id=\"sv000001\"></a>\nappears-as: Side panel\n\n1. [#CP000003 Item row](../components/cp000003-item-row.md) · variant: Compact\n\n## Uses API\n- [#AP000001 List items](../apis/ap000001-list-items.md)\n\n## Comments\n- [#CM000001 Empty-list message](../comments/cm000001-empty-list-message.md)\n\n## ⚙ Placed on\n- [#IA000001 Main map](../ia/ia000001-main-map.md) · parent: #SC000001\n\n## ⚙ Flows\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000001\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000005\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: screen\nid: SC000002\nname: Item list\nstatus: In design\nfeature: FT000002\n---\n# Item list · #SC000002\n> ⚙ #SC000002V1.0 · V1.0 in-progress\n\n## Description\nShows all of a Member's items as rows; choosing a row opens Item detail.\n\n**R1 · GWT**\nGiven a Member with no items\nWhen the Item list opens\nThen an empty-list message and a create button are shown\n\n## Components\n1. [#CP000003 Item row](../components/cp000003-item-row.md) — one per item\n2. [#CP000001 Button](../components/cp000001-button.md) — creates an item\n\n## Variants\n### Picker · #SV000001\n<a id=\"sv000001\"></a>\nopens-as: Side panel\n\n1. [#CP000003 Item row](../components/cp000003-item-row.md) · variant: Compact\n\n## APIs\n- [#AP000001 List items](../apis/ap000001-list-items.md)\n\n## Comments\n- [#CM000001 Empty-list message](../comments/cm000001-empty-list-message.md)\n\n## ⚙ On maps\n- [#IA000001 Main map](../ia/ia000001-main-map.md) · under: #SC000001\n\n## ⚙ In user flows\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000001\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000005\n"
     },
     "component": {
       "prefix": "CP",
@@ -1093,7 +1250,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1103,7 +1260,18 @@
           "guidance": "What the part does and its contract, true on every screen that uses it; GWT blocks."
         },
         {
-          "heading": "Rules applied",
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why this element, this way? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
+        },
+        {
+          "heading": "Rules",
           "required": false,
           "generated": false,
           "defaultRelation": "Applies rule",
@@ -1144,7 +1312,7 @@
           "guidance": "Named alternatives (### <Name> · #CV…), each with its own component list."
         },
         {
-          "heading": "Uses API",
+          "heading": "APIs",
           "required": false,
           "generated": false,
           "defaultRelation": "Uses API",
@@ -1194,7 +1362,7 @@
           "guidance": "Comment cards attached here, one line each; the remark lives in the CM file."
         },
         {
-          "heading": "⚙ Used on",
+          "heading": "⚙ Used in",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -1203,7 +1371,7 @@
           "guidance": "Every screen, variant and component that contains this component."
         },
         {
-          "heading": "⚙ Flows",
+          "heading": "⚙ In user flows",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -1240,7 +1408,7 @@
         }
       ],
       "defaultPreset": "GWT",
-      "example": "---\nstandard: MDStandard/1.0\ntype: component\nid: CP000003\nname: Item row\nstatus: In design\nfeature: FT000002\ncomponent-type: molecule\n---\n# Item row · #CP000003\n> ⚙ #CP000003V1.0 · V1.0 in-progress\n\n## Description & Requirements\nShows one item's name in a list and opens the item when chosen.\n\n## Do & Don'ts\n✅ Show the whole name on one line and cut it at the end.\n🚫 Don't put more than one button in a row.\n\n## Components\n1. [#CP000001 Button](cp000001-button.md) — opens the item\n\n## Variants\n### Compact · #CV000001\n<a id=\"cv000001\"></a>\n\nnone\n\n## ⚙ Used on\n- [#SC000002 Item list](../screens/sc000002-item-list.md)\n- [#SC000002 Item list](../screens/sc000002-item-list.md) · at: #SV000001\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: component\nid: CP000003\nname: Item row\nstatus: In design\nfeature: FT000002\ncomponent-type: molecule\n---\n# Item row · #CP000003\n> ⚙ #CP000003V1.0 · V1.0 in-progress\n\n## Description\nShows one item's name in a list and opens the item when chosen.\n\n## Do & Don'ts\n✅ Show the whole name on one line and cut it at the end.\n🚫 Don't put more than one button in a row.\n\n## Components\n1. [#CP000001 Button](cp000001-button.md) — opens the item\n\n## Variants\n### Compact · #CV000001\n<a id=\"cv000001\"></a>\n\nnone\n\n## ⚙ Used in\n- [#SC000002 Item list](../screens/sc000002-item-list.md)\n- [#SC000002 Item list](../screens/sc000002-item-list.md) · at: #SV000001\n"
     },
     "shell": {
       "prefix": "SH",
@@ -1274,7 +1442,7 @@
         "state?",
         "shell-type",
         "platform?",
-        "appears-as?",
+        "opens-as?",
         "flow?",
         "origin?",
         "x-*?"
@@ -1302,9 +1470,9 @@
           "description": "Platforms this shell is the frame for; omitted = all. Variants refine it."
         },
         {
-          "key": "appears-as",
+          "key": "opens-as",
           "required": false,
-          "values": "@vocabulary:Appears-as",
+          "values": "@vocabulary:Opens-as",
           "description": "Overlay shells only: the presentation this shell frames (Modal, Bottom sheet …); every placement with that presentation resolves to it."
         },
         {
@@ -1316,7 +1484,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1326,7 +1494,17 @@
           "guidance": "What the frame is for and the platform conventions it carries (back gesture, Escape, swipe to close); requirement blocks for the frame itself."
         },
         {
-          "heading": "Rules applied",
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Why this frame around the places? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
+        },
+        {
+          "heading": "Rules",
           "required": false,
           "generated": false,
           "defaultRelation": "Applies rule",
@@ -1344,7 +1522,7 @@
           "subdocuments": null,
           "content": "ordered-relations",
           "relief": "components",
-          "guidance": "The frame's own parts, top to bottom: 1. <component>[ · variant: <name>][ · appears-as: <value>][ — note]. A part that unfolds over the page (a navigation drawer, an account menu) carries · appears-as:. none for an embedded shell."
+          "guidance": "The frame's own parts, top to bottom: 1. <component>[ · variant: <name>][ · opens-as: <value>][ — note]. A part that unfolds over the page (a navigation drawer, an account menu) carries · opens-as:. none for an embedded shell."
         },
         {
           "heading": "Navigation",
@@ -1409,7 +1587,7 @@
           "guidance": "Comment cards attached here, one line each."
         },
         {
-          "heading": "⚙ Frames",
+          "heading": "⚙ Wraps",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -1436,15 +1614,15 @@
           "guidance": "Decisions that affect this shell."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: shell\nid: SH000001\nname: App shell\nstatus: In design\nshell-type: app\n---\n# App shell · #SH000001\n> ⚙ #SH000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nThe frame around every page: navigation, the account entry and the consent banner. On the phone the navigation unfolds from the burger.\n\n## Components\n1. [#CP000006 Consent banner](../components/cp000006-consent-banner.md)\n\n## Navigation\n1. [#SC000001 Home](../screens/sc000001-home.md) · kind: tab · in: Top bar, Navigation drawer\n2. [#SC000002 Item list](../screens/sc000002-item-list.md) · kind: tab · label: Items · in: Top bar, Navigation drawer\n3. [#SC000005 Settings](../screens/sc000005-settings.md) · kind: menu · in: Top bar, Navigation drawer\n\n## Places inside\n✅ Declare one primary action by name; the frame renders it.\n🚫 Never show navigation of your own.\n\n## Variants\n### Web · #HV000001\n<a id=\"hv000001\"></a>\nplatform: Web\n\n1. [#CP000004 Top bar](../components/cp000004-top-bar.md)\n\n### Mobile · #HV000002\n<a id=\"hv000002\"></a>\nplatform: Mobile\n\n1. [#CP000007 Burger](../components/cp000007-burger.md)\n2. [#CP000008 Navigation drawer](../components/cp000008-navigation-drawer.md) · appears-as: Side panel — opened by the burger\n",
+      "example": "---\nstandard: IntentFormat/1.2\ntype: shell\nid: SH000001\nname: App shell\nstatus: In design\nshell-type: app\n---\n# App shell · #SH000001\n> ⚙ #SH000001V1.0 · V1.0 in-progress\n\n## Description\nThe frame around every page: navigation, the account entry and the consent banner. On the phone the navigation unfolds from the burger.\n\n\n## Why\nOne frame around every page, so navigation and the account entry are learned once.\n## Components\n1. [#CP000006 Consent banner](../components/cp000006-consent-banner.md)\n\n## Navigation\n1. [#SC000001 Home](../screens/sc000001-home.md) · kind: tab · in: Top bar, Navigation drawer\n2. [#SC000002 Item list](../screens/sc000002-item-list.md) · kind: tab · label: Items · in: Top bar, Navigation drawer\n3. [#SC000005 Settings](../screens/sc000005-settings.md) · kind: menu · in: Top bar, Navigation drawer\n\n## Places inside\n✅ Declare one primary action by name; the frame renders it.\n🚫 Never show navigation of your own.\n\n## Variants\n### Web · #HV000001\n<a id=\"hv000001\"></a>\nplatform: Web\n\n1. [#CP000004 Top bar](../components/cp000004-top-bar.md)\n\n### Mobile · #HV000002\n<a id=\"hv000002\"></a>\nplatform: Mobile\n\n1. [#CP000007 Burger](../components/cp000007-burger.md)\n2. [#CP000008 Navigation drawer](../components/cp000008-navigation-drawer.md) · opens-as: Side panel — opened by the burger\n",
       "modelling": [
         "Screens are content, shells are context. A screen says what the place is for, its outcome and its primary action by name; the shell says what surrounds it and renders that action.",
-        "Does the user go somewhere with a purpose of its own → a screen (a modal or sheet via appears-as). Does the frame unfold (a navigation drawer, an account menu) → a part of the shell with · appears-as:.",
+        "Does the user go somewhere with a purpose of its own → a screen (a modal or sheet via opens-as). Does the frame unfold (a navigation drawer, an account menu) → a part of the shell with · opens-as:.",
         "New shell or variant? A new shell when the frame does another job (another shell-type) or follows another navigation model — mostly different destinations or parts, or different rules in ## Places inside (a variant cannot change them). A variant when the same frame adds or swaps a part or two for a platform, a state or a level.",
         "Typical set: one app shell per platform family whose frame is built differently (a desktop header vs a native tab bar), a section shell per area with its own wayfinding, a stepper per task flow, one overlay shell per presentation.",
         "Variants stack: every variant whose passport matches applies, so write Signed in, Level 2+ and Mobile once each — never their combinations.",
         "Navigation is one ordered list on the host, in display order. A line shown only on some platforms or in some states carries · platform: / · state:; · in: names the part that holds the entry (Header, Footer, Tab bar, Account menu).",
-        "Write the exception, not the rule: every page gets the app shell of its platform and state, every modal the Modal shell. Bind a section once on its map node (· shell:). Run mds frame <root> <screen> to see what a place resolves to."
+        "Write the exception, not the rule: every page gets the app shell of its platform and state, every modal the Modal shell. Bind a section once on its map node (· shell:). Run intent-format frame <root> <screen> to see what a place resolves to."
       ]
     },
     "userflow": {
@@ -1477,11 +1655,17 @@
         "status",
         "state?",
         "feature?",
+        "users?",
         "platform?",
         "origin?",
         "x-*?"
       ],
       "extras": [
+        {
+          "key": "users",
+          "required": false,
+          "description": "The user types this card is for: one role card name, or a list; omitted = every user type whose states include its state."
+        },
         {
           "key": "platform",
           "required": false,
@@ -1492,7 +1676,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1502,7 +1686,17 @@
           "guidance": "The journey's intent, for whom, and its success criteria."
         },
         {
-          "heading": "Rules applied",
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Why does this journey exist — what does the user have at the end of it? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
+        },
+        {
+          "heading": "Rules",
           "required": false,
           "generated": false,
           "defaultRelation": "Applies rule",
@@ -1609,7 +1803,7 @@
           "guidance": "Decisions that affect this card."
         },
         {
-          "heading": "⚙ Shown as",
+          "heading": "⚙ Shown in",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -1618,7 +1812,7 @@
           "guidance": "Stepper shells that show this flow."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: userflow\nid: UF000001\nname: Create an item\nstatus: In design\nfeature: FT000003\n---\n# Create an item · #UF000001\n> ⚙ #UF000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nA Member adds a new item from the Item list and returns to the list with the item saved.\n\n## Step list\n1. [#FS000001 Start from the list](#fs000001)\n2. [#FS000002 Enter item details](#fs000002)\n3. [#FS000003 Name valid?](#fs000003)\n4. [#FS000004 Save the item](#fs000004)\n5. [#FS000005 Item created](#fs000005)\n\n### Quick add\nplatform: Mobile\n\n1. [#FS000001 Start from the list](#fs000001)\n2. [#FS000002 Enter item details](#fs000002)\n3. [#FS000004 Save the item](#fs000004)\n4. [#FS000005 Item created](#fs000005)\n\n## Steps\n### ○ Start from the list · #FS000001\n<a id=\"fs000001\"></a>\n\n- Entry: the Member taps Create on the Item list.\n- Screen: [#SC000002 Item list](../screens/sc000002-item-list.md)\n\n### □ Enter item details · #FS000002\n<a id=\"fs000002\"></a>\n\n- Screen: [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- Component: [#CP000002 Text field](../components/cp000002-text-field.md)\n\nThe Member types a name and optional notes.\n\n### ◇ Name valid? · #FS000003\n<a id=\"fs000003\"></a>\n\n- Branch: Yes → [#FS000004 Save the item](#fs000004) · primary\n- Branch: No → [#FS000002 Enter item details](#fs000002) · rule: #RL000001\n\n### ⚡ Save the item · #FS000004\n<a id=\"fs000004\"></a>\n\n- API: [#AP000002 Save item](../apis/ap000002-save-item.md)\n\n### ◎ Item created · #FS000005\n<a id=\"fs000005\"></a>\n\n- Outcome: the new item is saved and shown on the Item list.\n- Screen: [#SC000002 Item list](../screens/sc000002-item-list.md)\n\n## ⚙ Edge cases\n- [#EC000001 Save fails](../edge-cases/ec000001-save-fails.md) · at: #FS000004 · severity: Medium\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: userflow\nid: UF000001\nname: Create an item\nstatus: In design\nfeature: FT000003\n---\n# Create an item · #UF000001\n> ⚙ #UF000001V1.0 · V1.0 in-progress\n\n## Description\nA Member adds a new item from the Item list and returns to the list with the item saved.\n\n\n## Why\nThe main use case of Items: without it nothing gets into the list.\n## Step list\n1. [#FS000001 Start from the list](#fs000001)\n2. [#FS000002 Enter item details](#fs000002)\n3. [#FS000003 Name valid?](#fs000003)\n4. [#FS000004 Save the item](#fs000004)\n5. [#FS000005 Item created](#fs000005)\n\n### Quick add\nplatform: Mobile\n\n1. [#FS000001 Start from the list](#fs000001)\n2. [#FS000002 Enter item details](#fs000002)\n3. [#FS000004 Save the item](#fs000004)\n4. [#FS000005 Item created](#fs000005)\n\n## Steps\n### ○ Start from the list · #FS000001\n<a id=\"fs000001\"></a>\n\n- Entry: the Member taps Create on the Item list.\n- Screen: [#SC000002 Item list](../screens/sc000002-item-list.md)\n\n### □ Enter item details · #FS000002\n<a id=\"fs000002\"></a>\n\n- Screen: [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- Component: [#CP000002 Text field](../components/cp000002-text-field.md)\n\nThe Member types a name and optional notes.\n\n### ◇ Name valid? · #FS000003\n<a id=\"fs000003\"></a>\n\n- Branch: Yes → [#FS000004 Save the item](#fs000004) · primary\n- Branch: No → [#FS000002 Enter item details](#fs000002) · rule: #RL000001\n\n### ⚡ Save the item · #FS000004\n<a id=\"fs000004\"></a>\n\n- API: [#AP000002 Save item](../apis/ap000002-save-item.md)\n\n### ◎ Item created · #FS000005\n<a id=\"fs000005\"></a>\n\n- Outcome: the new item is saved and shown on the Item list.\n- Screen: [#SC000002 Item list](../screens/sc000002-item-list.md)\n\n## ⚙ Edge cases\n- [#EC000001 Save fails](../edge-cases/ec000001-save-fails.md) · at: #FS000004 · severity: Medium\n"
     },
     "ia": {
       "prefix": "IA",
@@ -1669,7 +1863,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1677,6 +1871,17 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "What this arrangement covers and why it exists."
+        },
+        {
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why this arrangement of places? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
         },
         {
           "heading": "Parts",
@@ -1731,7 +1936,7 @@
           "guidance": "Decisions that affect this card."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: ia\nid: IA000001\nname: Main map\nstatus: In design\ndefault: true\n---\n# Main map · #IA000001\n> ⚙ #IA000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nHow the places of Example app are arranged for every Member.\n\n## Parts\n- [#SC000001 Home](../screens/sc000001-home.md)\n  - [#SC000002 Item list](../screens/sc000002-item-list.md) · group: Items\n    - [#SC000003 Item detail](../screens/sc000003-item-detail.md) · group: Items\n      - [#SC000004 Edit item](../screens/sc000004-edit-item.md) · appears-as: Side panel · group: Items\n  - [#SC000005 Settings](../screens/sc000005-settings.md)\n\n### Lateral\n- Edge: [#SC000005 Settings](../screens/sc000005-settings.md) → [#SC000002 Item list](../screens/sc000002-item-list.md) · label: Back to items\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: ia\nid: IA000001\nname: Main map\nstatus: In design\ndefault: true\n---\n# Main map · #IA000001\n> ⚙ #IA000001V1.0 · V1.0 in-progress\n\n## Description\nHow the places of Example app are arranged for every Member.\n\n## Parts\n- [#SC000001 Home](../screens/sc000001-home.md)\n  - [#SC000002 Item list](../screens/sc000002-item-list.md) · group: Items\n    - [#SC000003 Item detail](../screens/sc000003-item-detail.md) · group: Items\n      - [#SC000004 Edit item](../screens/sc000004-edit-item.md) · opens-as: Side panel · group: Items\n  - [#SC000005 Settings](../screens/sc000005-settings.md)\n\n### Lateral\n- Edge: [#SC000005 Settings](../screens/sc000005-settings.md) → [#SC000002 Item list](../screens/sc000002-item-list.md) · label: Back to items\n"
     },
     "rule": {
       "prefix": "RL",
@@ -1750,7 +1955,7 @@
         },
         {
           "type": "requirement",
-          "rule": "An acceptance criterion of one card stays in that card's Description & Requirements."
+          "rule": "An acceptance criterion of one card stays in that card's Description."
         }
       ],
       "statusVocabulary": "default",
@@ -1768,7 +1973,7 @@
       "extras": [],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1776,6 +1981,16 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "The rule itself, once: one precise sentence or an EARS block."
+        },
+        {
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "What goes wrong without it? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
         },
         {
           "heading": "Links",
@@ -1827,7 +2042,7 @@
         }
       ],
       "defaultPreset": "EARS",
-      "example": "---\nstandard: MDStandard/1.0\ntype: rule\nid: RL000001\nname: Item name is required\nstatus: Approved\n---\n# Item name is required · #RL000001\n> ⚙ #RL000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\n**R1 · EARS** If the item name is empty, then the system shall refuse to save the item and say why.\n\n## ⚙ Applied in\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000003\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: rule\nid: RL000001\nname: Item name is required\nstatus: Approved\n---\n# Item name is required · #RL000001\n> ⚙ #RL000001V1.0 · V1.0 in-progress\n\n## Description\n**R1 · EARS** If the item name is empty, then the system shall refuse to save the item and say why.\n\n\n## Why\nAn item without a name cannot be found again in the list.\n## ⚙ Applied in\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000003\n"
     },
     "api": {
       "prefix": "AP",
@@ -1869,7 +2084,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -1877,6 +2092,17 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "What the call does, its input and result, in one or two sentences."
+        },
+        {
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why this call, this shape? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
         },
         {
           "heading": "Served by",
@@ -1958,7 +2184,7 @@
           "guidance": "Decisions that affect this card."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: api\nid: AP000002\nname: Save item\nstatus: In build\nmethod: PUT\nendpoint: /items/{id}\n---\n# Save item · #AP000002\n> ⚙ #AP000002V1.0 · V1.0 in-progress\n\n## Description & Requirements\nCreates or updates one item and returns the stored version.\n\n## Served by\n- [#BN000001 App server](../backend/bn000001-app-server.md)\n\n## ⚙ Called from\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000004\n\n## ⚙ Edge cases\n- [#EC000001 Save fails](../edge-cases/ec000001-save-fails.md) · severity: Medium\n\n## ⚙ Decisions\n- [#DC000001 Where do item images live?](../decisions/dc000001-where-do-item-images-live.md) · status: Open\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: api\nid: AP000002\nname: Save item\nstatus: In build\nmethod: PUT\nendpoint: /items/{id}\n---\n# Save item · #AP000002\n> ⚙ #AP000002V1.0 · V1.0 in-progress\n\n## Description\nCreates or updates one item and returns the stored version.\n\n## Served by\n- [#BN000001 App server](../backend/bn000001-app-server.md)\n\n## ⚙ Called from\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md) · at: #FS000004\n\n## ⚙ Edge cases\n- [#EC000001 Save fails](../edge-cases/ec000001-save-fails.md) · severity: Medium\n\n## ⚙ Decisions\n- [#DC000001 Where do item images live?](../decisions/dc000001-where-do-item-images-live.md) · status: Open\n"
     },
     "feature": {
       "prefix": "FT",
@@ -1966,13 +2192,13 @@
       "purpose": "A product domain (Feature) or a capability inside one (Sub-feature, with parent:).",
       "levels": {
         "feature": "Top-level product domain; no parent:.",
-        "subfeature": "A capability; parent: <FT core of a Feature>. Max two levels."
+        "subfeature": "A capability; parent: <FT core of a Feature>; its Why is same as the parent's. Max two levels. When it outgrows its Feature (a why, rules or decisions of its own): remove parent:, keep its id and its children, record the move as a decision."
       },
       "altitude": {
         "feature": "Why it exists and its scope in/out.",
         "subfeature": "What capability, for whom."
       },
-      "whenToUse": "Feature: one per product domain. Sub-feature: one per user-facing capability named by its outcome, under its Feature. Screens, flows and components point at their home with feature:.",
+      "whenToUse": "Feature: one per product domain. Anything with a why, rules or decisions of its own is a Feature, wherever the user reaches it from — a loyalty programme opened from the profile screen is its own Feature, not part of Profile. Sub-feature: one per user-facing capability named by its outcome, under its Feature, only while its why is the Feature's (`same as #FT…`). One level deep: a needed third level means a Feature is missing in the middle. Screens, flows and components point at their home with feature:.",
       "notToConfuseWith": [
         {
           "type": "userflow",
@@ -1985,6 +2211,10 @@
         {
           "type": "rule",
           "rule": "Numbers, limits and conditions go to rules, never into a Feature's description."
+        },
+        {
+          "type": "ia",
+          "rule": "Where a feature is reached from is navigation (the IA map, a screen's Navigation); the feature tree groups by purpose, never by screen."
         }
       ],
       "statusVocabulary": "default",
@@ -2021,7 +2251,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -2029,6 +2259,16 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "Feature: why it exists, then In scope / Out of scope. Sub-feature: one sentence on the capability and for whom, then User story blocks."
+        },
+        {
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "What problem does this solve, or what goal does it serve? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
         },
         {
           "heading": "Touchpoints",
@@ -2135,8 +2375,8 @@
         }
       ],
       "defaultPreset": "User story",
-      "example": "---\nstandard: MDStandard/1.0\ntype: feature\nid: FT000001\nname: Items\nstatus: In design\npriority: High\n---\n# Items · #FT000001\n> ⚙ #FT000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nMembers need one dependable place for the things they keep track of.\n\nIn scope: finding, creating and changing items. Out of scope: sharing items with other people.\n\n## ⚙ Sub-features\n- [#FT000002 Browse items](ft000002-browse-items.md) — Lets a Member find an item in their list.\n- [#FT000003 Edit an item](ft000003-edit-an-item.md) — Lets a Member create an item or change its details.\n",
-      "exampleSubfeature": "---\nstandard: MDStandard/1.0\ntype: feature\nid: FT000003\nname: Edit an item\nstatus: In design\nparent: FT000001\npriority: High\n---\n# Edit an item · #FT000003\n> ⚙ #FT000003V1.0 · V1.0 in-progress\n\n## Description & Requirements\nLets a Member create an item or change its details.\n\n**R1 · User story** As a Member, I want to change an item's details, so that my list stays accurate.\n\n## Touchpoints\n- [#CP000002 Text field](../components/cp000002-text-field.md) — name entry\n\n## ⚙ Screens\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n\n## ⚙ Also uses\n- [#SC000002 Item list](../screens/sc000002-item-list.md) · home: #FT000002\n\n## ⚙ User flows\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md)\n- [#UF000002 Edit an item](../userflows/uf000002-edit-an-item.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: feature\nid: FT000001\nname: Items\nstatus: In design\npriority: High\n---\n# Items · #FT000001\n> ⚙ #FT000001V1.0 · V1.0 in-progress\n\n## Description\nMembers need one dependable place for the things they keep track of.\n\nIn scope: finding, creating and changing items. Out of scope: sharing items with other people.\n\n\n## Why\nKeeping track of things is the reason the app exists.\n## ⚙ Sub-features\n- [#FT000002 Browse items](ft000002-browse-items.md) — Lets a Member find an item in their list.\n- [#FT000003 Edit an item](ft000003-edit-an-item.md) — Lets a Member create an item or change its details.\n",
+      "exampleSubfeature": "---\nstandard: IntentFormat/1.2\ntype: feature\nid: FT000003\nname: Edit an item\nstatus: In design\nparent: FT000001\npriority: High\n---\n# Edit an item · #FT000003\n> ⚙ #FT000003V1.0 · V1.0 in-progress\n\n## Description\nLets a Member create an item or change its details.\n\n**R1 · User story** As a Member, I want to change an item's details, so that my list stays accurate.\n\n\n## Why\nsame as #FT000001\n\n## Touchpoints\n- [#CP000002 Text field](../components/cp000002-text-field.md) — name entry\n\n## ⚙ Screens\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n\n## ⚙ Also uses\n- [#SC000002 Item list](../screens/sc000002-item-list.md) · home: #FT000002\n\n## ⚙ User flows\n- [#UF000001 Create an item](../userflows/uf000001-create-an-item.md)\n- [#UF000002 Edit an item](../userflows/uf000002-edit-an-item.md)\n"
     },
     "edge-case": {
       "prefix": "EC",
@@ -2184,7 +2424,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -2194,7 +2434,18 @@
           "guidance": "If <situation> then <handling>: a GWT or EARS block with both parts."
         },
         {
-          "heading": "Rules applied",
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why does this case need handling of its own? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
+        },
+        {
+          "heading": "Rules",
           "required": false,
           "generated": false,
           "defaultRelation": "Applies rule",
@@ -2254,7 +2505,7 @@
         }
       ],
       "defaultPreset": "GWT",
-      "example": "---\nstandard: MDStandard/1.0\ntype: edge-case\nid: EC000001\nname: Save fails\nstatus: Idea\nseverity: Medium\n---\n# Save fails · #EC000001\n> ⚙ #EC000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\n**R1 · GWT**\nGiven a Member editing an item\nWhen Save item does not answer in time\nThen the edits stay on screen and a retry option is shown\n\n## Rules applied\nnone\n\n## Where\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#FS000004 Save the item](../userflows/uf000001-create-an-item.md#fs000004)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: edge-case\nid: EC000001\nname: Save fails\nstatus: Idea\nseverity: Medium\n---\n# Save fails · #EC000001\n> ⚙ #EC000001V1.0 · V1.0 in-progress\n\n## Description\n**R1 · GWT**\nGiven a Member editing an item\nWhen Save item does not answer in time\nThen the edits stay on screen and a retry option is shown\n\n## Rules\nnone\n\n## Where\n- [#SC000004 Edit item](../screens/sc000004-edit-item.md)\n- [#FS000004 Save the item](../userflows/uf000001-create-an-item.md#fs000004)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
     },
     "backend": {
       "prefix": "BN",
@@ -2302,7 +2553,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -2310,6 +2561,17 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "What the node is responsible for."
+        },
+        {
+          "heading": "Why",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Optional. Why this part, this way? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. Absent = nothing to say.",
+          "inTemplate": false
         },
         {
           "heading": "Connections",
@@ -2380,7 +2642,7 @@
           "guidance": "Nodes that connect to this one."
         },
         {
-          "heading": "⚙ Flows",
+          "heading": "⚙ In user flows",
           "required": false,
           "generated": true,
           "defaultRelation": null,
@@ -2407,7 +2669,7 @@
           "guidance": "Decisions that affect this card."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: backend\nid: BN000001\nname: App server\nstatus: In build\nbackend-type: server\n---\n# App server · #BN000001\n> ⚙ #BN000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nServes the item APIs and reads and writes the stored data.\n\n## Connections\n- [#BN000002 Main database](bn000002-main-database.md) · kind: stores\n- [#BN000003 File storage](bn000003-file-storage.md) · kind: stores\n\n## Built with\n- [~ Server runtime]\n\n## ⚙ Serves\n- [#AP000001 List items](../apis/ap000001-list-items.md)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: backend\nid: BN000001\nname: App server\nstatus: In build\nbackend-type: server\n---\n# App server · #BN000001\n> ⚙ #BN000001V1.0 · V1.0 in-progress\n\n## Description\nServes the item APIs and reads and writes the stored data.\n\n## Connections\n- [#BN000002 Main database](bn000002-main-database.md) · kind: stores\n- [#BN000003 File storage](bn000003-file-storage.md) · kind: stores\n\n## Built with\n- [~ Server runtime]\n\n## ⚙ Serves\n- [#AP000001 List items](../apis/ap000001-list-items.md)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
     },
     "tech": {
       "prefix": "TC",
@@ -2466,7 +2728,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -2482,8 +2744,8 @@
           "defaultRelation": null,
           "ordered": false,
           "subdocuments": null,
-          "content": "prose",
-          "guidance": "Why it was chosen or is being considered, with evidence or a decision reference."
+          "content": "why",
+          "guidance": "Why this library or service and not another? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
         },
         {
           "heading": "Alternatives",
@@ -2544,7 +2806,7 @@
           "guidance": "Decisions that affect this card."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: tech\nid: TC000002\nname: Relational database\nstatus: Adopted\ncategory: Data & storage\ntech-version: \"16\"\nlicense: Open source\n---\n# Relational database · #TC000002\n> ⚙ #TC000002V1.0 · V1.0 in-progress\n\n## Description & Requirements\nKeeps items and settings in tables with transactions.\n\n## Why\nItems have a fixed shape and need safe concurrent updates.\n\n## Alternatives\n- [~ Document database]\n\n## ⚙ Used by\n- [#PR000001 Example app](../project.md)\n- [#BN000002 Main database](../backend/bn000002-main-database.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: tech\nid: TC000002\nname: Relational database\nstatus: Adopted\ncategory: Data & storage\ntech-version: \"16\"\nlicense: Open source\n---\n# Relational database · #TC000002\n> ⚙ #TC000002V1.0 · V1.0 in-progress\n\n## Description\nKeeps items and settings in tables with transactions.\n\n## Why\nItems have a fixed shape and need safe concurrent updates.\n\n## Alternatives\n- [~ Document database]\n\n## ⚙ Used by\n- [#PR000001 Example app](../project.md)\n- [#BN000002 Main database](../backend/bn000002-main-database.md)\n"
     },
     "decision": {
       "prefix": "DC",
@@ -2570,10 +2832,31 @@
         "name",
         "status",
         "state?",
+        "decided?",
+        "by?",
+        "superseded-by?",
         "origin?",
         "x-*?"
       ],
-      "extras": [],
+      "extras": [
+        {
+          "key": "decided",
+          "required": false,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "Date the decision was taken (YYYY-MM-DD). Expected once status is Decided or Superseded."
+        },
+        {
+          "key": "by",
+          "required": false,
+          "description": "Who decided: owner, agent, or the name of a role card."
+        },
+        {
+          "key": "superseded-by",
+          "required": false,
+          "pattern": "^DC\\d{6}$",
+          "description": "Superseded only: the DC core of the decision that replaced this one."
+        }
+      ],
       "sections": [
         {
           "heading": "Question",
@@ -2584,6 +2867,16 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "The question in one or two sentences."
+        },
+        {
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Why does this question matter — what hangs on the outcome? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
         },
         {
           "heading": "Options",
@@ -2656,7 +2949,7 @@
           "guidance": "Decisions that affect this card."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: decision\nid: DC000001\nname: Where do item images live?\nstatus: Open\n---\n# Where do item images live? · #DC000001\n> ⚙ #DC000001V1.0 · V1.0 in-progress\n\n## Question\nShould item images be kept in File storage or inside the Main database?\n\n## Options\n1. File storage — cheap and fast to serve; needs a cleanup job.\n2. Main database — one backup for everything; larger tables.\n\n## Outcome\n—\n\n## Affects\n- [#BN000003 File storage](../backend/bn000003-file-storage.md)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: decision\nid: DC000001\nname: Where do item images live?\nstatus: Open\n---\n# Where do item images live? · #DC000001\n> ⚙ #DC000001V1.0 · V1.0 in-progress\n\n## Question\nShould item images be kept in File storage or inside the Main database?\n\n\n## Why\nImages are the largest data the app stores; where they live decides backup and cost. [likely]\n## Options\n1. File storage — cheap and fast to serve; needs a cleanup job.\n2. Main database — one backup for everything; larger tables.\n\n## Outcome\n—\n\n## Affects\n- [#BN000003 File storage](../backend/bn000003-file-storage.md)\n- [#AP000002 Save item](../apis/ap000002-save-item.md)\n"
     },
     "comment": {
       "prefix": "CM",
@@ -2721,7 +3014,7 @@
           "guidance": "Where this comment is attached."
         }
       ],
-      "example": "---\nstandard: MDStandard/1.0\ntype: comment\nid: CM000001\nname: Empty-list message\nstatus: Open\nauthor: Product owner\n---\n# Empty-list message · #CM000001\n> ⚙ #CM000001V1.0 · V1.0 in-progress\n\nShould the empty Item list also offer to import items? Only if it is cheap.\n\n## ⚙ Attached to\n- [#SC000002 Item list](../screens/sc000002-item-list.md)\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: comment\nid: CM000001\nname: Empty-list message\nstatus: Open\nauthor: Product owner\n---\n# Empty-list message · #CM000001\n> ⚙ #CM000001V1.0 · V1.0 in-progress\n\nShould the empty Item list also offer to import items? Only if it is cheap.\n\n## ⚙ Attached to\n- [#SC000002 Item list](../screens/sc000002-item-list.md)\n"
     },
     "role": {
       "prefix": "RO",
@@ -2763,7 +3056,7 @@
       ],
       "sections": [
         {
-          "heading": "Description & Requirements",
+          "heading": "Description",
           "required": true,
           "generated": false,
           "defaultRelation": null,
@@ -2771,6 +3064,16 @@
           "subdocuments": null,
           "content": "prose",
           "guidance": "Who they are, their context, what they come to do and what matters to them (devices, frequency, expertise, accessibility needs); requirement blocks only for needs that hold wherever this role appears."
+        },
+        {
+          "heading": "Why",
+          "required": true,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": false,
+          "subdocuments": null,
+          "content": "why",
+          "guidance": "Why does this user type matter to the product? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —."
         },
         {
           "heading": "Links",
@@ -2809,7 +3112,7 @@
           "defaultRelation": null,
           "ordered": false,
           "subdocuments": null,
-          "guidance": "Every user story that names this role: Main use cases and User story blocks on any card."
+          "guidance": "Every user story that names this role: User stories and User story blocks on any card."
         },
         {
           "heading": "⚙ Decisions",
@@ -2822,7 +3125,7 @@
         }
       ],
       "defaultPreset": "User story",
-      "example": "---\nstandard: MDStandard/1.0\ntype: role\nid: RO000001\nname: Member\nstatus: In design\nplatform: [Web, Mobile]\n---\n# Member · #RO000001\n> ⚙ #RO000001V1.0 · V1.0 in-progress\n\n## Description & Requirements\nSomeone who keeps a personal list of items. Uses the app several times a week, mostly on the phone; expects to find an item in a few taps.\n"
+      "example": "---\nstandard: IntentFormat/1.2\ntype: role\nid: RO000001\nname: Member\nstatus: In design\nplatform: [Web, Mobile]\n---\n# Member · #RO000001\n> ⚙ #RO000001V1.0 · V1.0 in-progress\n\n## Description\nSomeone who keeps a personal list of items. Uses the app several times a week, mostly on the phone; expects to find an item in a few taps.\n\n\n## Why\nThe product exists for this user; every story names them."
     }
   },
   "subdocuments": {
@@ -2841,9 +3144,9 @@
             "rule": "One State name or Shared; omitted = the host card's state. Only when the project declares States."
           },
           {
-            "key": "appears-as",
-            "values": "@vocabulary:Appears-as",
-            "rule": "Omitted = the host's appears-as (default Page)."
+            "key": "opens-as",
+            "values": "@vocabulary:Opens-as",
+            "rule": "Omitted = the host's opens-as (default Page)."
           },
           {
             "key": "shell",
@@ -2894,9 +3197,9 @@
             "rule": "One State name or Shared; omitted = the host card's state. Only when the project declares States."
           },
           {
-            "key": "appears-as",
-            "values": "@vocabulary:Appears-as",
-            "rule": "Omitted = the host's appears-as (default Page)."
+            "key": "opens-as",
+            "values": "@vocabulary:Opens-as",
+            "rule": "Omitted = the host's opens-as (default Page)."
           },
           {
             "key": "platform",
@@ -3162,13 +3465,13 @@
           "value": "variant name, or #SV/#CV core for screen/component variants"
         },
         {
-          "key": "appears-as",
-          "values": "@vocabulary:Appears-as",
+          "key": "opens-as",
+          "values": "@vocabulary:Opens-as",
           "value": "shells only: this part unfolds over the page with that presentation"
         }
       ],
       "generatedReverse": {
-        "section": "⚙ Used on",
+        "section": "⚙ Used in",
         "on": [
           "component"
         ]
@@ -3176,7 +3479,7 @@
       "rules": [
         "Component nesting is acyclic.",
         "Ordered lines never nest; deeper composition lives in the child component.",
-        "· appears-as: is legal only in a shell's Components and variants."
+        "· opens-as: is legal only in a shell's Components and variants."
       ]
     },
     "Leads to": {
@@ -3277,8 +3580,8 @@
           "value": "screen variant name or #SV core"
         },
         {
-          "key": "appears-as",
-          "values": "@vocabulary:Appears-as"
+          "key": "opens-as",
+          "values": "@vocabulary:Opens-as"
         },
         {
           "key": "shell",
@@ -3290,7 +3593,7 @@
         }
       ],
       "generatedReverse": {
-        "section": "⚙ Placed on",
+        "section": "⚙ On maps",
         "on": [
           "screen"
         ]
@@ -3370,8 +3673,8 @@
           "value": "screen variant name or #SV core"
         },
         {
-          "key": "appears-as",
-          "values": "@vocabulary:Appears-as"
+          "key": "opens-as",
+          "values": "@vocabulary:Opens-as"
         },
         {
           "key": "shell",
@@ -3379,7 +3682,7 @@
         }
       ],
       "generatedReverse": {
-        "section": "⚙ Flows",
+        "section": "⚙ In user flows",
         "on": [
           "screen"
         ]
@@ -3408,7 +3711,7 @@
         }
       ],
       "generatedReverse": {
-        "section": "⚙ Flows",
+        "section": "⚙ In user flows",
         "on": [
           "component"
         ]
@@ -3452,7 +3755,7 @@
       ],
       "qualifiers": [],
       "generatedReverse": {
-        "section": "⚙ Flows",
+        "section": "⚙ In user flows",
         "on": [
           "backend"
         ]
@@ -3547,22 +3850,22 @@
       "authoredIn": [
         {
           "type": "screen",
-          "section": "Rules applied",
+          "section": "Rules",
           "prefixless": true
         },
         {
           "type": "component",
-          "section": "Rules applied",
+          "section": "Rules",
           "prefixless": true
         },
         {
           "type": "userflow",
-          "section": "Rules applied",
+          "section": "Rules",
           "prefixless": true
         },
         {
           "type": "edge-case",
-          "section": "Rules applied",
+          "section": "Rules",
           "prefixless": true
         },
         {
@@ -3570,7 +3873,7 @@
         },
         {
           "type": "shell",
-          "section": "Rules applied",
+          "section": "Rules",
           "prefixless": true
         }
       ],
@@ -3590,12 +3893,12 @@
       "authoredIn": [
         {
           "type": "screen",
-          "section": "Uses API",
+          "section": "APIs",
           "prefixless": true
         },
         {
           "type": "component",
-          "section": "Uses API",
+          "section": "APIs",
           "prefixless": true
         },
         {
@@ -4107,7 +4410,7 @@
       ],
       "qualifiers": [],
       "generatedReverse": {
-        "section": "⚙ Frames",
+        "section": "⚙ Wraps",
         "on": [
           "shell"
         ]
@@ -4131,7 +4434,7 @@
       ],
       "qualifiers": [],
       "generatedReverse": {
-        "section": "⚙ Shown as",
+        "section": "⚙ Shown in",
         "on": [
           "userflow"
         ]
@@ -4198,7 +4501,7 @@
     "Story": {
       "meaning": "A user story names this role.",
       "authoredIn": [],
-      "authoredAs": "the role slot of a user story — As a <role name>, I want … — in Main use cases or a User story block; resolved by exact role-card name, not by core",
+      "authoredAs": "the role slot of a user story — As a <role name>, I want … — in User stories or a User story block; resolved by exact role-card name, not by core",
       "targetTypes": [
         "role"
       ],
@@ -4232,7 +4535,7 @@
     "sort": "By target type (typeRoster order), then core ascending, then the first qualifier value."
   },
   "generatedSections": {
-    "⚙ Used on": {
+    "⚙ Used in": {
       "on": [
         "component"
       ],
@@ -4243,7 +4546,7 @@
       "computedFrom": "Components lists of screens, components and variants containing this component; hosts reached through another component carry · via: the component placed on that host.",
       "guidance": "Every screen, variant and component that contains this component."
     },
-    "⚙ Frames": {
+    "⚙ Wraps": {
       "on": [
         "shell"
       ],
@@ -4254,14 +4557,14 @@
       "computedFrom": "shell: keys of screens, variant passports (· at: the variant), IA nodes (the map, · at: the node's screen) and step Screen lines (the flow, · at: the step) that name this shell.",
       "guidance": "Everything bound to this shell explicitly; default bindings are computed, not listed."
     },
-    "⚙ Placed on": {
+    "⚙ On maps": {
       "on": [
         "screen"
       ],
       "from": [
         "Node"
       ],
-      "line": "- <IA map>[ · parent: #SC…]",
+      "line": "- <IA map>[ · under: #SC…]",
       "computedFrom": "IA maps whose Parts tree places this screen; parent omitted at the root.",
       "guidance": "The IA maps that place this screen."
     },
@@ -4276,7 +4579,7 @@
       "computedFrom": "Navigation lines of shells (and their variants) naming this screen.",
       "guidance": "Shells whose Navigation leads to this screen."
     },
-    "⚙ Shown as": {
+    "⚙ Shown in": {
       "on": [
         "userflow"
       ],
@@ -4287,7 +4590,7 @@
       "computedFrom": "flow: keys of stepper shells.",
       "guidance": "Stepper shells that show this flow."
     },
-    "⚙ Flows": {
+    "⚙ In user flows": {
       "on": [
         "screen",
         "component",
@@ -4520,9 +4823,9 @@
       "from": [
         "Story"
       ],
-      "line": "- <card> · story: R<n>|Main use cases",
-      "computedFrom": "User stories whose role slot equals this role card's name exactly: Main use cases on the project card and User story requirement blocks on any card.",
-      "guidance": "Every user story that names this role: Main use cases and User story blocks on any card."
+      "line": "- <card> · story: R<n>|User stories",
+      "computedFrom": "User stories whose role slot equals this role card's name exactly: User stories on the project card and User story requirement blocks on any card.",
+      "guidance": "Every user story that names this role: User stories and User story blocks on any card."
     }
   },
   "ia": {
@@ -4541,7 +4844,7 @@
         "rule": "Pins a screen variant (name or #SV core); unpinned = the default ## Components list."
       },
       {
-        "key": "appears-as",
+        "key": "opens-as",
         "rule": "Placement override of the presentation: host default → variant → placement."
       },
       {
@@ -4586,7 +4889,7 @@
         "frame": "progress and order from the flow, Back, Continue, confirm on leave"
       },
       "overlay": {
-        "bound": "by default: every placement whose presentation equals the shell's appears-as (places and shell parts alike)",
+        "bound": "by default: every placement whose presentation equals the shell's opens-as (places and shell parts alike)",
         "frame": "title, close, Confirm or Cancel; the host stays and refreshes"
       },
       "focus": {
@@ -4602,15 +4905,15 @@
         "frame": "none; the host provides it"
       }
     },
-    "threeThings": "appears-as on a placement says HOW content is shown (over the current screen); the overlay shell says WHAT frames everything shown that way (close, confirm, rules); the content is the screen card or the shell part. Each written once.",
-    "goesWhere": "Does the user go somewhere with content and purpose of its own → a screen with appears-as. Does the frame unfold (navigation drawer, account menu, search overlay) → a part of the shell with · appears-as: on its Part line.",
+    "threeThings": "opens-as on a placement says HOW content is shown (over the current screen); the overlay shell says WHAT frames everything shown that way (close, confirm, rules); the content is the screen card or the shell part. Each written once.",
+    "goesWhere": "Does the user go somewhere with content and purpose of its own → a screen with opens-as. Does the frame unfold (navigation drawer, account menu, search overlay) → a part of the shell with · opens-as: on its Part line.",
     "resolution": [
       "the placement's own · shell: (IA node, or a step's Screen line); none = no shell",
       "the variant's passport shell:",
       "for a step of a flow: the stepper shell whose flow: is that flow",
       "the screen's shell:, only when the resolved presentation is Page (an overlay never inherits a page shell)",
       "on a map, the nearest ancestor node's · shell:",
-      "the default: for a Page, the app shell whose platform and state match the map's or flow's (a stated one beats a Shared one); for another presentation, the overlay shell whose appears-as equals it",
+      "the default: for a Page, the app shell whose platform and state match the map's or flow's (a stated one beats a Shared one); for another presentation, the overlay shell whose opens-as equals it",
       "none",
       "On every rung, a shell whose platform: excludes the placement's platform is skipped and resolution goes on down the list."
     ],
@@ -4620,7 +4923,7 @@
       "W044 shell: / · shell: names a card that is not a shell",
       "W045 two shells are the default for the same kind, platform, state and presentation",
       "W046 a shell in a Components list (a shell is never a part)",
-      "W047 appears-as on a non-overlay shell, flow on a non-stepper, an overlay without appears-as, a stepper without flow",
+      "W047 opens-as on a non-overlay shell, flow on a non-stepper, an overlay without opens-as, a stepper without flow",
       "W048 · in: on a Navigation line names no part of this shell",
       "I027 a component is a part of a shell and of a screen (chrome on a screen)",
       "I028 a Navigation line reaches a screen that does not exist in the State where the line is shown"
@@ -4628,7 +4931,7 @@
     "shellOrVariant": "New shell or variant? A new shell when the frame does another job (another shell-type) or follows another navigation model — mostly different destinations or parts, or different rules in ## Places inside (a variant cannot change them). A variant when the same frame adds or swaps a part or two for a platform, a state or a level."
   },
   "requirementPresets": {
-    "where": "Requirement blocks sit in Description & Requirements (and the project's Constraints, and step bodies), after the descriptive prose.",
+    "where": "Requirement blocks sit in Description (and the project's Keep in mind, and step bodies), after the descriptive prose.",
     "marker": "**R<n> · <Preset>**",
     "numbering": "n is unique within the file; never reused or renumbered.",
     "notLinkTargets": "Requirement blocks have no anchors and are not link targets.",
@@ -4694,9 +4997,9 @@
     "reservedValues": {
       "States": "Shared",
       "Platforms": "All",
-      "Appears-as": "Page"
+      "Opens-as": "Page"
     },
-    "reservedNote": "Always legal without being listed. Omitted state = Shared, omitted platform = all platforms, omitted appears-as = Page.",
+    "reservedNote": "Always legal without being listed. Omitted state = Shared, omitted platform = all platforms, omitted opens-as = Page.",
     "lists": {
       "Roles": {
         "shape": "table",
@@ -4706,9 +5009,9 @@
           "States"
         ],
         "key": "Role",
-        "note": "Deprecated — role cards replace this table (W050, mds migrate). States: comma-separated State names the role can be in; empty = all.",
+        "note": "Deprecated — role cards replace this table (W050, intent-format migrate). States: comma-separated State names the role can be in; empty = all.",
         "usedBy": [
-          "Main use cases",
+          "User stories",
           "User story role slot"
         ]
       },
@@ -4734,13 +5037,13 @@
           "variant and flow-variant passport platform"
         ]
       },
-      "Appears-as": {
+      "Opens-as": {
         "shape": "bullets",
         "line": "- <value>[ — note]",
         "usedBy": [
-          "screen appears-as:",
-          "variant passport appears-as",
-          "Node and Screen · appears-as:"
+          "screen opens-as:",
+          "variant passport opens-as",
+          "Node and Screen · opens-as:"
         ]
       },
       "Tech categories": {
@@ -4754,7 +5057,7 @@
     "rolesVsStates": "Role = who uses the product, a card (roles/); State = a mode in which a different set of screens exists (typically signed in vs signed out), a vocabulary. User stories name roles by exact card name; a role card lists its States with state:.",
     "empty": "An empty vocabulary (no rows, no bullets) is not used. No States → no state: keys and no state codes.",
     "deprecated": {
-      "Roles": "User types are role cards (S-TYPE-15). A ### Roles table is still read — its names resolve stories while no role card exists — but warns (W050); mds migrate turns each row into a role card."
+      "Roles": "User types are role cards (S-TYPE-15). A ### Roles table is still read — its names resolve stories while no role card exists — but warns (W050); intent-format migrate turns each row into a role card."
     }
   },
   "altitudeRule": {
@@ -4766,7 +5069,7 @@
       "component": "what the part does anywhere",
       "rule": "the exact policy"
     },
-    "oneLiner": "The first sentence of Description & Requirements is the card's one-liner (rosters, ⚙ Sub-features).",
+    "oneLiner": "The first sentence of Description is the card's one-liner (rosters, ⚙ Sub-features).",
     "parents": "Parents never summarise children: child lists are generated.",
     "specifics": "Numbers, limits and conditions live in rules or the lowest owner (info I021 for digits in a top-level Feature's description).",
     "review": "Review check: a Feature's scope vs its Sub-features' one-liners."
@@ -4796,7 +5099,8 @@
           "sections": "— as the body of a required section, a step or a comment remark",
           "lists": "— as a whole list body inside a section, or as the final item of a list (incomplete list)",
           "requirements": "— in a requirement-preset or user-story slot",
-          "targets": "— as a relation target or as Entry/Outcome text"
+          "targets": "— as a relation target or as Entry/Outcome text",
+          "why": "— as the body of ## Why, or same as #id pointing at a card with no why (why debt)"
         }
       },
       "unresolvedPlaceholders": {
@@ -4806,6 +5110,31 @@
       "openDecisions": {
         "label": "Open decisions",
         "counts": "Decision cards with status Open or Proposed."
+      },
+      "why": {
+        "label": "Why",
+        "counts": {
+          "filled": "## Why holds text",
+          "inherited": "same as #id, resolved to a card with a why or none",
+          "none": "none[ — note]",
+          "missing": "— (why debt); also counted among blind spots"
+        }
+      },
+      "confidence": {
+        "label": "Confidence",
+        "counts": {
+          "likely": "[likely] marks on Why texts and decision Outcomes — to confirm",
+          "assumed": "[assumed] marks — open questions"
+        },
+        "unmarked": "confirmed"
+      },
+      "asks": {
+        "label": "Ask markers",
+        "counts": {
+          "open": "[ask: …] markers in authored body lines — questions to the owner",
+          "later": "[ask: … · later <date>] markers — the owner said later; still open",
+          "due": "later markers older than ask.again days — ask again"
+        }
       }
     },
     "plus": "Diagnostic counts per severity (error · warning · info).",
@@ -4825,7 +5154,7 @@
     "error": "The KB cannot be trusted: unparsable front matter, unknown type, malformed id, ID collisions. regen refuses to run.",
     "warning": "A MUST is violated. Never blocks authors.",
     "info": "A SHOULD, or something regen will tidy.",
-    "exit": "mds check exits 1 when there is at least one error."
+    "exit": "intent-format check exits 1 when there is at least one error."
   },
   "diagnostics": [
     {
@@ -4867,7 +5196,7 @@
       "code": "W001",
       "severity": "warning",
       "summary": "Bad standard key",
-      "check": "standard: is missing, not the first key, or not MDStandard/1.0.",
+      "check": "standard: is missing, not the first key, or not IntentFormat/1.0.",
       "ref": "D0.1"
     },
     {
@@ -4902,7 +5231,7 @@
       "code": "W006",
       "severity": "warning",
       "summary": "Value outside project vocabulary",
-      "check": "A state, platform, appears-as or Tech category value is not defined in project.md and is not a reserved value (Shared, All, Page); or a story names a role that is no role card (when role cards exist; else the deprecated Roles table).",
+      "check": "A state, platform, opens-as or Tech category value is not defined in project.md and is not a reserved value (Shared, All, Page); or a story names a role that is no role card (when role cards exist; else the deprecated Roles table).",
       "ref": "D7.2 D18.4"
     },
     {
@@ -5084,7 +5413,7 @@
       "code": "W032",
       "severity": "warning",
       "summary": "Workspace files",
-      "check": "A workspace without mdstandard.md or project.md, or with more than one project card.",
+      "check": "A workspace without intent-format.md or project.md, or with more than one project card.",
       "ref": "D18.1"
     },
     {
@@ -5119,7 +5448,7 @@
       "code": "W037",
       "severity": "warning",
       "summary": "Main use case",
-      "check": "A Main use cases line that is not a user story, or whose role names no role card (when role cards exist).",
+      "check": "A User stories line that is not a user story, or whose role names no role card (when role cards exist).",
       "ref": "D7.1"
     },
     {
@@ -5189,7 +5518,7 @@
       "code": "W047",
       "severity": "warning",
       "summary": "Shell keys and kind",
-      "check": "appears-as: on a shell that is not an overlay; flow: on a shell that is not a stepper; an overlay shell without appears-as:; a stepper shell without flow:; · appears-as: on a Part line outside a shell.",
+      "check": "opens-as: on a shell that is not an overlay; flow: on a shell that is not a stepper; an overlay shell without opens-as:; a stepper shell without flow:; · opens-as: on a Part line outside a shell.",
       "ref": "6.4"
     },
     {
@@ -5210,7 +5539,7 @@
       "code": "W050",
       "severity": "warning",
       "summary": "Roles table deprecated",
-      "check": "project.md holds a ### Roles table: user types are role cards now — run mds migrate (not reported in read-only versions).",
+      "check": "project.md holds a ### Roles table: user types are role cards now — run intent-format migrate (not reported in read-only versions).",
       "ref": "S-VOC-1"
     },
     {
@@ -5329,7 +5658,7 @@
       "code": "I017",
       "severity": "info",
       "summary": "Use case count",
-      "check": "Main use cases holds fewer than 5 or more than 10 stories.",
+      "check": "User stories holds fewer than 5 or more than 10 stories.",
       "ref": "D7.1"
     },
     {
@@ -5357,7 +5686,7 @@
       "code": "I021",
       "severity": "info",
       "summary": "Specifics in a Feature",
-      "check": "A top-level Feature's Description & Requirements contains digits outside references, requirement markers and version labels (V1, v2.0) — consider a rule.",
+      "check": "A top-level Feature's Description contains digits outside references, requirement markers and version labels (V1, v2.0) — consider a rule.",
       "ref": "D16.5"
     },
     {
@@ -5407,6 +5736,41 @@
       "summary": "Role without stories",
       "check": "No user story names this role: nobody needs anything from it, or a story is missing.",
       "ref": "S-TYPE-15"
+    },
+    {
+      "code": "W051",
+      "severity": "warning",
+      "summary": "Why value",
+      "check": "## Why says same as #id where the id names no card or the card itself, or a confidence mark sits anywhere but the end of a Why text or a decision Outcome.",
+      "ref": "S-BODY-7"
+    },
+    {
+      "code": "W052",
+      "severity": "warning",
+      "summary": "Decision record",
+      "check": "A Decided decision without decided:, a Superseded one without superseded-by:, or decided: / superseded-by: on a decision of another status.",
+      "ref": "S-TYPE-12"
+    },
+    {
+      "code": "W053",
+      "severity": "warning",
+      "summary": "Source outside inputs/",
+      "check": "A Link with type: Source whose target is not a URL and not a file inside the project root’s inputs/. Evidence lives in inputs/; nothing else may be cited.",
+      "ref": "S-LINK-6"
+    },
+    {
+      "code": "I030",
+      "severity": "info",
+      "summary": "Borrowed why unresolved",
+      "check": "## Why says same as #id, but that card has no why (— or absent) or borrows one that is missing; this card counts as why missing.",
+      "ref": "S-BODY-7"
+    },
+    {
+      "code": "I031",
+      "severity": "info",
+      "summary": "[confirmed] is the default",
+      "check": "A [confirmed] mark on a Why or Outcome: confirmed is unmarked; regen removes it.",
+      "ref": "S-BODY-7"
     }
   ],
   "grammar": {
@@ -5457,7 +5821,9 @@
     "body": {
       "blindSpot": "^—$",
       "none": "^none$",
-      "forgiveness": "^(?:-|–|TBD|\\?)$"
+      "forgiveness": "^(?:-|–|TBD|\\?)$",
+      "whyNone": "^none(?: — .+)?$",
+      "sameAs": "^same as #?(?<core>[A-Z]{2}\\d{6})$"
     },
     "requirementMarker": "^\\*\\*R(?<n>\\d+) · (?<preset>User story|GWT|EARS|Checklist)\\*\\*(?: (?<rest>\\S.*))?$",
     "userStory": "^As an? (?<role>.+?), I want (?<goal>.+?),? so that (?<benefit>.+?)\\.?$",
@@ -5503,6 +5869,17 @@
       "Split the rest at \" · \" outside [], () and \"…\": first part = the atom, the others = qualifiers.",
       "Parse the atom: bound | hand | placeholder | — ; anything else is a bad line shape."
     ],
-    "mentions": "In prose, bound and hand references are untyped mentions: resolved and refreshed, never a relation. Placeholders in prose count as unresolved."
+    "mentions": "In prose, bound and hand references are untyped mentions: resolved and refreshed, never a relation. Placeholders in prose count as unresolved.",
+    "confidenceMark": " \\[(?<mark>likely|assumed|confirmed)\\]$",
+    "askMarker": "\\[ask: (?<q>[^\\]]+?)(?: · later (?<date>\\d{4}-\\d{2}-\\d{2}))?\\]"
+  },
+  "ask": {
+    "marker": "[ask: <question>]",
+    "later": "[ask: <question> · later <YYYY-MM-DD>]",
+    "again": 2,
+    "where": "inside any authored body line of any card, in the sentence it concerns; never in front matter, a generated section or a status line",
+    "means": "a question for the owner that no card value can hold yet: an unknown fact, a doubt about a sentence. Not a blind spot (— says 'unknown'), not a guess ([assumed] says 'probably')",
+    "counted": "health asks {open, later, due}; intent-format open lists each with its card, due ones first; never a blind spot",
+    "closed": "the answer rewrites the sentence and the marker goes. \"Later\" (the owner's word) adds · later <date> and keeps it counted; after `again` days (2) it is due and asked again. Only the owner closes a question as not relevant; the agent never drops one. \"Unknown\" is not an answer: the question stays."
   }
 }

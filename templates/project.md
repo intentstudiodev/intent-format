@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: project
 id: PR000000
 name: New project
@@ -7,13 +7,16 @@ status: —
 ---
 # New project · #PR000000
 
-## Description & Requirements
+## Description
 —
 
-## Main use cases
+## Why
 —
 
-## Constraints
+## User stories
+—
+
+## Keep in mind
 —
 
 ## Vocabularies
@@ -23,7 +26,7 @@ status: —
 
 ### Platforms
 
-### Appears-as
+### Opens-as
 
 ### Tech categories
 

@@ -1,6 +1,6 @@
-# Contributing to MDStandard
+# Contributing to Intent Format
 
-Thanks for helping. This repository holds the **released versions** of MDStandard; the maintainers
+Thanks for helping. This repository holds the **released versions** of Intent Format; the maintainers
 prepare each version in a working copy and publish it here as a tagged release.
 
 - **Questions, bugs, unclear rules:** open an issue. Name the rule (`S-<TOPIC>-<n>`) or the CLI

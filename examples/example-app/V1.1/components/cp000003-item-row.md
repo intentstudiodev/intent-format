@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: component
 id: CP000003
 name: Item row
@@ -10,8 +10,11 @@ component-type: molecule
 # Item row · #CP000003
 > ⚙ #CP000003V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Shows one item's name in a list and opens the item when chosen.
+
+## Why
+same as #FT000003
 
 ## Do & Don'ts
 ✅ Show the whole name on one line and cut it at the end.
@@ -26,7 +29,6 @@ Shows one item's name in a list and opens the item when chosen.
 
 none
 
-## ⚙ Used on
-- [#SC000001 Home](../screens/sc000001-home.md)
+## ⚙ Used in
 - [#SC000002 Item list](../screens/sc000002-item-list.md)
 - [#SC000002 Item list](../screens/sc000002-item-list.md) · at: #SV000001

@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: rule
 id: RL000001
 name: Item name is required
@@ -8,8 +8,11 @@ status: Approved
 # Item name is required · #RL000001
 > ⚙ #RL000001V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 **R1 · EARS** If the item name is empty, then the system shall refuse to save the item and say why.
+
+## Why
+An item without a name cannot be found again in the list.
 
 ## ⚙ Applied in
 - [#SC000004 Edit item](../screens/sc000004-edit-item.md)

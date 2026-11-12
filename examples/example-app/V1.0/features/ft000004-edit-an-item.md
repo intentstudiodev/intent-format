@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: feature
 id: FT000004
 name: Edit an item
@@ -10,10 +10,13 @@ priority: High
 # Edit an item · #FT000004
 > ⚙ #FT000004V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Lets a Member create an item or change its details.
 
 **R1 · User story** As a Member, I want to change an item's details, so that my list stays accurate.
+
+## Why
+A list nobody can change goes stale within a week.
 
 ## Touchpoints
 - [#CP000002 Text field](../components/cp000002-text-field.md) — name entry

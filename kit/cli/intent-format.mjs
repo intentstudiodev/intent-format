@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// mds — command-line tool for MDStandard knowledge bases. Node >= 18, no dependencies.
+// intent-format — command-line tool for Intent Format knowledge bases. Node >= 18, no dependencies.
 // Reads ../../schema.json (relative to this file); the schema drives the behaviour.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,15 +18,16 @@ import { nextStep, renderNext } from './lib/next.mjs';
 import { frameOf, renderFrame } from './lib/frame.mjs';
 import { ensureAgentFiles } from './lib/agents.mjs';
 import { migrate } from './lib/migrate.mjs';
+import { openList, renderOpen } from './lib/open.mjs';
 
-const HELP = `mds — MDStandard knowledge-base tool
+const HELP = `intent-format — Intent Format knowledge-base tool
 
-Usage: node <standard>/kit/cli/mds.mjs <command> [arguments]
+Usage: node <standard>/kit/cli/intent-format.mjs <command> [arguments]
 
 Commands
   init <root> --name "<Name>" [--kb <slug>] [--version 1.0] [--lifecycle in-progress] [--modules a,b]
         Create a project root (_index.md, _ids.md, inputs/links.md), the workspace
-        V<version>/ with mdstandard.md, project.md and module folders; then regen.
+        V<version>/ with intent-format.md, project.md and module folders; then regen.
         <root> may already exist (e.g. with inputs/); refuses if it holds a manifest.
   new <type> "<Name>" --root <root> [--ws V1.0] [--feature FT…] [--state <State>] [--parent FT…]
         Mint a core and write the card from its template. Prints "<core> <path>".
@@ -50,6 +51,9 @@ Commands
   next [<root>] [--ws V1.0] [--json]
         Read the project folder and print the one next step: during a cold start
         (set up · kickoff · proposal · review · scaffold · fill · check · report) and after.
+  open <root> [--ws V1.0] [--json]
+        The open list: [ask: …] questions, open decisions, [assumed] and [likely] marks, whys
+        missing, other blind spots per card. What to ask the owner next.
   frame <root> <screen core or name> [--ws V1.0] [--json]
         What surrounds a screen at each placement: the resolved shell and its stacked
         variants, parts, navigation and the Places inside contract.
@@ -58,8 +62,8 @@ Commands
 
 Maintainer only
   build-kit
-        Regenerates the kit inside the standard (templates/, kit/skills/mdstandard/types/,
-        kit/skills/mdstandard/links.md) from schema.json. Never run it in a KB project.
+        Regenerates the kit inside the standard (templates/, kit/skills/intent-format/types/,
+        kit/skills/intent-format/links.md) from schema.json. Never run it in a KB project.
 
 Exit codes: 0 ok · 1 errors in the KB, problems, or command refused · 2 usage error`;
 
@@ -99,7 +103,7 @@ function pickWorkspace(P, wsFlag) {
 
 function requireProject(S, root) {
   const P = loadProject(S, root);
-  if (!P.workspaces.length) throw new Refused(`no workspace (V<x.y>/) in ${path.resolve(root)} — run mds init`);
+  if (!P.workspaces.length) throw new Refused(`no workspace (V<x.y>/) in ${path.resolve(root)} — run intent-format init`);
   return P;
 }
 
@@ -135,9 +139,9 @@ function cmdInit(S, pos, f) {
   const modules = f.modules ? String(f.modules).split(',').map((x) => x.trim()).filter(Boolean) : [...S.modules];
   for (const m of modules) if (!S.modules.includes(m)) throw new Usage(`unknown module "${m}" (${S.modules.join(', ')})`);
   const abs = path.resolve(root);
-  if (exists(path.join(abs, 'mdstandard.md'))) throw new Refused(`${abs} already holds a workspace manifest (mdstandard.md)`);
+  if (exists(path.join(abs, 'intent-format.md'))) throw new Refused(`${abs} already holds a workspace manifest (intent-format.md)`);
   for (const e of listDir(abs)) {
-    if (e.isDirectory() && exists(path.join(abs, e.name, 'mdstandard.md'))) throw new Refused(`${abs} already holds a workspace manifest (${e.name}/mdstandard.md)`);
+    if (e.isDirectory() && exists(path.join(abs, e.name, 'intent-format.md'))) throw new Refused(`${abs} already holds a workspace manifest (${e.name}/intent-format.md)`);
   }
   fs.mkdirSync(path.join(abs, 'inputs'), { recursive: true });
   const links = path.join(abs, 'inputs', 'links.md');
@@ -148,7 +152,7 @@ function cmdInit(S, pos, f) {
   const manifest = ['---', `standard: ${S.standard}`, 'type: manifest', `kb: ${kb}`, `name: ${fmValue(S, 'name', name)}`,
     `version: ${fmValue(S, 'version', version)}`, `lifecycle: ${lifecycle}`, `modules: [${ordered.join(', ')}]`, '---',
     `# ${name}`, '', `Knowledge base of ${name}. Maintainer: —.`, ''].join('\n');
-  fs.writeFileSync(path.join(wsDir, 'mdstandard.md'), manifest);
+  fs.writeFileSync(path.join(wsDir, 'intent-format.md'), manifest);
   for (const m of ordered) fs.mkdirSync(path.join(wsDir, m), { recursive: true });
   const pfile = path.join(wsDir, 'project.md');
   if (exists(pfile)) console.log(`kept existing ${toPosix(path.relative(abs, pfile))}`);
@@ -192,12 +196,12 @@ function cmdMint(S, pos, f) {
   for (const c of mintCores(S, P, prefix, count)) console.log(c);
 }
 
-const KIND_LABEL = { status: 'status', frontMatter: 'front matter', sections: 'required sections', lists: 'list items', requirements: 'requirement slots', targets: 'relation targets' };
+const KIND_LABEL = { status: 'status', frontMatter: 'front matter', sections: 'required sections', lists: 'list items', requirements: 'requirement slots', targets: 'relation targets', why: 'why' };
 
 function cmdCheck(S, pos, f) {
   let root = path.resolve(pos[0] || f.root || '.');
   let ws = f.ws ? 'V' + vNorm(f.ws) : null;
-  if (exists(path.join(root, 'mdstandard.md'))) { ws = ws || path.basename(root); root = path.dirname(root); }
+  if (exists(path.join(root, 'intent-format.md'))) { ws = ws || path.basename(root); root = path.dirname(root); }
   const P = requireProject(S, root);
   if (ws && !P.workspaces.some((w) => w.folder === ws)) throw new Refused(`no workspace ${ws} in ${root}`);
   const r = checkProject(S, P, { ws });
@@ -208,6 +212,7 @@ function cmdCheck(S, pos, f) {
     for (const h of r.health) {
       const by = Object.entries(h.blindSpotsByKind).map(([k, v]) => `${KIND_LABEL[k] || k} ${v}`).join(' · ');
       console.log(`${h.workspace} (${h.lifecycle || '—'}): ${h.cards} cards · blind spots ${h.blindSpots} (${by}) · unresolved placeholders ${h.unresolvedPlaceholders} · open decisions ${h.openDecisions}`);
+      console.log(`  why: filled ${h.why.filled} · inherited ${h.why.inherited} · none ${h.why.none} · debt ${h.why.missing} · confidence: assumed ${h.confidence.assumed} · likely ${h.confidence.likely} · asks ${h.asks.open}${h.asks.later ? ` (+${h.asks.later} later${h.asks.due ? `, ${h.asks.due} due` : ''})` : ''}`);
     }
   }
   return r.counts.error ? 1 : 0;
@@ -246,15 +251,15 @@ function cmdBranch(S, pos) {
   if (!S.R.version.test(v)) throw new Usage(`"${to}" must look like V1.1 or V1.1-label`);
   const dst = path.join(P.root, 'V' + v);
   if (exists(dst)) throw new Refused(`${dst} already exists`);
-  if (!exists(path.join(src.dir, 'mdstandard.md'))) throw new Refused(`V${src.version} has no mdstandard.md`);
+  if (!exists(path.join(src.dir, 'intent-format.md'))) throw new Refused(`V${src.version} has no intent-format.md`);
   copyDir(src.dir, dst);
   fs.rmSync(path.join(dst, 'CHANGES.md'), { force: true });
-  setManifest(S, path.join(dst, 'mdstandard.md'), { version: v, lifecycle: 'in-progress', 'based-on': src.version });
+  setManifest(S, path.join(dst, 'intent-format.md'), { version: v, lifecycle: 'in-progress', 'based-on': src.version });
   console.log(`V${v} created from V${src.version}`);
   regenProject(S, P.root);
 }
 
-const MDS = `node "${toPosix(path.join(STANDARD_DIR, 'kit', 'cli', 'mds.mjs'))}"`;
+const MDS = `node "${toPosix(path.join(STANDARD_DIR, 'kit', 'cli', 'intent-format.mjs'))}"`;
 
 function cmdMigrate(S, pos, f) {
   const root = pos[0] || f.root;
@@ -289,6 +294,18 @@ function cmdFrame(S, pos, f) {
   else console.log(renderFrame(screen, rows));
 }
 
+function cmdOpen(S, pos, f) {
+  let root = path.resolve(pos[0] || f.root || '.');
+  let ws = f.ws ? 'V' + vNorm(f.ws) : null;
+  if (exists(path.join(root, 'intent-format.md'))) { ws = ws || path.basename(root); root = path.dirname(root); }
+  const P = requireProject(S, root);
+  const w = ws ? P.workspaces.find((x) => x.folder === ws) : pickWorkspace(P, null);
+  if (!w) throw new Refused(`no workspace ${ws} in ${root}`);
+  checkProject(S, P, { ws: w.folder, skipGenerated: true });
+  const o = openList(S, w);
+  console.log(f.json ? JSON.stringify(o, null, 2) : renderOpen(o));
+}
+
 function cmdBuildKit(S) {
   const written = buildKit(S);
   console.log(`build-kit: ${written.length} file(s) changed`);
@@ -303,7 +320,7 @@ export function main(argv) {
   try { args = parseArgs(argv); } catch (e) { console.error(e.message); return 2; }
   const [cmd, ...pos] = args.pos;
   if (!cmd || args.flags.help || args.flags.h || cmd === 'help') { console.log(HELP); return cmd || args.flags.help || args.flags.h ? 0 : 2; }
-  const table = { init: cmdInit, new: cmdNew, scaffold: cmdScaffold, mint: cmdMint, check: cmdCheck, regen: cmdRegen, branch: cmdBranch, next: cmdNext, frame: cmdFrame, migrate: cmdMigrate, 'build-kit': cmdBuildKit };
+  const table = { init: cmdInit, new: cmdNew, scaffold: cmdScaffold, mint: cmdMint, check: cmdCheck, regen: cmdRegen, branch: cmdBranch, next: cmdNext, frame: cmdFrame, migrate: cmdMigrate, open: cmdOpen, 'build-kit': cmdBuildKit };
   if (!table[cmd]) { console.error(`unknown command "${cmd}"\n\n${HELP}`); return 2; }
   // writing commands hold the project lock: parallel agents on one project take turns
   const writes = { init: pos[0], new: args.flags.root || '.', scaffold: pos[0] || args.flags.root, mint: args.flags.root || '.', regen: pos[0] || args.flags.root, branch: pos[0], migrate: pos[0] || args.flags.root };
@@ -312,13 +329,13 @@ export function main(argv) {
     return writes[cmd] ? withLock(path.resolve(writes[cmd]), run) : run();
   } catch (e) {
     if (e.locked) { console.error(e.message); return 1; }
-    if (e instanceof Usage) { console.error(`usage: mds ${e.message}`); return 2; }
+    if (e instanceof Usage) { console.error(`usage: intent-format ${e.message}`); return 2; }
     if (e instanceof Refused) { console.error(e.message); return 1; }
     throw e;
   }
 }
 
-// Run when started as a program — directly, or through a link such as npm's `mds` bin — not when imported.
+// Run when started as a program — directly, or through a link such as npm's `intent-format` bin — not when imported.
 const realOf = (p) => { try { return fs.realpathSync(p); } catch { return path.resolve(p); } };
 if (process.argv[1] && realOf(process.argv[1]) === realOf(fileURLToPath(import.meta.url))) {
   process.exitCode = main(process.argv.slice(2));

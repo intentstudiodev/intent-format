@@ -44,6 +44,15 @@ export function checkProject(S, P, opts = {}) {
 }
 
 export function healthOf(S, ws) {
+  const why = { filled: 0, inherited: 0, none: 0, missing: 0 };
+  const confidence = { likely: 0, assumed: 0 };
+  const asks = { open: 0, later: 0, due: 0 };
+  const again = S.raw.ask?.again ?? 2, today = Date.now();
+  for (const c of ws.cards) {
+    if (c.why) why[c.whyEffective || c.why.state]++;
+    for (const m of [c.why?.mark, c.outcomeMark]) if (m && m !== 'confirmed') confidence[m]++;
+    for (const a of c.asks || []) { if (!a.later) asks.open++; else { asks.later++; if ((today - Date.parse(a.later)) / 86400000 >= again) asks.due++; } }
+  }
   let blind = 0;
   const groups = new Set();
   const byKind = Object.fromEntries(Object.keys(S.raw.health.numbers.blindSpots.kinds || {}).map((k) => [k, 0]));
@@ -53,15 +62,15 @@ export function healthOf(S, ws) {
     for (const p of c.placeholders) groups.add((p.types ? [...p.types].sort().join(',') : 'any') + '|' + p.name.replace(/\s+/g, ' ').trim());
   }
   const open = ws.cards.filter((c) => c.type === 'decision' && S.openStatuses.includes(c.status)).length;
-  return { cards: ws.cards.length, blindSpots: blind, blindSpotsByKind: byKind, unresolvedPlaceholders: groups.size, openDecisions: open };
+  return { cards: ws.cards.length, blindSpots: blind, blindSpotsByKind: byKind, unresolvedPlaceholders: groups.size, openDecisions: open, why, confidence, asks };
 }
 
 function checkWorkspace(S, P, ws, add) {
   const R = S.R;
-  const mrel = `${ws.folder}/mdstandard.md`;
-  if (!ws.manifest) add('W032', ws.folder + '/', 1, 'workspace has no mdstandard.md');
+  const mrel = `${ws.folder}/intent-format.md`;
+  if (!ws.manifest) add('W032', ws.folder + '/', 1, 'workspace has no intent-format.md');
   else if (ws.manifest.kind === 'manifest') checkManifest(S, P, ws, add, mrel);
-  else if (ws.manifest.kind !== 'broken') add('W033', mrel, 1, 'mdstandard.md must have type: manifest');
+  else if (ws.manifest.kind !== 'broken') add('W033', mrel, 1, 'intent-format.md must have type: manifest');
   const projects = ws.cards.filter((c) => c.type === 'project');
   if (!exists(path.join(ws.dir, 'project.md'))) add('W032', ws.folder + '/', 1, 'workspace has no project.md');
   if (projects.length > 1) for (const p of projects.slice(1)) add('W032', p.rel, 1, 'more than one project card in the workspace');
@@ -85,7 +94,7 @@ function checkWorkspace(S, P, ws, add) {
     } else {
       const folder = S.folderOfType[c.type];
       if (relWs.length !== 2 || relWs[0] !== folder) add('W031', c.rel, 1, `a ${c.type} card lives in ${folder}/`);
-      else if (!ws.modules.includes(folder)) add('W034', c.rel, 1, `module ${folder} is not enabled in mdstandard.md`);
+      else if (!ws.modules.includes(folder)) add('W034', c.rel, 1, `module ${folder} is not enabled in intent-format.md`);
       const m = R.filename.exec(relWs[relWs.length - 1]);
       if (!m) add('W031', c.rel, 1, 'filename must be <core-lowercase>-<slug>.md');
       else if (c.id && m.groups.core !== c.id.toLowerCase()) add('W031', c.rel, 1, `filename core ${m.groups.core} differs from id ${c.id}`);
@@ -115,7 +124,35 @@ function checkWorkspace(S, P, ws, add) {
   for (const r of roleCards) if (!named.has(r.name)) add('I029', r.rel, 1, `no user story names "${r.name}"`);
   if (ws.project && !S.raw.lifecycles.readOnly.includes(ws.lifecycle)) {
     const i = ws.project.lines.findIndex((l, k) => !ws.project.mask[k] && /^### Roles\s*$/.test(l));
-    if (i >= 0) add('W050', ws.project.rel, i + 1, 'user types are role cards now: run mds migrate (each row becomes a card in roles/)');
+    if (i >= 0) add('W050', ws.project.rel, i + 1, 'user types are role cards now: run intent-format migrate (each row becomes a card in roles/)');
+  }
+  // borrowed whys: same as #id names any card; a target without a why makes this card count as missing
+  const resolveWhy = (c, seen = new Set()) => {
+    if (!c.why) return 'missing';
+    if (c.whyEffective) return c.whyEffective;
+    if (c.why.state !== 'inherited') return c.why.state;
+    if (seen.has(c)) return 'missing';
+    seen.add(c);
+    const t = c.why.sameAs ? ws.byCore.get(c.why.sameAs) : null;
+    if (!t || t.sub) return 'unresolved';
+    const r = resolveWhy(t.card, seen);
+    return r === 'filled' || r === 'none' || r === 'inherited' ? 'inherited' : 'missing';
+  };
+  for (const c of ws.cards) {
+    if (!c.why || c.why.state !== 'inherited') continue;
+    const r = resolveWhy(c);
+    if (r === 'unresolved') { add('W051', c.rel, c.why.idx + 1, `same as #${c.why.sameAs}: names no card in this workspace — write the why, none or —`); c.whyEffective = 'missing'; c.bs('why'); }
+    else if (r === 'missing') { add('I030', c.rel, c.why.idx + 1, `same as #${c.why.sameAs}: that card has no why yet — counted as missing here`); c.whyEffective = 'missing'; c.bs('why'); }
+    else c.whyEffective = 'inherited';
+  }
+  // Source links cite evidence: a URL or a file inside <root>/inputs/
+  const inputsDir = path.resolve(P.root, 'inputs') + path.sep;
+  for (const c of ws.cards) for (const r of c.rels) {
+    if (r.rel !== 'Link' || !r.quals.some((q) => q.key === 'type' && q.value === 'Source')) continue;
+    const target = r.atoms[0]?.target;
+    if (!target || /^[a-z][a-z0-9+.-]*:\/\//i.test(target)) continue;
+    const abs = path.resolve(path.dirname(c.file), target.split('#')[0]);
+    if (!abs.startsWith(inputsDir)) add('W053', c.rel, r.idx + 1, `Source ${target} is outside inputs/ — evidence lives in <root>/inputs/`);
   }
   // default maps, origins, homes
   const defaults = new Map(), origins = new Map();
@@ -249,6 +286,13 @@ function checkReferences(S, ws, add) {
       if (!t) add('W019', rel, fe.idx + 1, `feature: ${fe.value} does not resolve in ${ws.folder}`);
       else if (t.sub || t.card.type !== 'feature') add('W018', rel, fe.idx + 1, `feature: ${fe.value} is not a feature`);
     }
+    const sb = c.fm.map.get('superseded-by');
+    if (sb && /^DC\d{6}$/.test(sb.value)) {
+      const t = res(sb.value);
+      if (!t) add('W019', rel, sb.idx + 1, `superseded-by: ${sb.value} does not resolve in ${ws.folder}`);
+      else if (t.sub || t.card.type !== 'decision') add('W018', rel, sb.idx + 1, `superseded-by: ${sb.value} is not a decision`);
+      else if (t.card === c) add('W052', rel, sb.idx + 1, 'a decision cannot supersede itself');
+    }
     const pa = c.fm.map.get('parent');
     if (pa && /^FT\d{6}$/.test(pa.value)) {
       const t = res(pa.value);
@@ -283,7 +327,7 @@ function checkReferences(S, ws, add) {
       else steppers.set(fl, c.rel);
     }
     if (!['app', 'overlay', 'embedded'].includes(kind)) continue;
-    const ap = c.fm.map.get('appears-as');
+    const ap = c.fm.map.get('opens-as');
     if (kind === 'overlay' && (!ap || ap.kind === 'empty' || ap.kind === 'blind')) continue;
     const listOf = (key, dflt) => { const e = c.fm.map.get(key); return e && e.kind !== 'empty' && e.kind !== 'blind' ? (e.kind === 'list' ? e.items : [e.value]) : [dflt]; };
     for (const p of listOf('platform', S.reserved.Platforms)) for (const st of listOf('state', S.reserved.States)) {
@@ -346,8 +390,8 @@ function checkGenerated(S, P, add, opts) {
     }
     const stale = (file, want) => {
       const rel = path.relative(P.root, file).split(path.sep).join('/');
-      if (!exists(file)) add('I020', rel, 1, 'generated file missing (run mds regen)');
-      else if (want !== null && readText(file) !== want) add('I020', rel, 1, 'generated file is stale (run mds regen)');
+      if (!exists(file)) add('I020', rel, 1, 'generated file missing (run intent-format regen)');
+      else if (want !== null && readText(file) !== want) add('I020', rel, 1, 'generated file is stale (run intent-format regen)');
     };
     for (const folder of S.modules) {
       if (ws.modules.includes(folder) || exists(path.join(ws.dir, folder))) stale(path.join(ws.dir, folder, '_index.md'), renderFolderIndex(S, ws, folder));
@@ -363,6 +407,6 @@ function checkGenerated(S, P, add, opts) {
 
 function stale2(P, add, file, want) {
   const rel = path.relative(P.root, file).split(path.sep).join('/');
-  if (!exists(file)) add('I020', rel, 1, 'generated file missing (run mds regen)');
-  else if (readText(file) !== want) add('I020', rel, 1, 'generated file is stale (run mds regen)');
+  if (!exists(file)) add('I020', rel, 1, 'generated file missing (run intent-format regen)');
+  else if (readText(file) !== want) add('I020', rel, 1, 'generated file is stale (run intent-format regen)');
 }

@@ -1,17 +1,19 @@
 // Builds the per-file model: front matter, skeleton, sections, relation lines, sub-documents.
 // Only local (single-file) diagnostics are produced here; cross-card checks live in check.mjs.
 import { readText } from './util.mjs';
+import { modernize } from './rename.mjs';
 import { parseFrontMatter, parseSkeleton, fenceMask, splitSub, contentIdx, bodyState, parseTable } from './parse.mjs';
 import { scanMentions, parseRelSection, parseSubdocSection, parseStepList, finishFlow, parseIaParts } from './relations.mjs';
 
 export function buildFile(S, file, rel, opts = {}) {
-  const text = readText(file);
+  const text = modernize(readText(file), S);
   const lines = text.split('\n');
   if (lines.length && lines[lines.length - 1] === '') lines.pop();
   const c = {
     file, rel, lines, text, kind: 'none', diags: [], rels: [], subs: [], mentions: [], placeholders: [],
     vocabUses: [], stories: [], qualRefs: [], stepLists: [], iaNodes: [], groups: [], forgive: [], extLines: new Set(),
     flowVariants: new Set(), reqNums: new Set(), blind: 0, blindBy: {}, mask: null, sk: null,
+    why: null, outcomeMark: null, confirmedIdx: [], asks: [],
   };
   c.bs = (kind) => { c.blind++; c.blindBy[kind] = (c.blindBy[kind] || 0) + 1; };
   c.d = (code, idx, msg) => c.diags.push({ code, line: (idx ?? 0) + 1, msg });
@@ -45,7 +47,7 @@ export function buildFile(S, file, rel, opts = {}) {
   c.def = S.typeDef(c.type);
   const idE = fm.map.get('id');
   const want = S.prefixOfType[c.type];
-  if (!idE || idE.kind === 'empty') c.d('E003', 0, 'missing id: (mint one with mds new / mds mint)');
+  if (!idE || idE.kind === 'empty') c.d('E003', 0, 'missing id: (mint one with intent-format new / intent-format mint)');
   else if (!S.R.idPattern.test(idE.value)) c.d('E003', idE.idx, `malformed id "${idE.raw}" (core only: ${want} + 6 digits)`);
   else if (idE.value.slice(0, 2) !== want) c.d('E003', idE.idx, `id prefix ${idE.value.slice(0, 2)} is not ${want} (type ${c.type})`);
   else c.id = idE.value;
@@ -58,7 +60,7 @@ export function buildFile(S, file, rel, opts = {}) {
 function checkStandard(S, c) {
   const first = c.fm.entries[0];
   if (!first || first.key !== 'standard') c.d('W001', first ? first.idx : 0, 'standard: must be the first key');
-  else if (S.legacyStandards.includes(first.value)) c.d('W001', first.idx, `standard: ${first.value} is a pre-release name — mds migrate renames it to ${S.standard}`);
+  else if (S.legacyStandards.includes(first.value)) c.d('W001', first.idx, `standard: ${first.value} is a pre-release name — intent-format migrate renames it to ${S.standard}`);
   else if (first.value !== S.standard) c.d('W001', first.idx, `standard: must be ${S.standard}`);
 }
 
@@ -108,11 +110,11 @@ function checkFrontMatter(S, c) {
     if (!e || e.kind === 'empty') c.d('W004', e ? e.idx : 0, `required key ${k}: is missing (write — when unknown)`);
   }
   if (type === 'shell') {
-    const kind = c.fm.map.get('shell-type')?.value, ap = c.fm.map.get('appears-as'), fl = c.fm.map.get('flow');
+    const kind = c.fm.map.get('shell-type')?.value, ap = c.fm.map.get('opens-as'), fl = c.fm.map.get('flow');
     const has = (e) => e && e.kind !== 'empty' && e.kind !== 'blind';
-    if (has(ap) && kind && kind !== 'overlay') c.d('W047', ap.idx, 'appears-as: belongs on overlay shells (shell-type: overlay)');
+    if (has(ap) && kind && kind !== 'overlay') c.d('W047', ap.idx, 'opens-as: belongs on overlay shells (shell-type: overlay)');
     if (has(fl) && kind && kind !== 'stepper') c.d('W047', fl.idx, 'flow: belongs on stepper shells (shell-type: stepper)');
-    if (kind === 'overlay' && !has(ap)) c.d('W047', c.fm.map.get('shell-type').idx, 'an overlay shell needs appears-as: (the presentation it frames)');
+    if (kind === 'overlay' && !has(ap)) c.d('W047', c.fm.map.get('shell-type').idx, 'an overlay shell needs opens-as: (the presentation it frames)');
     if (kind === 'stepper' && !has(fl)) c.d('W047', c.fm.map.get('shell-type').idx, 'a stepper shell needs flow: (the flow it shows)');
   }
   if (type === 'component') {
@@ -187,6 +189,7 @@ function parseSections(S, c, modules) {
     }
     const def = sec.def;
     if (!def) { parseProse(S, c, idxs); continue; }
+    if (def.content === 'why') { parseWhy(S, c, sec, idxs, def, bs); continue; }
     if (bs === 'forgive') { c.d('I005', idxs[0], `"${lines[idxs[0]].trim()}" read as —`); c.forgive.push(idxs[0]); }
     if (bs === 'empty' && def.required) c.d('W011', sec.idx, `required section ## ${def.heading} is empty (write — or none)`);
     if (bs === 'blind' || bs === 'forgive') {
@@ -219,6 +222,7 @@ function parseSections(S, c, modules) {
     }
   }
   if (c.type === 'userflow') finishFlow(S, c);
+  scanAsks(S, c);
   for (const g of c.groups) {
     g.forEach((idx, k) => {
       const m = /^\s*(\d+)\./.exec(lines[idx]);
@@ -226,6 +230,40 @@ function parseSections(S, c, modules) {
     });
   }
   cardChecks(S, c);
+}
+
+/** ## Why: — (missing, counted as kind why) · none[ — note] · same as #id (resolved in check) · text with an optional confidence mark. */
+function parseWhy(S, c, sec, idxs, def, bs) {
+  const { lines } = c, R = S.R;
+  const w = { state: 'filled', mark: null, note: null, idx: sec.idx, textIdx: idxs[idxs.length - 1] ?? sec.idx };
+  if (bs === 'empty') { if (def.required) c.d('W011', sec.idx, 'required section ## Why is empty (write — or none)'); w.state = 'missing'; c.bs('why'); }
+  else if (bs === 'blind' || bs === 'forgive') {
+    if (bs === 'forgive') { c.d('I005', idxs[0], `"${lines[idxs[0]].trim()}" read as —`); c.forgive.push(idxs[0]); }
+    w.state = 'missing'; c.bs('why');
+  } else if (idxs.length === 1 && R.whyNone.test(lines[idxs[0]].trim())) {
+    w.state = 'none'; const m = /^none — (.+)$/.exec(lines[idxs[0]].trim()); w.note = m ? m[1] : null;
+  } else if (idxs.length === 1 && R.sameAs.test(lines[idxs[0]].trim())) {
+    const m = R.sameAs.exec(lines[idxs[0]].trim());
+    w.state = 'inherited'; w.sameAs = m.groups.core;
+    if (c.fm.map.get('id')?.value === w.sameAs) { c.d('W051', idxs[0], 'same as: a card cannot borrow its own why'); w.state = 'missing'; w.sameAs = null; c.bs('why'); }
+  } else {
+    parseProse(S, c, idxs, false);
+    const last = lines[w.textIdx].trimEnd();
+    const m = R.confidenceMark.exec(last);
+    if (m) { w.mark = m.groups.mark; if (m.groups.mark === 'confirmed') { c.d('I031', w.textIdx, '[confirmed] is the default — regen removes it'); c.confirmedIdx.push(w.textIdx); } }
+    for (const i of idxs) if (i !== w.textIdx && R.confidenceMark.test(lines[i].trimEnd())) c.d('W051', i, 'a confidence mark goes only at the end of the Why text');
+  }
+  c.why = w;
+}
+
+/** [ask: …] markers in authored body lines: questions to the owner, counted in health and listed by intent-format open. */
+function scanAsks(S, c) {
+  const { lines, sk, mask } = c;
+  const gear = sk.sections.filter((s) => s.gear);
+  for (let i = sk.preStart; i < lines.length; i++) {
+    if (mask?.[i] || gear.some((s) => i >= s.idx && i < s.end)) continue;
+    for (const m of lines[i].matchAll(S.R.askMarker)) c.asks.push({ idx: i, question: m.groups.q.trim(), later: m.groups.date || null });
+  }
 }
 
 /** Prose: mentions, placeholders, requirement blocks. */
@@ -345,13 +383,23 @@ function parseVocabularies(S, c, sec, def) {
 function cardChecks(S, c) {
   const { lines } = c;
   const sec = (h) => c.sk.sections.find((s) => s.full === h);
-  if (c.type === 'decision' && ['Decided', 'Superseded'].includes(c.status)) {
+  if (c.type === 'decision') {
     const o = sec('Outcome');
-    const st = o ? bodyState(lines, contentIdx(lines, o.start, o.end, c.mask), S.R) : 'empty';
-    if (st) c.d('W039', o ? o.idx : 0, `a ${c.status} decision needs its Outcome`);
+    const oi = o ? contentIdx(lines, o.start, o.end, c.mask) : [];
+    const st = o ? bodyState(lines, oi, S.R) : 'empty';
+    if (['Decided', 'Superseded'].includes(c.status) && st) c.d('W039', o ? o.idx : 0, `a ${c.status} decision needs its Outcome`);
+    if (!st && oi.length) {
+      const li = oi[oi.length - 1], m = S.R.confidenceMark.exec(lines[li].trimEnd());
+      if (m) { c.outcomeMark = m.groups.mark; if (m.groups.mark === 'confirmed') { c.d('I031', li, '[confirmed] is the default — regen removes it'); c.confirmedIdx.push(li); } }
+    }
+    const has = (k) => { const e = c.fm.map.get(k); return e && e.kind !== 'empty' && e.kind !== 'blind'; };
+    if (c.status === 'Decided' && !has('decided')) c.d('W052', 0, 'a Decided decision records decided: <YYYY-MM-DD> (and by: who)');
+    if (c.status === 'Superseded' && !has('superseded-by')) c.d('W052', 0, 'a Superseded decision names superseded-by: <DC core>');
+    if (has('decided') && !['Decided', 'Superseded'].includes(c.status)) c.d('W052', c.fm.map.get('decided').idx, `decided: on a ${c.status} decision — set status: Decided or remove it`);
+    if (has('superseded-by') && c.status !== 'Superseded') c.d('W052', c.fm.map.get('superseded-by').idx, `superseded-by: on a ${c.status} decision — set status: Superseded or remove it`);
   }
   if (c.type === 'feature' && !c.fm.map.get('parent')) {
-    const dr = sec('Description & Requirements');
+    const dr = sec('Description');
     if (dr) for (const i of contentIdx(lines, dr.start, dr.end, c.mask)) {
       const t = lines[i].replace(S.R.boundG, '').replace(S.R.handG, '').replace(/\*\*R\d+ · [^*]+\*\*/g, '')
         .replace(/\b[Vv]\d+(?:\.\d+)*\b/g, '').replace(/\bR\d+\b/g, '');

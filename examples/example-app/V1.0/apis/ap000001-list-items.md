@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: api
 id: AP000001
 name: List items
@@ -10,7 +10,7 @@ endpoint: /items
 # List items · #AP000001
 > ⚙ #AP000001V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Returns the items of the signed-in Member, newest first.
 
 ## Served by

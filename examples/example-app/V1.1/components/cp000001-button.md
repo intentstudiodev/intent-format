@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: component
 id: CP000001
 name: Button
@@ -9,18 +9,24 @@ component-type: atom
 # Button · #CP000001
 > ⚙ #CP000001V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Starts one action when chosen.
+
+## Why
+none — layout only
 
 ## Components
 none
 
-## ⚙ Used on
-- [#SC000001 Home](../screens/sc000001-home.md) · via: #CP000003
+## ⚙ Used in
+- [#SC000001 Home](../screens/sc000001-home.md) · via: #CP000004
 - [#SC000002 Item list](../screens/sc000002-item-list.md)
 - [#SC000002 Item list](../screens/sc000002-item-list.md) · via: #CP000003
+- [#SC000002 Item list](../screens/sc000002-item-list.md) · via: #CP000004
 - [#SC000003 Item detail](../screens/sc000003-item-detail.md)
+- [#SC000003 Item detail](../screens/sc000003-item-detail.md) · via: #CP000004
 - [#SC000004 Edit item](../screens/sc000004-edit-item.md)
+- [#SC000004 Edit item](../screens/sc000004-edit-item.md) · via: #CP000004
+- [#SC000005 Settings](../screens/sc000005-settings.md) · via: #CP000004
 - [#CP000003 Item row](cp000003-item-row.md)
 - [#CP000004 Top bar](cp000004-top-bar.md)
-- [#SH000001 App shell](../shells/sh000001-app-shell.md) · via: #CP000004

@@ -1,4 +1,4 @@
-// mds migrate: bring a KB written against an earlier reading of the standard up to date (S-OPS-5).
+// intent-format migrate: bring a KB written against an earlier reading of the standard up to date (S-OPS-5).
 // Two steps, both idempotent: pre-release names of the standard (`standard:` first key) become the
 // current one, and the deprecated ### Roles table in project.md becomes role cards — one core per
 // role name across all workspaces, so a role is the same card in every version.
@@ -66,7 +66,7 @@ export function migrate(S, P, log) {
       if (unknown.length) { stats.problems++; log(`${ws.folder}: ${r.name} — States ${unknown.join(', ')} are not declared; kept on the card for check to report`); }
       const values = { id: core, name: r.name, ...(states.length === 1 ? { state: states[0] } : states.length > 1 ? { state: states } : {}) };
       let text = renderCard(S, 'role', values);
-      if (r.description) text = text.replace('## Description & Requirements\n—', `## Description & Requirements\n${r.description}`);
+      if (r.description) text = text.replace('## Description\n—', `## Description\n${r.description}`);
       fs.mkdirSync(dir, { recursive: true });
       const file = path.join(dir, `${core.toLowerCase()}-${slugify(r.name, 'role')}.md`);
       if (!exists(file)) fs.writeFileSync(file, text);
@@ -80,7 +80,7 @@ export function migrate(S, P, log) {
     while (lines[table.start] === '' && lines[table.start - 1] === '') lines.splice(table.start, 1);
     fs.writeFileSync(pc.file, lines.join('\n') + '\n');
     // enable the roles module
-    const mf = path.join(ws.dir, 'mdstandard.md');
+    const mf = path.join(ws.dir, 'intent-format.md');
     if (exists(mf)) {
       const t = readText(mf);
       const m = /^modules: \[(.*)\]$/m.exec(t);

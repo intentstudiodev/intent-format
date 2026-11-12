@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: backend
 id: BN000001
 name: App server
@@ -9,7 +9,7 @@ backend-type: server
 # App server · #BN000001
 > ⚙ #BN000001V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Serves the item APIs and reads and writes the stored data.
 
 ## Connections

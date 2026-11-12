@@ -98,7 +98,7 @@ function checkQualifiers(S, c, rec, def) {
       if (h) c.qualRefs.push({ idx, core: h.groups.core, types: ['shell'], key: 'shell', rec });
       else if (q.value !== 'none') c.d('W021', idx, 'shell: takes #SH… or none');
     }
-    if (q.key === 'appears-as' && rec.rel === 'Part' && c.type !== 'shell') c.d('W047', idx, '· appears-as: on a part is for shells only');
+    if (q.key === 'opens-as' && rec.rel === 'Part' && c.type !== 'shell') c.d('W047', idx, '· opens-as: on a part is for shells only');
     if (q.key === 'variant') rec.variant = q.value;
   }
   if (link && !seen.has('type')) c.d('W038', idx, 'link line needs "· type: Design|Code|Doc|Source|Analytics|Other"');

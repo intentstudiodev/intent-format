@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: api
 id: AP000002
 name: Save item
@@ -10,7 +10,7 @@ endpoint: /items/{id}
 # Save item · #AP000002
 > ⚙ #AP000002V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Creates or updates one item and returns the stored version.
 
 ## Served by

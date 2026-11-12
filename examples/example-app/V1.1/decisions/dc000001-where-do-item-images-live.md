@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: decision
 id: DC000001
 name: Where do item images live?
@@ -10,6 +10,9 @@ status: Open
 
 ## Question
 Should item images be kept in File storage or inside the Main database?
+
+## Why
+Images are the largest data the app stores; where they live decides backup and cost.
 
 ## Options
 1. File storage — cheap and fast to serve; needs a cleanup job.

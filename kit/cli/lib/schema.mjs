@@ -59,6 +59,10 @@ export function loadSchema(file = SCHEMA_PATH) {
     blind: re(g.body.blindSpot),
     none: re(g.body.none),
     forgiveness: re(g.body.forgiveness),
+    whyNone: re(g.body.whyNone),
+    sameAs: re(g.body.sameAs),
+    askMarker: new RegExp(g.askMarker, 'gu'),
+    confidenceMark: re(g.confidenceMark),
     reqMarker: re(g.requirementMarker),
     userStory: re(g.userStory),
     useCase: re(g.useCaseLine),
@@ -143,6 +147,7 @@ export function loadSchema(file = SCHEMA_PATH) {
     folderOfType, typeOfFolder, shapeByGlyph, diag,
     standard: s.standard,
     legacyStandards: s.legacyStandards || [],
+    renames: s.renames || null,
     gear: s.conventions.gear,
     relations: s.relations,
     generated: s.generatedSections,
@@ -163,6 +168,8 @@ export function loadSchema(file = SCHEMA_PATH) {
     requiredKeys: (t) => s.types[t].keys.filter((k) => !k.endsWith('?')),
     alwaysQuoted: new Set(s.frontMatter.values.alwaysQuoted),
     reserved: s.vocabularies.reservedValues,
+    why: s.why || { questions: {}, requiredOn: [] },
+    ask: s.ask || null,
     vocabName: (v) => (typeof v === 'string' && v.startsWith('@vocabulary:') ? v.slice(12) : null),
     /** card type, sub-document kind, 'x' for extension prefixes, or null */
     typeOfCore(core) {

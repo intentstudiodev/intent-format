@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: tech
 id: TC000001
 name: UI framework
@@ -9,7 +9,7 @@ category: Frontend
 # UI framework · #TC000001
 > ⚙ #TC000001V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Renders every screen and component of the app.
 
 ## Why

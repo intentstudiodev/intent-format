@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Shell navigation and cold-start steering: stacked variants, one navigation list, the checks
-// W017 / W048 / I027 / I028, mds frame, mds next through every phase, the lock, AGENTS.md.
+// W017 / W048 / I027 / I028, intent-format frame, intent-format next through every phase, the lock, AGENTS.md.
 //   node kit/cli/test/nav.mjs [--keep]
 import fs from 'node:fs';
 import os from 'node:os';
@@ -9,7 +9,7 @@ import { spawnSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const MDS = path.join(here, '..', 'mds.mjs');
+const MDS = path.join(here, '..', 'intent-format.mjs');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mds-nav-'));
 const R = path.join(tmp, 'shop');
 const results = [];
@@ -27,7 +27,7 @@ step('next: no project → set up', n.step === 1, JSON.stringify(n));
 fs.mkdirSync(path.join(R, 'inputs'), { recursive: true });
 put('inputs/brief.md', '# Brief\n\nA shop: guests browse, members buy.\n');
 mds('init', R, '--name', 'Shop');
-step('init writes AGENTS.md and CLAUDE.md', /mds\.mjs" next \./.test(get('AGENTS.md')) && get('CLAUDE.md') === '@AGENTS.md\n');
+step('init writes AGENTS.md and CLAUDE.md', /intent-format\.mjs" next \./.test(get('AGENTS.md')) && get('CLAUDE.md') === '@AGENTS.md\n');
 put('AGENTS.md', '# mine\n');
 mds('regen', R);
 step('regen never overwrites AGENTS.md', get('AGENTS.md') === '# mine\n');
@@ -46,7 +46,7 @@ n = next();
 step('next: unattended review is written, not skipped', n.step === 4 && /Unattended/.test(n.do[0]));
 put('proposal/review.md', 'Unattended — recommendations applied.\n');
 n = next();
-step('next: scaffold', n.step === 5 && /mds scaffold/.test(n.do[0]));
+step('next: scaffold', n.step === 5 && /intent-format scaffold/.test(n.do[0]));
 mds('scaffold', R, '--inventory', path.join(R, 'proposal/inventory.md'));
 n = next();
 step('next: fill project first', n.step === 6 && /project card/.test(n.do[0]), n.do?.[0]);
@@ -55,19 +55,19 @@ step('next: fill project first', n.step === 6 && /project card/.test(n.do[0]), n
 const ids = Object.fromEntries([...get('proposal/inventory.md').matchAll(/\| \d+ \| [a-z]+ \| ([^|]+?) \|.*\| ([A-Z]{2}\d{6}) \|/g)].map((m) => [m[1], m[2]]));
 const ref = (name, folder) => `[#${ids[name]} ${name}](../${folder}/${ids[name].toLowerCase()}-${name.toLowerCase().replace(/ /g, '-')}.md)`;
 const proj = get('V1.0/project.md');
-put('V1.0/project.md', proj.replace(/## Description & Requirements\n—/, '## Description & Requirements\nA shop.')
+put('V1.0/project.md', proj.replace(/## Description\n—/, '## Description\nA shop.')
   .replace(/### States\n[\s\S]*?(?=### Platforms)/, '### States\n| State | Code | Note |\n|---|---|---|\n| Guest | SGU | not signed in |\n| Member | SM | signed in |\n\n')
   .replace(/### Platforms\n[^#]*/, '### Platforms\n- Desktop web\n- Mobile web\n\n')
-  .replace(/### Appears-as\n[^#]*/, '### Appears-as\n- Dropdown\n- Side panel\n\n'));
+  .replace(/### Opens-as\n[^#]*/, '### Opens-as\n- Dropdown\n- Side panel\n\n'));
 const shellFile = `V1.0/shells/${ids['Web shell'].toLowerCase()}-web-shell.md`;
-put(shellFile, get(shellFile).replace('shell-type: —', 'shell-type: app').replace(/## Description & Requirements\n—/, '## Description & Requirements\nThe web frame.')
+put(shellFile, get(shellFile).replace('shell-type: —', 'shell-type: app').replace(/## Description\n—/, '## Description\nThe web frame.')
   .replace(/## Components\n—/, `## Components\n1. ${ref('Header', 'components')}`)
   .replace(/## Navigation\n—/, `## Navigation\n1. ${ref('Home', 'screens')} · kind: tab · in: Header\n2. ${ref('Sign in', 'screens')} · in: Header · state: Guest\n3. ${ref('Account', 'screens')} · kind: menu · in: Account menu · state: Member\n4. ${ref('Account', 'screens')} · in: Header`)
   .replace(/## Places inside\n—/, '## Places inside\n🚫 Never show navigation of your own.')
-  + `\n## Variants\n### Mobile web · #HV000001\n<a id="hv000001"></a>\nplatform: Mobile web\n\n1. ${ref('Burger', 'components')}\n- Leads to: ${ref('Home', 'screens')}\n\n### Member · #HV000002\n<a id="hv000002"></a>\nstate: Member\n\n1. ${ref('Account menu', 'components')} · appears-as: Dropdown\n`);
+  + `\n## Variants\n### Mobile web · #HV000001\n<a id="hv000001"></a>\nplatform: Mobile web\n\n1. ${ref('Burger', 'components')}\n- Leads to: ${ref('Home', 'screens')}\n\n### Member · #HV000002\n<a id="hv000002"></a>\nstate: Member\n\n1. ${ref('Account menu', 'components')} · opens-as: Dropdown\n`);
 mds('mint', 'HV', '--root', R, '--count', '2');
 const homeFile = `V1.0/screens/${ids.Home.toLowerCase()}-home.md`;
-put(homeFile, get(homeFile).replace(/## Description & Requirements\n—/, '## Description & Requirements\nThe start.').replace(/## Components\n—/, `## Components\n1. ${ref('Header', 'components')}`));
+put(homeFile, get(homeFile).replace(/## Description\n—/, '## Description\nThe start.').replace(/## Components\n—/, `## Components\n1. ${ref('Header', 'components')}`));
 const accFile = `V1.0/screens/${ids.Account.toLowerCase()}-account.md`;
 put(accFile, get(accFile).replace(/^status: —\n/m, 'status: —\nstate: Member\n'));
 const mapFile = `V1.0/ia/${ids['Main map'].toLowerCase()}-main-map.md`;

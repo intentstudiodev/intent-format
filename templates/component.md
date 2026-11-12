@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: component
 id: CP000000
 name: New component
@@ -8,7 +8,7 @@ component-type: —
 ---
 # New component · #CP000000
 
-## Description & Requirements
+## Description
 —
 
 ## Components

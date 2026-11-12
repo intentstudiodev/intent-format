@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: project
 id: PR000001
 name: Example app
@@ -8,17 +8,20 @@ status: In design
 # Example app · #PR000001
 > ⚙ #PR000001V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 A small app in which a Member keeps a list of items: create, browse and change them.
 
-## Main use cases
+## Why
+Members lose track of things kept in notes and chats; one list that is always at hand fixes that.
+
+## User stories
 - As a Member, I want to create an item, so that I can keep track of it.
 - As a Member, I want to browse my items, so that I find one quickly.
 - As a Member, I want to edit an item, so that its details stay current.
 - As a Member, I want to change my settings, so that the app fits how I work.
 - As an Admin, I want to review all items, so that the list stays clean.
 
-## Constraints
+## Keep in mind
 **R1 · Checklist**
 - [ ] The Item list opens in under one second with 1000 items.
 - [ ] Every screen works with the keyboard alone.
@@ -32,7 +35,7 @@ A small app in which a Member keeps a list of items: create, browse and change t
 - Web
 - Mobile
 
-### Appears-as
+### Opens-as
 - Side panel — opens beside the current page
 
 ### Tech categories

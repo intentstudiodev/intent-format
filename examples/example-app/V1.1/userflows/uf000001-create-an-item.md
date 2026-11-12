@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: userflow
 id: UF000001
 name: Create an item
@@ -9,8 +9,11 @@ feature: FT000004
 # Create an item · #UF000001
 > ⚙ #UF000001V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 A Member adds a new item from the Item list and returns to the list with the item saved.
+
+## Why
+The main use case of Items: without it nothing gets into the list.
 
 ## Step list
 1. [#FS000001 Start from the list](#fs000001)

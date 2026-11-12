@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: backend
 id: BN000003
 name: File storage
@@ -9,7 +9,7 @@ backend-type: storage
 # File storage · #BN000003
 > ⚙ #BN000003V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Keeps files attached to items.
 
 ## Connections

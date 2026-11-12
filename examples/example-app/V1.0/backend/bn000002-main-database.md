@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: backend
 id: BN000002
 name: Main database
@@ -9,7 +9,7 @@ backend-type: database
 # Main database · #BN000002
 > ⚙ #BN000002V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Stores items and settings.
 
 ## Connections

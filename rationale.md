@@ -1,4 +1,4 @@
-# MDStandard 1.0 — Rationale
+# Intent Format 1.0 — Rationale
 
 Non-normative. Why the key choices were made, and what was rejected. The rules are in
 `spec.md`.
@@ -105,10 +105,10 @@ A **shell** is the frame around places. It started as a component with one speci
 became its own type: it is never placed as a part, its variants are chosen by platform, state
 and level rather than pinned by a host, it leads somewhere, and it carries a contract for
 whatever it frames. Places bind to it. The binding resolves per placement exactly like the
-presentation does, because the two are one decision seen from two sides — *appears-as* says
+presentation does, because the two are one decision seen from two sides — *opens-as* says
 what kind of container, *shell* says what chrome is inside it. Defaults do most of the work: a
-shell with `appears-as: Page` for a state frames every page of that state, a shell with
-`appears-as: Bottom sheet` frames every sheet, a section node binds its shell once for the whole
+shell with `opens-as: Page` for a state frames every page of that state, a shell with
+`opens-as: Bottom sheet` frames every sheet, a section node binds its shell once for the whole
 subtree. Levels and breadcrumbs are computed from nesting and the map path, never written, so
 nothing goes stale. Navigation lives on the shell as ordered `Leads to` lines: written once,
 true wherever the shell is, and a tool can draw "reachable from everywhere" as a frame instead
@@ -133,6 +133,39 @@ change: they keep naming the role in plain words ("As a Member, …") and resolv
 the way they resolved against the table; the role card lists them in `⚙ Stories` instead of
 restating them, because the stories already are the role's goals. States stay a vocabulary:
 they decide which screens exist, a role only says who is there.
+
+## Why on every card, confidence as a mark
+
+Draft 1 kept a card's reason inside its Description, where nothing could find or count it, and
+the question "do we know why?" had no answer a tool could give. 1.1 gives every type but
+`comment` a `## Why` section (`tech` had one since 1.0) and makes it required only where a
+missing reason is a real gap: project, feature, rule, decision, flow, shell, role. A button needs
+no why, so on screens, components and the rest the section is optional — absent means nothing to
+say — and two extra values keep the required ones honest without inventing text: `none — <note>`
+("there is nothing to explain, and here is why") and `same as #<id>` ("that card's why covers
+this"). `same as` is a real link, not a way to hide a hole: the checker follows it and counts
+the borrower when the lender is `—`. "Why debt" is the number of cards that still say `—`.
+
+A first draft let a child inherit its parent's why along the structural tree (`see parent`,
+following `feature:` or `parent:`). The lab showed that whys do not follow the tree: a feature's
+why is a purpose (what problem it solves), a screen's why is a choice (why a screen of its own,
+why this way), a rule's why is a constraint (what goes wrong without it). So each type now has
+its own **why question**, in three flavours, printed on the type sheet, and borrowing is by id
+from any card. The question also stops the most common bad why: a restatement of the
+Description.
+
+**Ask markers.** The KB could already say *unknown* (`—`) and *probably* (`[assumed]`), but not
+*somebody must answer this* about a sentence that is otherwise fine. Agents kept such questions
+in side lists that drifted from the cards and got lost. `[ask: …]` puts the question into the
+sentence it concerns, so it is counted, listed by `intent-format open` with its card and line, and cannot
+be lost without touching the card. Only the owner closes one; deferring keeps it counted.
+
+Confidence is one mark at the end of a why or an outcome, in a scale of three where the top step is
+written by writing nothing: unmarked is confirmed, `[likely]` follows from inputs, `[assumed]`
+is a guess. Marking the baseline would tag most of the KB to say "normal" and drown the marks that
+matter; confirming an assumption is the removal of doubt, so it removes the mark. Where the
+evidence lives stays a `Source` link — and a Source may only point into `inputs/`, so nothing
+becomes evidence by being mentioned.
 
 ## Future work
 

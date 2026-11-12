@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: userflow
 id: UF000000
 name: New userflow
@@ -7,7 +7,10 @@ status: —
 ---
 # New userflow · #UF000000
 
-## Description & Requirements
+## Description
+—
+
+## Why
 —
 
 ## Step list

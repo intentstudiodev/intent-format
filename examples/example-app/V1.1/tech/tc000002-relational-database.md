@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: tech
 id: TC000002
 name: Relational database
@@ -11,7 +11,7 @@ license: Open source
 # Relational database · #TC000002
 > ⚙ #TC000002V1.1 · V1.1 in-progress · based on V1.0 · unchanged
 
-## Description & Requirements
+## Description
 Keeps items and settings in tables with transactions.
 
 ## Why

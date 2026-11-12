@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: userflow
 id: UF000002
 name: Edit an item
@@ -9,8 +9,11 @@ feature: FT000004
 # Edit an item · #UF000002
 > ⚙ #UF000002V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 A Member changes an existing item and returns to its details.
+
+## Why
+Details change; the list must follow.
 
 ## Step list
 1. [#FS000006 Open the item](#fs000006)

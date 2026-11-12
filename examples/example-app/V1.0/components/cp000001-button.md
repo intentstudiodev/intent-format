@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: component
 id: CP000001
 name: Button
@@ -9,13 +9,16 @@ component-type: atom
 # Button · #CP000001
 > ⚙ #CP000001V1.0 · V1.0 released
 
-## Description & Requirements
+## Description
 Starts one action when chosen.
+
+## Why
+none — layout only
 
 ## Components
 none
 
-## ⚙ Used on
+## ⚙ Used in
 - [#SC000001 Home](../screens/sc000001-home.md) · via: #CP000004
 - [#SC000002 Item list](../screens/sc000002-item-list.md)
 - [#SC000002 Item list](../screens/sc000002-item-list.md) · via: #CP000003

@@ -1,5 +1,5 @@
 ---
-standard: MDStandard/1.0
+standard: IntentFormat/1.2
 type: api
 id: AP000000
 name: New api
@@ -9,7 +9,7 @@ endpoint: —
 ---
 # New api · #AP000000
 
-## Description & Requirements
+## Description
 —
 
 ## Served by

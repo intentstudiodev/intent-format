@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Role cards: stories resolve by name, ⚙ Stories, W049 / W050 / I029, mds migrate across
+// Role cards: stories resolve by name, ⚙ Stories, W049 / W050 / I029, intent-format migrate across
 // versions (one core per role, archived skipped, idempotent), next sends old KBs to migrate.
 //   node kit/cli/test/roles.mjs [--keep]
 import fs from 'node:fs';
@@ -9,7 +9,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const MDS = path.join(here, '..', 'mds.mjs');
+const MDS = path.join(here, '..', 'intent-format.mjs');
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'mds-roles-'));
 const R = path.join(tmp, 'kb');
 const results = [];
@@ -23,17 +23,17 @@ const has = (code) => diags().some((d) => d.code === code);
 
 /* ---------- an old-style KB: Roles table, two versions, one archived ---------- */
 mds('init', R, '--name', 'Kb');
-const old = (p) => p.replace(/## Main use cases\n—/, '## Main use cases\n- As a Guest, I want to look around, so that I can decide.\n- As a Member, I want to buy, so that I get the thing.')
+const old = (p) => p.replace(/## User stories\n—/, '## User stories\n- As a Guest, I want to look around, so that I can decide.\n- As a Member, I want to buy, so that I get the thing.')
   .replace('## Vocabularies\n', '## Vocabularies\n### Roles\n| Role | Description | States |\n|---|---|---|\n| Guest | Looks around | Signed out |\n| Member | Buys things | Signed in |\n| Staff | Back office, not in this KB | |\n\n')
   .replace(/### States\n\| State \| Code \| Note \|\n\|---\|---\|---\|\n/, '### States\n| State | Code | Note |\n|---|---|---|\n| Signed out | SSO | |\n| Signed in | SSI | |\n');
 put('V1.0/project.md', old(get('V1.0/project.md')));
 step('old table still resolves stories (no W037)', !has('W037') && has('W050'));
 mds('branch', R, 'V1.0', 'V1.1');
 mds('branch', R, 'V1.1', 'V1.2');
-put('V1.0/mdstandard.md', get('V1.0/mdstandard.md').replace(/lifecycle: .*/, 'lifecycle: archived'));
+put('V1.0/intent-format.md', get('V1.0/intent-format.md').replace(/lifecycle: .*/, 'lifecycle: archived'));
 step('W050 silent in a read-only version', !diags().some((d) => d.code === 'W050' && d.path.startsWith('V1.0/')));
 let n = JSON.parse(mds('next', R, '--json').out);
-step('next sends an old KB to migrate', n.mode === 'migrate' && /mds migrate/.test(n.do[0]));
+step('next sends an old KB to migrate', n.mode === 'migrate' && /intent-format migrate/.test(n.do[0]));
 
 /* ---------- migrate ---------- */
 let r = mds('migrate', R);
@@ -41,10 +41,10 @@ step('migrate runs', r.code === 0, r.out + r.err);
 const cores = (ws) => fs.readdirSync(path.join(R, ws, 'roles')).filter((f) => f !== '_index.md').sort();
 step('archived version untouched', (!fs.existsSync(path.join(R, 'V1.0', 'roles')) || !cores('V1.0').length) && /### Roles/.test(get('V1.0/project.md')));
 step('one core per role across versions', JSON.stringify(cores('V1.1')) === JSON.stringify(cores('V1.2')) && cores('V1.1').length === 3, cores('V1.1').join(','));
-step('table removed, module enabled', !/### Roles/.test(get('V1.1/project.md')) && /modules: \[roles,/.test(get('V1.1/mdstandard.md')));
+step('table removed, module enabled', !/### Roles/.test(get('V1.1/project.md')) && /modules: \[roles,/.test(get('V1.1/intent-format.md')));
 const member = get('V1.2/roles/' + cores('V1.2').find((f) => f.includes('member')));
 step('States column → state:, description kept', /^state: Signed in$/m.test(member) && /Buys things/.test(member));
-step('⚙ Stories filled', /## ⚙ Stories\n- \[#PR000001 Kb\]\(\.\.\/project\.md\) · story: Main use cases/.test(member), member);
+step('⚙ Stories filled', /## ⚙ Stories\n- \[#PR000001 Kb\]\(\.\.\/project\.md\) · story: User stories/.test(member), member);
 step('V1.2 role unchanged against V1.1', /· unchanged/.test(member));
 r = mds('migrate', R);
 step('migrate is idempotent', /0 role card\(s\) created · 0 reused/.test(r.out) && /regen: 0 file/.test(r.out), r.out);

@@ -19,7 +19,7 @@ Every card the KB will get. Evidence = input file + quote or locator, or a kicko
 | 5 | tech | UI framework | | K16 "decided: <name>" | high | | |
 ```
 
-Parent / home: a Sub-feature's parent Feature, or the home feature of a screen, flow or component (names from this table). Leave Core empty — `mds scaffold` fills it.
+Parent / home: a Sub-feature's parent Feature, or the home feature of a screen, flow or component (names from this table). Leave Core empty — `intent-format scaffold` fills it.
 
 Confidence: **high** = stated or shown directly · **medium** = strongly implied · **low** = inferred; must also appear in decisions.md.
 
@@ -38,7 +38,7 @@ before any card exists. One block per shell; the navigation list is in display o
 | Web shell | app | Desktop web, Mobile web | Consent banner · Header · Footer · Toast | Mobile web: Burger, Navigation drawer · Signed in: Account menu · Level 2+: Back |
 | App shell | app | App | Tab bar · Toast | Signed in: — |
 | Checkout | stepper | — (flow: Checkout) | Progress · Back · Exit | — |
-| Modal | overlay | appears-as: Modal | Title · Close · Confirm/Cancel | — |
+| Modal | overlay | opens-as: Modal | Title · Close · Confirm/Cancel | — |
 
 ### Web shell — navigation
 1. Home · tab · in Header
@@ -100,8 +100,8 @@ line, so the next agent knows the review was not skipped by accident.
 - **KB:** <path> · version V1.0 (<lifecycle>)
 - **Created:** <n> cards — screens <n>, components <n>, flows <n>, … · sub-documents <n>
 - **Check:** errors 0 · warnings 0 · info <n>
-- **Health:** blind spots <n> · unresolved placeholders <n> · open decisions <n>
-- **Assumptions made:** (each also exists as an Open decision card)
+- **Health:** blind spots <n> · unresolved placeholders <n> · open decisions <n> · why debt <n> · assumed <n> · likely <n>
+- **Assumptions made:** (each is an `[assumed]` mark or an Open decision card — `intent-format open` lists them)
   - …
 - **Questions for the owner:** top 5, with the decision card core for each
 - **Next steps:** …

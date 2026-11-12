@@ -1,19 +1,65 @@
-# Changelog — MDStandard
+# Changelog — Intent Format
 
-Newest first. Every published version has a `## <version> (<date>)` heading; changes waiting for
+Newest first. Every published version has a `## <version> (<date>)` heading (two numbers: 1.0, 1.1; the GitHub tag is `v<version>`, the first release was tagged `v1.0.0`); changes waiting for
 the next version collect under `## Unreleased`. Decision numbers (`D25`), `_work/` files and
 inventory rows (`00-03 #n`, `04-07 #n`) refer to the maintainers' working notes, which are not
 published.
 
-## 1.0.0 (2026-10-20) — first public release
+## 1.2 (2026-11-12) — files read as plain language; why and confidence
 
-MDStandard 1.0 is a rewrite of an unpublished prototype: the same core ideas, one source of truth
+- **Renamed.** The format is Intent Format (identifier `IntentFormat/1.2`; the old `MDStandard/…` spellings are read and migrated). The CLI is `intent-format` (was `mds`): `kit/cli/intent-format.mjs`, package bin `intent-format`. The repository is `intentstudiodev/intent-format` (was `mdstandard`; old links redirect).
+- **Features group by purpose, never by screen.** A capability with a why, rules or decisions of its own is
+  a Feature wherever the user reaches it from; a Sub-feature's `## Why` is normally `same as` its Feature's;
+  one level deep; a grown Sub-feature drops `parent:`, keeps its id and records a decision. Type sheet
+  (`whenToUse`, `levels`, not-to-confuse-with `ia`) and spec S-FEAT-1; guidance, no new check. D29.
+- **Decided, not built yet** (D30): `_summary.md`, a generated one-page overview written by `intent-format regen`
+  beside `_index.md` and clearly marked as not the source of truth; `intent-format export <id> [--for speckit|kiro|bmad]`,
+  a feature pack for outside pipelines.
+
+- **`## Why` on every card type** except `comment`, right after `## Description` (after `## Question`
+  on decisions). Required on project, feature, rule, decision, userflow, shell, role and tech (which
+  had it since 1.0); optional elsewhere — absent means nothing to say. Values: text, `none` or
+  `none — <note>` (not counted), `same as #<id>` (another card's why covers it — any card by id; `check`
+  follows it [I030], an id that names no card [W051]) and `—` (counted: blind-spot kind
+  `why`, printed as **why debt**). Each type has a **why question** in one of three flavours —
+  purpose (project, feature, userflow, role), choice (screen, component, shell, ia, api, backend,
+  tech, decision), constraint (rule, edge-case) — printed on the type sheet. Spec S-BODY-7; schema `why`.
+- **`[ask: <question>]`** inside any authored sentence: a question for the owner that no value can
+  hold. Counted as **asks** (open · later: `[ask: … · later <date>]` · due: later than `ask.again` = 2 days), listed by `intent-format open` with
+  card and line, never dropped by a tool. Spec S-BODY-8; schema `ask`.
+- **Confidence marks** at the end of a Why text or a decision Outcome: `[likely]` (follows from
+  inputs, not stated) and `[assumed]` (a guess). Unmarked = confirmed; `[confirmed]` is accepted and
+  `regen` removes it [I031]. Health counts both; a mark elsewhere is [W051].
+- **Decision record**: optional keys `decided: <YYYY-MM-DD>`, `by: owner|agent|<role>`,
+  `superseded-by: <DC core>`. A Decided decision without `decided`, a Superseded one without
+  `superseded-by`, or either key on another status → [W052]; `superseded-by` must name a decision.
+- **Evidence lives in `inputs/`**: a `Source` link whose path is not a URL must point inside the
+  project root's `inputs/` [W053].
+- **`intent-format open <root>`**: the one list of what is open — `[ask: …]` questions, open decisions, `[assumed]`
+  and `[likely]` marks, whys missing, other blind spots per card. `intent-format check` and `intent-format next` print why and confidence numbers.
+- Renamed to **Intent Format** (1.0.1): `standard: IntentFormat/1.2`; the old `MDStandard/…` values
+  are still read and `intent-format migrate` renames them. The CLI command stays `intent-format`.
+
+- **Renamed, so a card reads without a glossary** (schema.json → `renames`; old spellings are still
+  read, `intent-format migrate` and `regen` write the new ones): `## Description & Requirements` → `## Description`,
+  `## Rules applied` → `## Rules`, `## Uses API` → `## APIs` (the relation `Uses API` keeps its name),
+  `## Constraints` → `## Keep in mind`, `## Main use cases` → `## User stories`; generated:
+  `⚙ Placed on` → `⚙ On maps`, `⚙ Flows` → `⚙ In user flows`, `⚙ Used on` → `⚙ Used in`,
+  `⚙ Frames` → `⚙ Wraps`, `⚙ Shown as` → `⚙ Shown in`; the key and vocabulary `appears-as` /
+  `### Appears-as` → `opens-as` / `### Opens-as`; the qualifier `· parent:` on map lines → `· under:`.
+- **`users:`** on screens and user flows: the user types the card is for — one role card name or a
+  list; omitted = every user type whose states include the card's state.
+- KBs say `standard: IntentFormat/1.2`; `IntentFormat/1.0` gets the W001 hint and `intent-format migrate` renames it.
+
+## 1.0 (2026-10-20) — first public release
+
+Intent Format 1.0 is a rewrite of an unpublished prototype: the same core ideas, one source of truth
 per concept, machine-checkable, domain-neutral. This release contains the spec, the schema, the
-`mds` CLI, the agent skills, templates and an example KB.
+`intent-format` CLI, the agent skills, templates and an example KB.
 
-- **Name:** KBs say `standard: MDStandard/1.0`. KBs made with the pre-release name
-  `MDStandard/1.0-draft.2` get a W001 hint; `mds migrate <root>` renames them (all workspaces).
-- **CLI:** runs through npm's `mds` link, so `npx github:intentstudiodev/mdstandard#v1.0.0` works.
+- **Name:** KBs say `standard: IntentFormat/1.0`. KBs made with the pre-release name
+  `IntentFormat/1.0-draft.2` get a W001 hint; `intent-format migrate <root>` renames them (all workspaces).
+- **CLI:** runs through npm's `intent-format` link, so `npx github:intentstudiodev/intent-format#v1.0.0` works.
 
 The dated entries below describe how 1.0 took shape before publication; "draft 1" there means the
 prototype, "draft 2" the work that became 1.0.
@@ -33,8 +79,8 @@ user type with `state:` (the States it can be in), `platform:` (what it uses) an
 of who they are and why they come. Stories keep plain text and resolve by exact role-card
 name; the role lists them in generated `⚙ Stories` (`· story: R<n>` / `· story: Main use
 cases`). New checks W049 (duplicate role name), W050 (the deprecated table; silent in
-read-only versions), I029 (a role no story names). `mds migrate <root>` converts the table —
-one core per role across versions, idempotent. Scaffold and `mds next` put roles right after
+read-only versions), I029 (a role no story names). `intent-format migrate <root>` converts the table —
+one core per role across versions, idempotent. Scaffold and `intent-format next` put roles right after
 the project card; `next` sends an old KB to `migrate` first. The manifest `modules` values now
 list `shells` and `roles`.
 Also (D24.9): a stepper frames its own flow's steps by default; a shell whose `platform:` does
@@ -55,10 +101,10 @@ carries navigation lines (W017 tells where to move them).
   shell sheet). Typically three to eight shells.
 - **Chrome on a screen** is allowed but discouraged: I027.
 - Templates carry recommended optional sections (`inTemplate`): shell Navigation, Places inside.
-- CLI: `mds frame <root> <screen>` (what surrounds a screen per placement), `mds next <root>`
+- CLI: `intent-format frame <root> <screen>` (what surrounds a screen per placement), `intent-format next <root>`
   (the one next step, from the project's files alone), a project lock for writing commands,
   `AGENTS.md` + `CLAUDE.md` at the project root (S-PKG-8).
-- Kit: the cold-start skill steers by `mds next`; `proposal/frames.md` puts navigation in front
+- Kit: the cold-start skill steers by `intent-format next`; `proposal/frames.md` puts navigation in front
   of the owner before any card exists; fill order puts shells and maps before screens;
   unattended mode is written down; picking up, parallel work and later batches are covered.
   Kickoff questions 4, 10, 11 ask for navigation per platform and frames; "shell" no longer
@@ -69,7 +115,7 @@ carries navigation lines (W017 tells where to move them).
 **Persistent UI is a shell, not a screen.** The draft 2 advice "model the app shell as a screen
 at the IA root whose children are the views" made the shell the root of every map and left
 navigation with no home. Replaced by a new card type, **shell** (spec section 6.4,
-`schema.json shells`, type sheet `kit/skills/mdstandard/types/shell.md`):
+`schema.json shells`, type sheet `kit/skills/intent-format/types/shell.md`):
 
 - `type: shell`, prefix SH, folder `shells/`; `shell-type` is `app`, `section`, `stepper`,
   `overlay`, `focus`, `split` or `embedded`; `platform`, `state`; `appears-as` on overlays
@@ -98,7 +144,7 @@ navigation with no home. Replaced by a new card type, **shell** (spec section 6.
 **Package**
 - Nine documents with restated rules → one `spec.md` (rules stated once) plus `schema.json` as
   the single machine-readable source; templates and type sheets are generated from it.
-- The tool-conformance document → the reference CLI `mds` and fixtures, which make tool
+- The tool-conformance document → the reference CLI `intent-format` and fixtures, which make tool
   behaviour testable.
 - Domain-specific examples and real product names → the abstract `example-app`.
 
@@ -136,7 +182,7 @@ navigation with no home. Replaced by a new card type, **shell** (spec section 6.
 
 **IDs and versions**
 - Cores are unique across the project; `_ids.md` moves to the project root with Retired and
-  High-water marks; only `mds new`/`mds mint` mint.
+  High-water marks; only `intent-format new`/`intent-format mint` mint.
 - Lifecycle `planned · in-progress · released · archived · exploration`; versions form a tree
   through `based-on`; per-card change status and `CHANGES.md` replace stamps and logs.
 - Moving a card between versions means copying it with its core; re-minting is for import.
@@ -167,7 +213,7 @@ Cut rows of the inventories:
   (00-03 #49; 04-07 #119) — future work.
 - Per-workspace KB `CHANGELOG.md` (04-07 #95); freshness footer (00-03 #51); dates in any
   generated content (04-07 #50).
-- `_ids.md` Unresolved table (04-07 #78) — `mds check` and the health count instead.
+- `_ids.md` Unresolved table (04-07 #78) — `intent-format check` and the health count instead.
 - Component-type shelves `atoms/` … `integrations/` (00-03 #30).
 - Drafting history in normative text — decision-ledger wording, re-lock clause, dated
   examples (00-03 #3; 04-07 #49) — moved to `rationale.md` and this file.
@@ -199,8 +245,8 @@ Not carried from other rows:
 
 ## Renamed
 
-- `MDStandard/1.0-draft` → `MDStandard/1.0`.
-- Draft 1's button-style name for regenerating → **regenerate** (`mds regen`).
+- `IntentFormat/1.0-draft` → `IntentFormat/1.0`.
+- Draft 1's button-style name for regenerating → **regenerate** (`intent-format regen`).
 - Rule codes (CAT-n, S, M, O, F, T, E, Z, GC, B, P, G, V) → `S-<TOPIC>-<n>`.
 - Areas (vocabulary, `area:`, shelves) → top-level **Feature**; draft 1's feature →
   **Sub-feature** (`parent:`).
@@ -231,5 +277,5 @@ Not carried from other rows:
 - `## Stack` renamed to `## Components` ("stack" collided with the tech stack).
 - A final `—` in a list section marks the list as incomplete (one blind spot).
 - Health: blind spots broken down by kind.
-- CLI: `mds scaffold` (create all cards from an inventory), `init --lifecycle`; type sheets show the requirement formats; `types/_overview.md` added.
+- CLI: `intent-format scaffold` (create all cards from an inventory), `init --lifecycle`; type sheets show the requirement formats; `types/_overview.md` added.
 - Cold-start kit: unattended mode defined; derivation rule clarified; every judgment call becomes a decision card; persistent panels vs screens; sample content inside a product's UI is not documented.

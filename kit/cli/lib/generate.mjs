@@ -31,7 +31,7 @@ export function oneLiner(S, ws, card) {
   let start, end;
   if (card.def.preamble) { start = sk.preStart; end = sk.preEnd; }
   else {
-    const dr = sk.sections.find((s) => s.full === 'Description & Requirements')
+    const dr = sk.sections.find((s) => s.full === 'Description')
       || sk.sections.find((s) => !s.gear && s.def && s.def.content === 'prose');
     if (!dr) return '—';
     start = dr.start; end = dr.end;
@@ -67,7 +67,7 @@ export function collectEdges(S, ws) {
     // user stories name a role by its card name → ⚙ Stories on the role
     for (const st of c.stories || []) {
       const t = roleByName.get(st.role);
-      if (t && t.card !== c) edges.push({ rel: 'Story', src: c, at: null, t, rec: null, story: st.n ? 'R' + st.n : 'Main use cases' });
+      if (t && t.card !== c) edges.push({ rel: 'Story', src: c, at: null, t, rec: null, story: st.n ? 'R' + st.n : 'User stories' });
     }
     for (const r of c.rels) {
       const def = S.relations[r.rel];
@@ -92,7 +92,7 @@ export function collectEdges(S, ws) {
       const t = v && ws.byCore.get(v);
       if (t && !t.sub && t.card.type === type && t.card !== c) edges.push({ rel, src: c, at: null, t, rec: null });
     }
-    // framing (shell: keys, variant passports, · shell: on IA nodes and step Screen lines) → ⚙ Frames on the shell
+    // framing (shell: keys, variant passports, · shell: on IA nodes and step Screen lines) → ⚙ Wraps on the shell
     const shellOf = (v) => {
       const t = v && /^SH\d{6}$/.test(v) && ws.byCore.get(v);
       return t && !t.sub && t.card.type === 'shell' ? t : null;
@@ -198,10 +198,10 @@ function reverse(ctx, card, heading) {
     const at = e.at || (e.t.sub && e.t.sub.core) || (e.pin && e.pin.core) || null;
     if (withAt && at) l.quals.push(['at', '#' + at]);
     switch (heading) {
-      case '⚙ Placed on': {
+      case '⚙ On maps': {
         const pa = e.rec?.node?.parent?.rec?.atoms[0];
         const pt = pa && pa.core && ctx.ws.byCore.get(pa.core);
-        if (pt && !pt.sub && pt.card.type === 'screen') l.quals.push(['parent', '#' + pt.card.id]);
+        if (pt && !pt.sub && pt.card.type === 'screen') l.quals.push(['under', '#' + pt.card.id]);
         break;
       }
       case '⚙ Edge cases': {
@@ -247,7 +247,7 @@ export function generatedFor(ctx, card) {
   for (const sec of S.sections(card.type)) {
     if (!sec.generated || !S.generated[sec.heading]) continue;
     let lines;
-    if (sec.heading === '⚙ Used on') lines = usedOn(ctx, card);
+    if (sec.heading === '⚙ Used in') lines = usedOn(ctx, card);
     else if (sec.heading === '⚙ Also uses') lines = alsoLines(ctx, card, ['Screen']);
     else if (sec.heading === '⚙ Also connects') lines = alsoLines(ctx, card, ['Connected flow', 'Hand-off']);
     else lines = reverse(ctx, card, sec.heading);
@@ -357,7 +357,7 @@ export function renderRootIndex(S, P) {
   const out = [...fmBlock(S, name), `# ${name}`, '', S.raw.indexFile.projectRoster.purpose];
   if (P.workspaces.length) {
     out.push('', `## ${S.gear} Contents`, '| Version | Lifecycle | Based on |', '|---|---|---|');
-    for (const ws of P.workspaces) out.push(`| [V${ws.version}](${ws.folder}/mdstandard.md) | ${ws.lifecycle || '—'} | ${ws.basedOn ? 'V' + ws.basedOn : '—'} |`);
+    for (const ws of P.workspaces) out.push(`| [V${ws.version}](${ws.folder}/intent-format.md) | ${ws.lifecycle || '—'} | ${ws.basedOn ? 'V' + ws.basedOn : '—'} |`);
   }
   return out.join('\n') + '\n';
 }
