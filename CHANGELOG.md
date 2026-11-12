@@ -51,6 +51,7 @@ published.
   list; omitted = every user type whose states include the card's state.
 - KBs say `standard: IntentFormat/1.2`; `IntentFormat/1.0` gets the W001 hint and `intent-format migrate` renames it.
 - hotfix 2026-11-12: LICENSE names the maintainer as the Intent Harness does.
+- hotfix 2026-11-12: public repository: issue forms for visitors (something wrong or unclear, idea), a Code of Conduct, CONTRIBUTING and README point visitors to them.
 
 ## 1.0 (2026-10-20) — first public release
 
