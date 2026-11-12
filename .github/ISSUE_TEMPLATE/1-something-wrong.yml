@@ -1,0 +1,18 @@
+name: Something is wrong or unclear
+description: The CLI fails, a check is wrong, or a rule in the spec is unclear.
+labels: [bug]
+body:
+  - type: textarea
+    id: did
+    attributes: { label: "What did you do?", description: "The command you ran, or the rule you read (S-<TOPIC>-<n> if you know it)." }
+    validations: { required: true }
+  - type: textarea
+    id: happened
+    attributes: { label: "What happened, or what is unclear?", description: "Paste the output. A small made-up example card helps a lot." }
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes: { label: "What did you expect instead?" }
+  - type: input
+    id: version
+    attributes: { label: "Format version", description: "The `standard:` line of your project, or the version you downloaded." }

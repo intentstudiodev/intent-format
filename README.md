@@ -64,3 +64,9 @@ node kit/cli/intent-format.mjs branch ../my-kb V1.0 V1.1               # next ve
 Write facts only where you have them: unknown → `—`, known to be empty → `none`, not yet a
 card → `[~ Name]`. Say why in `## Why`; mark a guess `[assumed]`; put a question for the owner in its sentence as `[ask: …]`; `intent-format open` lists what is left. Run `regen`, then `check`, after every batch of edits. Warnings never block;
 only errors — files whose identity or format cannot be trusted — stop `regen`.
+
+## Help
+
+Something wrong or unclear? [Open an issue](https://github.com/intentstudiodev/intent-format/issues/new/choose).
+How to help: [`CONTRIBUTING.md`](CONTRIBUTING.md). Everyone here follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+MIT licence.

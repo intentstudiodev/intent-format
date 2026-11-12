@@ -1,0 +1,11 @@
+name: Idea or change to the format
+description: A card type, section or rule you need. Real examples move the format; the format changes only when real use proves a need.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: "What problem does it solve?", description: "Describe a real situation where the format got in your way." }
+    validations: { required: true }
+  - type: textarea
+    id: example
+    attributes: { label: "An example", description: "A card as it is today, and as you'd like it. Made-up content is fine." }
