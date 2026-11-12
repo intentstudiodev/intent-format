@@ -50,6 +50,7 @@ published.
 - **`users:`** on screens and user flows: the user types the card is for — one role card name or a
   list; omitted = every user type whose states include the card's state.
 - KBs say `standard: IntentFormat/1.2`; `IntentFormat/1.0` gets the W001 hint and `intent-format migrate` renames it.
+- hotfix 2026-11-12: LICENSE names the maintainer as the Intent Harness does.
 
 ## 1.0 (2026-10-20) — first public release
 
