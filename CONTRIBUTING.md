@@ -6,7 +6,7 @@ Thanks for helping. Intent Format is made by one person, in the open. This repos
 - **Questions, bugs, unclear rules:** [open an issue](https://github.com/intentstudiodev/intent-format/issues/new/choose)
   and pick **Something is wrong or unclear**. Name the rule (`S-<TOPIC>-<n>`) or the CLI command, and
   paste a small example card if you can. Made-up content is fine; don't paste anything private.
-  Issues are read about once a week, so a reply may take a few days.
+  As it's one person, replies can take a while: we'll do our best to get back to you soon, but can't promise when.
 - **Proposing a change to the spec or schema:** open an issue (**Idea or change to the format**) first and describe the problem it
   solves, with a real example. The standard changes only when real use proves a need.
 - **Pull requests** are welcome. They are carried into the working copy by hand and shipped in the
