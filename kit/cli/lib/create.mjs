@@ -103,25 +103,31 @@ function normType(S, raw) {
 const blank = (v) => !v || /^(—|-|–)$/.test(v);
 const norm = (n) => String(n || '').replace(/\s+/g, ' ').trim().toLowerCase();
 
-/** The inventory's first table with Type, Name and Core columns: { lines, rows } or null. */
+/**
+ * Every inventory table with Type, Name and Core columns, in file order: { lines, rows, tables } or null.
+ * An inventory split into sections (one table per type or area) is read whole; each table's columns are located by its own header.
+ */
 export function readInventory(S, invFile) {
   const lines = readText(invFile).split('\n');
-  let h = -1, cols = null;
-  for (let i = 0; i < lines.length && h < 0; i++) {
-    if (!/^\s*\|/.test(lines[i])) continue;
-    const cells = splitRow(lines[i]).map((c) => c.text.trim().toLowerCase());
-    const c = { type: cells.indexOf('type'), name: cells.indexOf('name'), core: cells.indexOf('core'), home: cells.findIndex((x) => x.startsWith('parent')) };
-    if (c.type >= 0 && c.name >= 0 && c.core >= 0) { h = i; cols = c; }
-  }
-  if (h < 0) return null;
   const rows = [];
-  for (let i = h + 1; i < lines.length && /^\s*\|/.test(lines[i]); i++) {
-    if (/^\s*\|(\s*:?-{3,}:?\s*\|)+\s*$/.test(lines[i])) continue;
-    const cells = splitRow(lines[i]);
-    const get = (k) => (cols[k] >= 0 && cells[cols[k]] ? cells[cols[k]].text.trim().replace(/\\\|/g, '|') : '');
-    rows.push({ idx: i, no: rows.length + 1, rawType: get('type'), type: normType(S, get('type')), name: get('name'), home: get('home'), core: get('core'), coreCell: cells[cols.core] });
+  let tables = 0;
+  for (let i = 0; i < lines.length; i++) {
+    if (!/^\s*\|/.test(lines[i])) continue;
+    const head = splitRow(lines[i]).map((c) => c.text.trim().toLowerCase());
+    const cols = { type: head.indexOf('type'), name: head.indexOf('name'), core: head.indexOf('core'), home: head.findIndex((x) => x.startsWith('parent')) };
+    if (!(cols.type >= 0 && cols.name >= 0 && cols.core >= 0)) continue;
+    tables++;
+    let j = i + 1;
+    for (; j < lines.length && /^\s*\|/.test(lines[j]); j++) {
+      if (/^\s*\|(\s*:?-{3,}:?\s*\|)+\s*$/.test(lines[j])) continue;
+      const cells = splitRow(lines[j]);
+      const get = (k) => (cols[k] >= 0 && cells[cols[k]] ? cells[cols[k]].text.trim().replace(/\\\|/g, '|') : '');
+      rows.push({ idx: j, no: rows.length + 1, rawType: get('type'), type: normType(S, get('type')), name: get('name'), home: get('home'), core: get('core'), coreCell: cells[cols.core] });
+    }
+    i = j - 1;
   }
-  return { lines, rows };
+  if (!tables) return null;
+  return { lines, rows, tables };
 }
 
 /**

@@ -39,8 +39,9 @@ Keys in this order. Unknown = `—` (never quoted); `version`-like values are qu
 | ## Question | required | The question in one or two sentences. |
 | ## Why | required | Why does this question matter — what hangs on the outcome? Text (optionally ending [likely] or [assumed]), none[ — note], same as #<id> (another card's why covers it) or —. |
 | ## Options | required | Each option with its trade-off; the recommendation, if any. |
-| ## Outcome | required | — while Open or Proposed; the chosen option and why once Decided. |
+| ## Outcome | required | — while Open or Proposed; the chosen option and why once Decided. Not edited after that: a later note goes to History; a new question reopens the decision. |
 | ## Affects | required | Every card or sub-document the outcome changes. Default relation: Affects. |
+| ## History | optional | Dated lines added after the decision, newest last: - <YYYY-MM-DD> · <what happened> · <source>. Carried out, a later change that leaves the decision as it is, a reopening. Never an edit of the Outcome. |
 | ## Links | optional | External links: - [title](url) · type: Design\|Code\|Doc\|Source\|Analytics\|Other. Source = evidence (inputs/ file or URL). Default relation: Link. |
 | ## Tags | optional | One line of comma-separated tags. |
 | ## Comments | optional | Comment cards attached here, one line each; the remark lives in the CM file. Default relation: Comment. |
