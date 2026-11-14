@@ -79,7 +79,7 @@ export function nextStep(S, P, root, wsFolder) {
   if (!exists(f('proposal', 'inventory.md'))) {
     return { ...status, ...step(3, {
       do: [`Read every input (${inputs.length} file(s) in inputs/, plus links.md and the kickoff answers). Set the lifecycle in ${ws.folder}/intent-format.md from kickoff question 7 if it is not in-progress.`,
-        'Write proposal/inventory.md (one table: Type · Name · Parent / home · Evidence · Confidence · Core), proposal/frames.md (shells and navigation), proposal/decisions.md and proposal/questions.md. No cards yet.'],
+        'Write proposal/inventory.md (tables with the columns Type · Name · Parent / home · Evidence · Confidence · Core: one, or one per section), proposal/frames.md (shells and navigation), proposal/decisions.md and proposal/questions.md. No cards yet.'],
       read: [`${SKILL} — Phase 2 and 3`, path.join(KIT, 'intent-format', 'types', '_overview.md'), path.join(KIT, 'kb-cold-start', 'templates.md')],
       done: 'proposal/inventory.md exists' }) };
   }

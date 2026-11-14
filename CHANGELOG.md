@@ -5,6 +5,11 @@ the next version collect under `## Unreleased`. Decision numbers (`D25`), `_work
 inventory rows (`00-03 #n`, `04-07 #n`) refer to the maintainers' working notes, which are not
 published.
 
+## Unreleased
+
+- **Decision `## History`** (optional, after `Affects`): dated lines added after a decision, newest last (`- <date> · <what happened> · <source>`): carried out, a later change that leaves it as it is, a reopening. The Outcome is not edited once Decided (spec S-TYPE-12). Older checkers keep the section as is (info I008).
+- **`scaffold` reads every inventory table** with Type, Name and Core columns, so an inventory split into sections is scaffolded whole (it read only the first table and silently skipped the rest). `next` and the template say so.
+
 ## 1.2 (2026-11-12) — files read as plain language; why and confidence
 
 - **Renamed.** The format is Intent Format (identifier `IntentFormat/1.2`; the old `MDStandard/…` spellings are read and migrated). The CLI is `intent-format` (was `mds`): `kit/cli/intent-format.mjs`, package bin `intent-format`. The repository is `intentstudiodev/intent-format` (was `mdstandard`; old links redirect).
