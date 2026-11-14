@@ -53,6 +53,8 @@ published.
 - hotfix 2026-11-12: LICENSE names the maintainer as the Intent Harness does.
 - hotfix 2026-11-12: public repository: issue forms for visitors (something wrong or unclear, idea), a Code of Conduct, CONTRIBUTING and README point visitors to them.
 - hotfix 2026-11-12: reply times said honestly; SECURITY.md (report privately).
+- hotfix 2026-11-14: decisions take an optional `## History` section after `Affects`: dated lines added after the decision (`- <date> · <what happened> · <source>`), so a decided Outcome is never edited (spec S-TYPE-12).
+- hotfix 2026-11-14: `scaffold` reads every inventory table with Type, Name and Core columns; an inventory split into sections is no longer scaffolded only in part. `next` and the template say so.
 
 ## 1.0 (2026-10-20) — first public release
 

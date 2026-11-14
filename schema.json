@@ -2897,7 +2897,7 @@
           "subdocuments": null,
           "content": "prose",
           "notCountedWhileOpen": true,
-          "guidance": "— while Open or Proposed; the chosen option and why once Decided."
+          "guidance": "— while Open or Proposed; the chosen option and why once Decided. Not edited after that: a later note goes to History; a new question reopens the decision."
         },
         {
           "heading": "Affects",
@@ -2908,6 +2908,16 @@
           "subdocuments": null,
           "content": "relations",
           "guidance": "Every card or sub-document the outcome changes."
+        },
+        {
+          "heading": "History",
+          "required": false,
+          "generated": false,
+          "defaultRelation": null,
+          "ordered": true,
+          "subdocuments": null,
+          "content": "prose",
+          "guidance": "Dated lines added after the decision, newest last: - <YYYY-MM-DD> · <what happened> · <source>. Carried out, a later change that leaves the decision as it is, a reopening. Never an edit of the Outcome."
         },
         {
           "heading": "Links",
