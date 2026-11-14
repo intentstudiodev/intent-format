@@ -19,7 +19,7 @@ Every card the KB will get. Evidence = input file + quote or locator, or a kicko
 | 5 | tech | UI framework | | K16 "decided: <name>" | high | | |
 ```
 
-Parent / home: a Sub-feature's parent Feature, or the home feature of a screen, flow or component (names from this table). Leave Core empty — `intent-format scaffold` fills it. One table, or one per section (roles, features, rules …) with the same columns: `scaffold` reads every table that has Type, Name and Core.
+Parent / home: a Sub-feature's parent Feature, or the home feature of a screen, flow or component (names from this table). Leave Core empty — `intent-format scaffold` fills it.
 
 Confidence: **high** = stated or shown directly · **medium** = strongly implied · **low** = inferred; must also appear in decisions.md.
 

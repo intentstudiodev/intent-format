@@ -411,9 +411,7 @@ while Open or Proposed, then the choice and why) and `Affects` (every card or su
 outcome changes). A Decided or Superseded decision MUST state its Outcome [W039] and record
 `decided: <YYYY-MM-DD>` (who, in `by:` — `owner`, `agent` or a role card name); a Superseded one
 MUST name its successor in `superseded-by: <DC core>`; these keys on another status are a
-warning [W052]. Once Decided, the Outcome is not edited: what happens later
-(carried out, a later change that leaves the decision as it is) is a dated line in the optional
-`History` section, after `Affects`; a new question reopens the decision instead. Rejected options are the `Options` lines that are not the Outcome. Every open
+warning [W052]. Rejected options are the `Options` lines that are not the Outcome. Every open
 question, judgment call or conflict between inputs SHOULD become a decision with
 `status: Open`. A remark is a comment; a runtime branch is a Fork step. Exports include
 decisions.
