@@ -55,6 +55,7 @@ published.
 - hotfix 2026-11-12: reply times said honestly; SECURITY.md (report privately).
 - hotfix 2026-11-14: decisions take an optional `## History` section after `Affects`: dated lines added after the decision (`- <date> · <what happened> · <source>`), so a decided Outcome is never edited (spec S-TYPE-12).
 - hotfix 2026-11-14: `scaffold` reads every inventory table with Type, Name and Core columns; an inventory split into sections is no longer scaffolded only in part. `next` and the template say so.
+- hotfix 2026-11-15: CONTRIBUTING says what a release that changes the shape of files owes: its step in `intent-format migrate` and a small project of the previous version as a test. A .gitignore for local files.
 
 ## 1.0 (2026-10-20) — first public release
 

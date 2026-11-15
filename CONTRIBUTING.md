@@ -11,6 +11,9 @@ Thanks for helping. Intent Format is made by one person, in the open. This repos
   solves, with a real example. The standard changes only when real use proves a need.
 - **Pull requests** are welcome. They are carried into the working copy by hand and shipped in the
   next version; you are credited in `CHANGELOG.md`.
+- **A release that changes the shape of files** (a key, a section, a folder, a name) adds its step to
+  `intent-format migrate` and keeps a small project of the previous version as a test that it migrates
+  cleanly. A release that changes nothing on disk only adds the old name to `legacyStandards`.
 - **Tests:** `npm test` (Node 18 or later, no dependencies).
 
 Everyone here follows the [Code of Conduct](CODE_OF_CONDUCT.md). By contributing you agree that your contribution is licensed under the MIT licence in `LICENSE`.
