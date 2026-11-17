@@ -1,5 +1,7 @@
 # Intent Format 1.2
 
+[![npm](https://img.shields.io/npm/v/intent-format)](https://www.npmjs.com/package/intent-format) [![downloads](https://img.shields.io/npm/dw/intent-format)](https://www.npmjs.com/package/intent-format)
+
 Intent Format is a format for the knowledge base (KB) of a software product, written as plain
 Markdown. Every user type, screen, shell, component, user flow, IA map, rule, API, feature, edge case, backend
 node, technology, decision and comment is one **card** — one file — and cards link to each
@@ -23,9 +25,8 @@ every change is listed in `CHANGELOG.md`.
 
 - **Download:** every version is on the [Releases](https://github.com/intentstudiodev/intent-format/releases)
   page; the newest is marked *Latest*. Older versions stay available.
-- **Run the CLI without installing** (Node 18 or later):
-  `npx github:intentstudiodev/intent-format#v1.2 check ./my-kb` — leave out `#…` for the
-  latest version.
+- **Run the CLI without installing** (Node 18 or later), from npm:
+  `npx intent-format@1.2 check ./my-kb` — leave out `@…` for the latest version.
 - **Versions:** two numbers. `1.x` for fixes and additions that keep existing KBs valid, `2.0` for
   changes that need `intent-format migrate`. A KB names the version it follows in its
   `intent-format.md`: `standard: IntentFormat/1.2`; any later `1.x` reads it. (`package.json` carries a third

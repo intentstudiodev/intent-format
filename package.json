@@ -1,6 +1,6 @@
 {
   "name": "intent-format",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Markdown format for a software product's knowledge base: spec, schema, the intent-format CLI and agent skills.",
   "type": "module",
   "bin": {
